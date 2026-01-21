@@ -1,0 +1,170 @@
+# Tint2 config file
+# For information on manually configuring tint2 see http://code.google.com/p/tint2/wiki/Configure
+
+# Background definitions
+# Background 1: panel
+rounded = 7
+border_width = 1
+background_color = #FFFFFF 0
+border_color = #FFFFFF 0
+
+# Background 2: normal/iconified tasks
+rounded = 5
+border_width = 0
+background_color = #777777 20
+border_color = #777777 30
+
+# Background 3: active tasks
+rounded = 5
+border_width = 1
+background_color = #777777 20
+border_color = #ffffff 70
+
+# Background 4: urgent tasks
+rounded = 5
+border_width = 1
+background_color = #aa4400 100
+border_color = #aa7733 100
+
+# Background 5: tooltips
+rounded = 2
+border_width = 1
+background_color = #FFFFFF 100
+border_color = #999999 100
+
+# Panel
+panel_items = L
+panel_monitor = all
+panel_position = left center vertical
+panel_size = 27 70
+panel_margin = 0 0
+panel_padding = 7 0 7
+panel_dock = 0
+wm_menu = 1
+panel_layer = top
+panel_background_id = 2
+font_shadow = 0
+
+# Panel Autohide
+autohide = 0
+autohide_show_timeout = 0
+autohide_hide_timeout = 0.5
+autohide_height = 2
+strut_policy = none
+
+# Taskbar
+taskbar_mode = single_desktop
+taskbar_padding = 2 3 2
+taskbar_background_id = 0
+taskbar_active_background_id = 0
+
+# Tasks
+task_icon = 1
+task_text = 1
+task_centered = 1
+task_maximum_size = 140 35
+task_padding = 6 2
+task_background_id = 2
+task_active_background_id = 3
+task_urgent_background_id = 4
+task_iconified_background_id = 2
+task_tooltip = 1
+urgent_nb_of_blink = 100000
+
+# Task Icons
+task_icon_asb = 100 0 0
+task_active_icon_asb = 100 0 0
+task_urgent_icon_asb = 100 0 0
+task_iconified_icon_asb = 100 0 0
+
+# Fonts
+task_font = sans 8
+task_font_color = #FFFFFF 90
+task_active_font_color = #FFFFFF 90
+task_urgent_font_color = #FFFFFF 90
+task_iconified_font_color = #FFFFFF 90
+
+# Mouse
+mouse_left = toggle_iconify
+mouse_middle = close
+mouse_right = none
+mouse_scroll_up = toggle
+mouse_scroll_down = iconify
+
+# System Tray
+systray_padding = 0 4 5
+systray_sort = ascending
+systray_background_id = 0
+systray_icon_size = 32
+systray_icon_asb = 70 0 0
+
+# Clock
+time1_format = %H:%M
+time1_font = sans 10
+time2_format = %A %d %B
+time2_font = sans 8
+clock_font_color = #FFFFFF 100
+clock_padding = 1 0
+clock_background_id = 0
+clock_lclick_command = gsimplecal
+
+# Tooltips
+tooltip_padding = 2 2
+tooltip_show_timeout = 0.5
+tooltip_hide_timeout = 0.1
+tooltip_background_id = 5
+tooltip_font = sans 10
+tooltip_font_color = #FFFFFF 100
+
+#-------------------------------------
+# Executor 1
+execp = new
+execp_command = hostname
+execp_interval = 0
+execp_has_icon = 0
+execp_cache_icon = 1
+execp_continuous = 0
+execp_markup = 1
+execp_tooltip = Left click for hardinfo
+execp_lclick_command = hardinfo
+execp_rclick_command = 
+execp_mclick_command = 
+execp_uwheel_command = 
+execp_dwheel_command = 
+execp_font = Droid Sans Fallback 12
+execp_font_color = #00ffff 100
+execp_padding = 0 0
+execp_background_id = 0
+execp_centered = 0
+execp_icon_w = 0
+execp_icon_h = 0
+
+#-------------------------------------
+
+# Battery
+battery_tooltip = 1
+battery_low_status = 10
+battery_low_cmd = notify-send "battery low"
+battery_hide = 101
+battery_font_color = #FFFFFF 100
+battery_padding = 1 0
+battery_background_id = 0
+
+# Launcher
+launcher_padding = 5 1
+launcher_background_id = 1
+launcher_icon_size = 64
+launcher_icon_asb = 100 0 0
+launcher_tooltip = 0
+startup_notifications = 0
+#back-launcher_item_app = /usr/share/applications/back.desktop
+#forward-launcher_item_app = /usr/share/applications/forward.desktop
+#refresh-launcher_item_app = /usr/share/applications/refresh.desktop
+#home-launcher_item_app = /usr/share/applications/home.desktop
+#zoom-out-launcher_item_app = /usr/share/applications/zoom-out.desktop
+#zoom-in-launcher_item_app = /usr/share/applications/zoom-in.desktop
+#print-launcher_item_app = /usr/share/applications/print.desktop
+#removable-launcher_item_app = /usr/share/applications/removable.desktop
+#close-launcher_item_app = /usr/share/applications/close.desktop
+
+# End of config

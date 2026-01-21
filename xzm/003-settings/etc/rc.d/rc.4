@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# This file is executed by init(8) when the system is being
+# initialized for run level 4.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Set highest framebuffer mode for the fbdev driver:
+#fbdev=yes
+if [ "$fbdev" ]; then
+    test -e /dev/fb0 || modprobe uvesafb mode_option=1920x1080-32
+    echo $(grep `cut -d: -f2 /sys/class/graphics/fb0/modes | sort -n | tail -n1` /sys/class/graphics/fb0/modes | tail -n1) > /sys/class/graphics/fb0/mode
+fi
+
+# Run X11 startup helper:
+pidof watch-xorg >/dev/null && sleep 4 || /opt/scripts/watch-xorg 2>/dev/null &
+
+# Start desktop:
+exec /usr/bin/xdm

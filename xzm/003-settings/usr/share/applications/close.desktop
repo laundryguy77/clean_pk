@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=killall firefox
+Icon=/usr/share/pixmaps/button-close.png
+Type=Application
+Categories=System;
+Name=Exit
+MimeType=text/html;
+StartupNotify=true

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=xdotool key F5
+Icon=/usr/share/pixmaps/button-refresh.png
+Type=Application
+Categories=System;
+Name=Refresh webpage
+MimeType=text/html;
+StartupNotify=true

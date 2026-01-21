@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# Session manager.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+slock=/opt/scripts/files/slock
+spass=/opt/scripts/files/sessionp
+
+# Setup session lock:
+touch $slock
+
+# Start auth window:
+while [ -e $slock ]; do
+touch $slock
+echo '
+<window decorated="true" title="Access verification" window-position="1" icon-name="kiosk" width-request="360">
+<vbox margin="10">
+        <hseparator></hseparator>
+        <text yalign="0" xalign="0" wrap="true" width-request="350"><label>Enter valid password to start the session.</label></text>
+        <text><label>""</label></text>
+	<hbox>
+	    <pixmap>
+        	<input file>/usr/share/pixmaps/locker-64.png</input>
+        	<width>64</width>
+	    </pixmap>
+	    <text width-request="20"><label>""</label></text>
+	    <text visibility="true">
+		<label>Password: </label>
+	    </text>
+            <entry visibility="false" editable="true" activates_default="true">
+                <variable>p1</variable>
+                <action signal="changed">echo "$p1" > '$spass'</action>
+            </entry>
+        </hbox>
+        <hbox>
+                <button can-default="true" has-default="true" use-stock="true">
+                        <label>Login</label>
+                        <input file icon="gtk-yes"></input>
+                </button>
+        </hbox>
+</vbox>
+</window>
+' | gtkdialog -s -c
+test -e $spass && [ "$(echo `grep sp= /opt/scripts/extras | cut -d= -f2-` | openssl aes-256-cbc -a -d -pass pass:`grep boot_dev= /opt/scripts/extras | cut -d= -f2-`)" = "`cat $spass`" ] && rm -f $slock
+if test -e $slock; then
+echo '
+<window decorated="true" title="Incorrect password" width-request="310">
+<vbox margin="10">
+        <hseparator></hseparator>
+        <text><label>"Provided password is not correct."</label></text>
+        <text><label>""</label></text>
+        <hbox>
+                <button ok></button>
+        </hbox>
+</vbox>
+</window>
+' | gtkdialog -s -c
+fi
+done
+
+# Cleanup:
+rm -f $spass

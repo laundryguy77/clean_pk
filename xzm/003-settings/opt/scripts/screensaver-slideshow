@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# Download images for the slideshow.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+dlpath="$*"
+
+(
+# Wait:
+sleep 5
+
+# Functions:
+archr() {
+rm -rf /usr/share/screensaver/*
+unzip -o $scripts/files/arch.zip -d /usr/share/screensaver
+find /usr/share/screensaver -type f | sort > $scripts/files/fehpls
+killall -HUP feh
+md5sum $scripts/files/arch.zip | cut -d" " -f1 > $scripts/files/arch.md5
+rm -f $scripts/files/arch.zip
+}
+dlarch() {
+if [ -e $scripts/files/arch.md5 ]; then
+    pkget $dlpath $scripts/files/arch.zip
+    if [ "`cat $scripts/files/arch.md5`" = "`md5sum $scripts/files/arch.zip | cut -d" " -f1`" ]; then
+	rm -f $scripts/files/arch.zip
+    else
+	archr
+    fi
+else
+    pkget $dlpath $scripts/files/arch.zip; archr
+fi
+}
+dlcheck() {
+[ `ls -1 /usr/share/screensaver | wc -l` -lt 1 ] && { rm -f $scripts/files/arch.zip; dlarch; }
+[ `ls -1 /usr/share/screensaver | wc -l` -lt 1 ] && { rm -f $scripts/files/arch.zip; dlarch; }
+# Fallback to wallpaper:
+[ `ls -1 /usr/share/screensaver | wc -l` -lt 1 ] && cp -a /usr/share/wallpapers/* /usr/share/screensaver
+}
+
+# Download and unpack archive:
+dlarch; dlcheck
+
+# Update slideshow:
+#uparch=60
+if [ "$uparch" ]; then
+    while [ 1 ]; do sleep "$uparch"m; sleep 2; dlarch; dlcheck; done
+fi
+) &

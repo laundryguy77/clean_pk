@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# GUI initialization script.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Place mouse cursor in the top left corner (mostly useful for digital signage):
+#xdotool mousemove 0 0
+
+# Skip during first run:
+if ! grep -q "^first_run=yes" /opt/scripts/extras; then
+
+    # Variables:
+    . /etc/profile.d/variables.sh
+
+    # Run local commands in GUI mode (runlevel 4):
+    for script in `ls -1 /etc/rc.d/local_gui.d`; do . /etc/rc.d/local_gui.d/$script; done
+fi
+
+# Start openbox:
+dbus-launch --exit-with-session /usr/bin/openbox-session

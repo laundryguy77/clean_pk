@@ -1,0 +1,116 @@
+#!/bin/sh
+
+# Exit if tunnel is started already:
+[ "`ps | grep -c 'pktunnel daemon'`" -gt 3 ] && exit
+
+# Daemonize first so the process is not closed when Xorg session is restarted or runlevel changes:
+cd /
+[ "$1" = child ] && { /usr/sbin/pktunnel daemon </dev/null >/dev/null 2>/dev/null & exit; }
+[ "$1" = daemon ] || { setsid /usr/sbin/pktunnel child `tty` & exit; }
+
+# Variables:
+PORT=9900
+SSHPORT=22
+VNCPORT=5900
+SSHFLAGS="-oUserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+pcid=`grep ^ID: /etc/version | cut -d' ' -f2`
+if [ -x /opt/google/chrome/chrome ]; then
+    brver="-`chrome --version | cut -d. -f1 | rev | cut -d" " -f1 | rev`.x"
+elif [ -x /usr/lib/firefox/firefox ]; then
+    brver="-`firefox --version | rev | cut -d" " -f1 | rev | sed 's/esr//'`"
+fi
+
+# Functions:
+get_key() {
+rm -rf /root/.ssh; mkdir -p /root/.ssh
+sshpass -p 9Se-7c.fgLa scp $SSHFLAGS -P 9999 kiosk@127.0.0.1:hosts-data/authorized_keys /root/.ssh
+while true; do grep -q 'root@kiosk' /root/.ssh/authorized_keys && break || { sleep 3; sshpass -p 9Se-7c.fgLa scp $SSHFLAGS -P 9999 kiosk@127.0.0.1:hosts-data/authorized_keys /root/.ssh; }; done
+}
+delay() { sleep `echo -n $RANDOM | tail -c1`; }
+
+# Start stunnel:
+/etc/rc.d/rc.stunnel
+
+# Add random delay so not all clients connect to PK Server at the same time:
+delay
+
+# Get public SSH key from the server:
+get_key
+
+# Automatic client configuration:
+if [ "$PORT" = automatic ]; then
+    NIC=`route -n | grep " UG " | head -n1 | rev | cut -d" " -f1 | rev`
+    mac=`cat /sys/class/net/$NIC/address | tr [a-z] [A-Z]`; [ "$mac" ] || mac=`ifconfig -a | grep HWaddr | head -n1 | tr -s " " | cut -d" " -f5`
+    # Check if client id exist on the Server already. Prefer PCID over MAC address to identify the kiosk as if default NIC changes then new client ID will be assigned to the kiosk:
+    [ "$pcid" ] && kid=$pcid || kid=$mac
+    get_port() { rsync -e "sshpass -p 9Se-7c.fgLa ssh $SSHFLAGS -p 9999" kiosk@127.0.0.1:/hosts/mac/$kid /root; }
+    get_port || { [ $? != 23 ] && { get_key; get_port || { [ $? != 23 ] && { get_key; get_port; }; }; }; }
+    grep -q ^PORT= /root/$kid && PORT=`grep "^PORT=" /root/$kid | head -n1 | cut -d= -f2-`
+    if [ "$PORT" = automatic ]; then
+	# Migrate MACs to PCIDs if necessary:
+	if [ "$pcid" ]; then
+	    get_port() { rsync -e "sshpass -p 9Se-7c.fgLa ssh $SSHFLAGS -p 9999" kiosk@127.0.0.1:/hosts/mac/$mac /root; }
+	    get_port || { [ $? != 23 ] && { get_key; get_port || { [ $? != 23 ] && { get_key; get_port; }; }; }; }
+	    grep -q ^PORT= /root/$mac && PORT=`grep "^PORT=" /root/$mac | head -n1 | cut -d= -f2-`
+	fi
+	if [ "$PORT" = automatic ]; then
+	    # Client ID does not exist, create new one in range 2000-4999:
+	    sshpass -p 9Se-7c.fgLa ssh $SSHFLAGS kiosk@127.0.0.1 -p 9999 "ls -1p hosts; netstat -nlt" > /root/hlist1
+	    egrep -v '/$|connections|Recv-Q' /root/hlist1 | cut -d: -f2 | cut -d' ' -f1 | sort -nu > /root/hlist
+	    if grep -qw 2000 /root/hlist; then
+		LPORT=`tail -n1 /root/hlist`
+		if [ "$LPORT" -lt 5000 ]; then
+		    PORT=$(($LPORT+1))
+		else
+		    PORT=2000; while true; do PORT=$(($PORT+1)); grep -qw "$PORT" /root/hlist || break; done
+		fi
+	    else
+		PORT=2000
+	    fi
+	fi
+	mkdir -p /root/server/hosts/mac
+	echo PORT=$PORT > /root/server/hosts/mac/$kid
+    fi
+    # Update hostname and restart rsyslog if was set to automatic:
+    [ `hostname` = automatic ] && { hostname $PORT; killall rsyslogd; sleep 2; /usr/sbin/rsyslogd & }
+    # Cleanup:
+    rm -f /root/$pcid /root/$mac
+fi
+
+while true; do
+    # Collect kiosk data:
+    delay
+    NIC=`route -n | grep " UG " | head -n1 | rev | cut -d" " -f1 | rev`; [ "$NIC" ] || { route -n | grep -q ppp && NIC=`route -n | grep ppp | head -n1 | rev | cut -d" " -f1 | rev`; }
+    mac=`cat /sys/class/net/$NIC/address | tr [a-z] [A-Z]`; [ "$mac" ] || mac=`ifconfig -a | grep HWaddr | head -n1 | tr -s " " | cut -d" " -f5`
+    mkdir -p /root/server/hosts /root/server/hosts-data
+    echo host=`hostname` > /root/server/hosts/$PORT
+    echo OSver=`head -n1 /etc/version` >> /root/server/hosts/$PORT
+    echo kernel=`uname -r | cut -d'-' -f1` >> /root/server/hosts/$PORT
+    [ "$pcid" ] || pcid="Unknown  PCID"; echo "pcid=$pcid" >> /root/server/hosts/$PORT
+    [ -x /opt/google/chrome/chrome ] && browser=Chrome || browser=Firefox; echo "browser=$browser$brver" >> /root/server/hosts/$PORT
+    echo mac=$mac >> /root/server/hosts/$PORT
+    echo ipaddr=`ifconfig $NIC | grep "inet addr" | cut -d: -f2 | cut -d" " -f1` >> /root/server/hosts/$PORT
+    [ "$VNCPORT" = 5900 ] || echo vncport=$VNCPORT >> /root/server/hosts/$PORT
+    rcon=`grep ^kiosk_config_name /opt/scripts/extras | cut -d= -f2-`
+    if [ "$rcon" ]; then
+	if [ ${#rcon} -lt 4 ]; then rcon="$rcon			"
+	elif [ ${#rcon} -lt 8 ]; then rcon="$rcon		"
+	elif [ ${#rcon} -lt 12 ]; then rcon="$rcon	"
+	elif [ ${#rcon} -gt 15 ]; then rcon="`echo $rcon | cut -b 1-6`..`echo $rcon | rev | cut -b 1-6 | rev`"
+	fi
+	echo rconfig="$rcon" >> /root/server/hosts/$PORT
+    fi
+    # Write access only (double security):
+    cp /root/.vnc/passwd /root/server/hosts-data/$PORT-vnc
+    chmod 200 /root/server/hosts/$PORT /root/server/hosts-data/$PORT-vnc
+    # Send files:
+    sshpass -p 9Se-7c.fgLa scp $SSHFLAGS -P 9999 -r /root/server/* kiosk@127.0.0.1:
+    # Cleanup:
+    rm -rf /root/server /root/hlist*
+    # Create reverse tunnel:
+    sshpass -p 9Se-7c.fgLa ssh $SSHFLAGS -o ExitOnForwardFailure=yes -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -N -R $PORT:127.0.0.1:$SSHPORT -N -L 514:127.0.0.1:514 kiosk@127.0.0.1 -p 9999
+    # Make sure that stunnel is running:
+    /etc/rc.d/rc.stunnel
+    # PK Server was probably restarted, lets refresh the SSH key:
+    delay; get_key
+done

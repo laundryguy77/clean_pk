@@ -1,0 +1,33 @@
+#!/bin/bash
+#
+# Screensaver idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SSIDLE=`grep SSIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+# Restart screensaver every 10 mins after launch to avoid background picture distortions:
+(
+while [ 1 ]; do
+    sleep 600
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    [ $idle -gt $(($SSIDLE+300)) ] && killall ripples imlib2_view 2>/dev/null
+done
+) &
+
+# Start screensaver:
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SSIDLE ]; then
+	if [ -z "`pidof ripples`" ]; then
+	    killall ripples imlib2_view 2>/dev/null
+	    imlib2_grab /root/screen.png
+	    imlib2_view /root/screen.png &
+	    sleep 1
+	    ripples -root &
+	fi
+	sleep 2
+    else
+	[ "`pidof ripples`" ] && killall ripples imlib2_view 2>/dev/null
+	sleep $(($SSIDLE-$idle))
+    fi
+done

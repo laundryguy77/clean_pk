@@ -1,0 +1,75 @@
+#!/bin/sh
+#
+# Printing test.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+profile=/home/guest/.mozilla/firefox/c3pp43bg.default
+json=/etc/opt/chrome/policies/managed/chrome.json
+wget="wget --no-http-keep-alive --no-cache --no-check-certificate"
+VER=`head -n1 /etc/version | cut -b 1,2,3`
+URLP=http://porteus-kiosk.org/public/$VER
+pth=/mnt/ISO
+prxzm=10-printing.xzm
+
+# Download module if missing:
+injected=no; mdr=`grep $prxzm /tmp/log/md5sum | cut -d" " -f1`; DONE=no; TRIES=9
+while [ $TRIES -gt 0 ]; do
+    test -e $pth/xzm/$prxzm && { DONE=yes; injected=yes; break; }
+    [ $TRIES = 8 ] && $wget -q -T20 -t2 $URLP/failed-dw-pr
+    while [ "$(pidof wget)" ]; do sleep 1; done
+    $wget -O $pth/xzm/$prxzm $URLP/$prxzm 2>/tmp/out &
+    VAR=0; pgs=0
+    while [ "$pgs" -lt 100 ]; do
+        sleep 1; pgs1=`grep % /tmp/out | tail -n1 | cut -d"%" -f1 | rev | cut -d" " -f1 | rev`; [ "$pgs1" ] || pgs1=0
+        [ "$pgs" -lt "$pgs1" ] && VAR=$(dunstify -p -r $VAR -u normal -i $PTH/status/dialog-information.png -h int:value:$pgs " Downloading $prxzm ...")
+        pgs=`grep % /tmp/out | tail -n1 | cut -d"%" -f1 | rev | cut -d" " -f1 | rev`; [ "$pgs" ] || pgs=0
+    done
+    VAR=$(dunstify -p -r $VAR -u normal -i $PTH/status/dialog-information.png -h int:value:$pgs " Downloading $prxzm ...")
+    while [ "$(pidof wget)" ]; do sleep 1; done; rm -f /tmp/out; sync
+    [ $mdr = `md5sum $pth/xzm/$prxzm | cut -d" " -f1` ] && { DONE=yes; break; } || { TRIES=$((TRIES-1)); echo 3 > /proc/sys/vm/drop_caches; rm -f $pth/xzm/$prxzm; }
+done
+[ $DONE = yes ] || { CS=`du -h $pth/xzm/$prxzm | cut -f1`; CM=`md5sum $pth/xzm/$prxzm | cut -d" " -f1`; dunstify -u critical -i /usr/share/icons/oxygen/48x48/status/dialog-error.png "Detected incorrect md5sum of the $prxzm component, downloaded file size is: $CS\nmd5sum is: $CM\ncomparator is: $mdr\nPlease try again." 2>/dev/null; $wget -q -T20 -t2 $URLP/failed-ins-pr; rm -f $pth/xzm/$prxzm; exit; }
+
+# Insert module to live filesystem:
+if [ "$injected" = no ]; then
+    MOD=/opt/scripts/pr-xzm
+    mkdir -p $MOD
+    mount -o loop,ro $pth/xzm/$prxzm $MOD
+    mount -no remount,add:1:$MOD=rr aufs /
+fi
+
+# Display notification:
+dunstify -u low -i $PTH/status/dialog-information.png "Setting up the printer - this may take a while ..."
+
+# Cleanup first:
+killall firefox chrome cupsd 2>/dev/null
+sleep 1
+rm -rf /var/log/cups/* /var/spool/cups/*
+cupsd
+# Delete old printers:
+for prnt in `lpstat -s | sed '1d' | cut -d: -f1 | rev | cut -d" " -f1 | rev`; do lpadmin -x $prnt; done
+
+# Setup printer:
+model=`cut -d= -f2- /tmp/kwiz*/printer-model.tmp`
+connection=`cut -d= -f2- /tmp/kwiz*/printer-connection.tmp`; [ "$connection" = direct ] && connection=`lpinfo -v | egrep '^direct|serial:/dev/ttyUSB' | grep ":" | sort -u | head -n1 | cut -d" " -f2`
+pname=`cut -d= -f2- /tmp/kwiz*/printer-name.tmp`; [ "$pname" ] || pname=kiosk-printer
+if echo "$model" | grep -q ' Foomatic/'; then
+    /usr/libexec/cups/driver/foomatic cat `grep "$model" /opt/scripts/files/wizard/printers.d/foomatic | cut -d'"' -f1 | head -n1` > /usr/share/ppd/kiosk.ppd
+    lpadmin -p $pname -E -v "$connection" -m lsb/usr/kiosk.ppd
+else
+    lpadmin -p $pname -E -v "$connection" -m `lpinfo --make-and-model "$model" -m | cut -d" " -f1 | head -n1`
+fi
+# Set kiosk-printer as default (needed for Chrome):
+lpoptions -d $pname
+# Set custom paper size:
+paper_size=`cut -d= -f2- /tmp/kwiz*/paper-size.tmp`
+[ "$paper_size" ] && sed -e 's|^*DefaultPageSize:.*|*DefaultPageSize: '"$paper_size"'|' -e 's|^*DefaultPageRegion:.*|*DefaultPageRegion: '"$paper_size"'|' -e 's|^*DefaultImageableArea:.*|*DefaultImageableArea: '"$paper_size"'|' -e 's|^*DefaultPaperDimension:.*|*DefaultPaperDimension: '"$paper_size"'|' -i /etc/cups/ppd/*.ppd
+
+# Display test page:
+sed -i 's/|^file:.\*//g' $profile/chrome/userContent.css 2>/dev/null
+sed -i s@,zoom-controls@,zoom-controls,print-button@ $profile/xulstore.json 2>/dev/null
+sed -i 's@,\\"zoom-controls\\",@,\\"zoom-controls\\",\\"print-button\\",@' $profile/prefs.js
+sed -i 's/"PrintingEnabled": false,/"PrintingEnabled": true,/g' $json 2>/dev/null
+echo -e "Driver:		"$model"\nConnection:	"$connection"\n\nPress Ctrl+P and print this page to test printer settings displayed above. Once done the printing progress can be tracked in the second tab (press F5 to refresh) while errors are displayed in the last tab of the browser. In case of issues with printing please copy and send the error log to support@porteus-kiosk.org email address.\n\nClose the browser when finished." > /tmp/print

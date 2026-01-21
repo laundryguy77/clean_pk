@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Start VNC daemon:
+if [ -z "`pidof x11vnc`" ]; then
+    (
+    # Wait till Xorg session is fully initialized so clipboard copying can work:
+    sleep 10
+    # Check if at least one video output is active, if not then create virtual mode in FullHD size and assign it to a disconnected output
+    # so VNC can work properly even without monitor attached to the kiosk:
+    if [ ! "`xrandr | grep -w connected | cut -d" " -f1`" ]; then
+	vout=`xrandr | grep -w disconnected | cut -d" " -f1 | tail -n1`
+	if [ "$vout" ]; then
+	    vmode=`cvt 1920 1200 | tail -n1 | cut -d" " -f2`
+	    xrandr --newmode `cvt 1920 1200 | tail -n1 | cut -d" " -f2-`
+	    xrandr --addmode $vout $vmode
+	    xrandr --output $vout --mode $vmode
+	    # Set wallpaper to new resolution:
+	    hsetroot -fill /usr/share/wallpapers/default.jpg
+	fi
+    fi
+    rm -f /var/log/x11vnc.log*
+    x11vnc -rfbauth /root/.vnc/passwd -auth /root/.`ps | grep -w xinit | egrep -o "serverauth.[^ ]+"` -display :0 -nomodtweak -noxdamage -shared -forever -viewonly -loop5000 -bg >/dev/null 2>&1
+    ) &
+else
+    echo "VNC daemon is started already"
+fi

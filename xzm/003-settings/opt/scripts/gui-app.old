@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Start kiosk application in a loop.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Disable backup of the /home folder (just in case the session is restarted):
+sed -i 's_^cp -a /home/guest_#cp -a /home/guest_g' /etc/xdg/openbox/autostart
+
+# Start application in a loop:
+while true; do
+    rm -rf /home/guest /tmp/*; cp -a /opt/scripts/guest /home; sync
+    # Session manager:
+    #/opt/scripts/session-manager
+    # Bottom panel:
+    #/opt/scripts/start-panel
+    su - guest -c "firefox"
+    sync
+done

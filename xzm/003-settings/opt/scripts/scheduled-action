@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Setup scheduled actions.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Sleep to avoid 'double reboot' issue at certain hour:minute in case PC is really fast and also to make sure that clock is synced through the NTP:
+sleep 40
+
+# Perform an action:
+while true; do
+    day=`date +%A`
+    planner=`grep ^scheduled_action /opt/scripts/extras | cut -d'=' -f2- | head -n1`
+    time=`echo "$planner" | egrep -o "$day-[^ ]+" | cut -d- -f2-`
+    if [ "$time" ]; then
+	hour=`echo $time | cut -d: -f1 | sed s/^0//g`
+	minute=`echo $time | cut -d: -f2 | sed s/^0//g`
+	min=$(echo $(($minute-`date +%M | sed s/^0//g`)))
+	hr=$(echo $(echo $(($hour-`date +%H | sed s/^0//g`)))*60)
+	mins_total=$(echo $(($min+$hr)))
+	sleep "$mins_total"m 2>/dev/null && eval `echo "$planner" | egrep -o "action:[^$]+" | cut -d: -f2-`
+    fi
+    hour=23
+    minute=59
+    min=$(echo $(($minute-`date +%M | sed s/^0//g`)))
+    hr=$(echo $(echo $(($hour-`date +%H | sed s/^0//g`)))*60)
+    mins_total=$(echo $(($min+$hr)))
+    sleep "$mins_total"m 2>/dev/null
+    sleep 70
+done

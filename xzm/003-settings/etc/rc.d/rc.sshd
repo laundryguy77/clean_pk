@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Start SSH daemon:
+if [ -z "`pidof sshd`" ]; then
+    mkdir /dev/pts 2>/dev/null && mount -o mode=0620,gid=5 -nt devpts devpts /dev/pts
+    ssh-keygen -A
+    /usr/sbin/sshd
+else
+    echo "SSH daemon is started already"
+fi

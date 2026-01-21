@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Screensaver slideshow.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SSIDLE=`grep SSIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SSIDLE ]; then
+	if [ -z "`pidof feh`" ]; then
+	    [ -z "`pidof hhpc`" ] && hhpc &
+	    find /usr/share/screensaver -type f | sort > /opt/scripts/files/fehpls
+	    feh -FZr -D5 -S filename /usr/share/screensaver &
+	fi
+	sleep 2
+    else
+	[ "`pidof feh`" ] && { killall feh hhpc; sleep 1; killall -9 feh hhpc 2>/dev/null; eval `grep hhpc /etc/xdg/openbox/autostart`; }
+	sleep $(($SSIDLE-$idle))
+    fi
+done

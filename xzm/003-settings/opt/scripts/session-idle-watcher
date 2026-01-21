@@ -1,0 +1,72 @@
+#!/bin/sh
+#
+# Session idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+SIDLE=`grep ^SIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+[ -x /opt/google/chrome/chrome ] && browser=chrome || browser=firefox
+
+# Force restarting of the session every X minutes if user activity is not detected:
+#forced=yes
+
+# Perform specific action:
+action=restart
+
+# Functions:
+fix_screensaver() {
+# Pull screensaver window on top so its not covered by restarted browser when in fulscreen:
+(
+SLEEP=30
+grep -q tint2-buttons $scripts/gui-app && appnum=3 || appnum=2
+while [ `wmctrl -l | wc -l` -lt $appnum -a $SLEEP -gt 0 ]; do sleep 0.5; let SLEEP=SLEEP-1; done
+grep -q tint2-buttons $scripts/gui-app && sleep 1
+wmctrl -a `wmctrl -l | head -n1 | cut -d" " -f5-`
+) &
+}
+
+# Do not restart until first activity happens (unless forced):
+if [ "$forced" ]; then
+    # Toggle tabs and refresh webpage functions generate input event which breaks idle time, we need to force restarting the session no matter of the idle time:
+    [ `egrep '^ttabs=|^rpage=' /etc/xdg/openbox/autostart | cut -d= -f2` ] && ( while true; do sleep $SIDLE; kill `ps | grep "guest.*$browser" | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1`; fix_screensaver; done; ) &
+else
+    sleep $SIDLE; sleep 5; restart=no
+fi
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SIDLE ]; then
+	if [ "$restart" = yes ]; then
+	    [ "`pidof session-manager`" -o "$forced" = yes ] || dunstify -r 110 -u critical -i $PTH/status/dialog-information.png "No user activity detected in last $(($SIDLE/60)) minutes. Session $action is scheduled within 30 seconds ... \nMove your mouse or press any key to continue using your session."
+	fi
+	SLEEP=30
+	[ "$forced" = yes ] || while true; do sleep 1; idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1; [ $idle -lt $SIDLE -o $SLEEP = 1 ] && break || let SLEEP=SLEEP-1; done
+	dunstify -C 110
+	idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+	if [ $idle -gt $SIDLE ]; then
+	    if [ "$restart" = yes ]; then
+		restart=no
+		if [ "$action" = "restart" ]; then
+		    # Restart session:
+		    [ "`pgrep -f /etc/xdg/tint2/tint2rc`" ] && openbox --exit
+		    killall -9 wfica; kill `ps | grep "guest.*$browser" | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1`; fix_screensaver; [ "$forced" ] && xdotool key Menu; sleep $SIDLE
+		elif [ "$action" = "lock" ]; then
+		    # Lock the session:
+		    [ "`pidof xlock`" ] || su - guest -c "xlock +resetsaver +description -timeelapsed -bg black -fg white -mode space -delay 50000 -count 50"
+		else
+		    # Run custom action:
+		    $action
+		fi
+	    else
+		sleep $SIDLE
+	    fi
+	else
+	    sleep $(($SIDLE-$idle))
+	    restart=yes
+	fi
+    else
+	sleep $(($SIDLE-$idle))
+	restart=yes
+    fi
+done

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=xdotool key ctrl+equal
+Icon=/usr/share/pixmaps/button-zoom-in.png
+Type=Application
+Categories=System;
+Name=Zoom in
+MimeType=text/html;
+StartupNotify=true

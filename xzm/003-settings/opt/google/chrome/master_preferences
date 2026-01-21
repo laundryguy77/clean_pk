@@ -1,0 +1,11 @@
+{
+ "browser": {
+   "custom_chrome_frame": false
+ },
+ "download": {
+   "prompt_for_download": false
+ },
+  "distribution" : {
+    "suppress_first_run_bubble": true
+ }
+}

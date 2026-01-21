@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Start the browser through the PulseAudio wrapper with provided arguments:
+eval "apulse /usr/lib64/firefox/firefox $*"

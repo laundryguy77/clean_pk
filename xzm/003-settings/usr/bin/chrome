@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ "$1" = URL ]; then
+    # Start the browser with predefined flags and homepage (also tabs):
+    eval "/opt/google/chrome/chrome `grep -v '#' /opt/google/chrome/chrome-flags.conf | tr '\n' ' '` `grep RestoreOnStartupURLs $json | cut -d[ -f2- | sed -e 's/", /" /g' -e 's/ ],$//g'`"
+else
+    # Start the browser with predefined flags and provided arguments:
+    eval "/opt/google/chrome/chrome `grep -v '#' /opt/google/chrome/chrome-flags.conf | tr '\n' ' '` $*"
+fi

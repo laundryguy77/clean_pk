@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# Screensaver video.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SSIDLE=`grep SSIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+# Cleanup (just in case):
+rm -rf /opt/scripts/vid-lock /root/.mozilla /root/.cache/mozilla /root/.config/google-chrome /root/.cache/google-chrome
+
+playURL() {
+# Set lock:
+touch /opt/scripts/URL-lock
+
+# Start screensaver:
+if [ -x /opt/google/chrome/chrome ]; then
+    surl="`grep ^screensaver_webpage= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1`"
+    test -e /tmp/kwiz*/screensaver-url.tmp && surl=`cat /tmp/kwiz*/screensaver-url.tmp | cut -d= -f2-`
+    rm -rf /root/.config/google-chrome /root/.cache/google-chrome
+    sed -i 's_\"file://\*\"_\"files://\*\"_g' $json
+    # Copy flashplayer:
+    mkdir -p /root/.config/google-chrome; cp -a /home/guest/.config/google-chrome/PepperFlash /root/.config/google-chrome
+    /opt/google/chrome/chrome --kiosk --disable-features=FullscreenExitUI --no-sandbox --test-type "$surl" &
+else
+    surl="`grep ^screensaver_webpage= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1 | sed 's/&/\\\&/g'`"
+    test -e /tmp/kwiz*/screensaver-url.tmp && surl=`cat /tmp/kwiz*/screensaver-url.tmp | cut -d= -f2-`
+    rm -rf /root/.mozilla /root/.cache/mozilla
+    # Prepare profile first:
+    profile=/root/.mozilla/firefox/c3pp43bg.default
+    cp -a /opt/scripts/guest/.mozilla /root
+    sed -i 's/|^file:.\*//g' $profile/chrome/userContent.css
+    echo "statuspanel { display: none !important; }" >> $profile/chrome/userChrome.css
+    sed -i 's@"maximized"@"fullscreen"@g' $profile/xulstore.json
+    firefox "$surl" &
+fi
+# Keep screensaver window on top so its not covered by restarted browser ('browser_idle=' function):
+(
+sleep 10
+[ `ps | grep -w "$surl" | wc -l` -gt 1 ] && wmctrl -r :ACTIVE: -b toggle,above
+) &
+}
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SSIDLE ]; then
+	if [ ! -e /opt/scripts/URL-lock ]; then
+	    [ -z "`pidof hhpc`" ] && hhpc &
+	    playURL
+	fi
+	sleep 2
+    else
+	if [ -e /opt/scripts/URL-lock ]; then
+	    kill -9 `ps | grep -w "$surl" | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1` 2>/dev/null
+	    killall hhpc; sleep 1; killall -9 hhpc 2>/dev/null; eval `grep hhpc /etc/xdg/openbox/autostart`
+	    rm -rf /opt/scripts/URL-lock /root/.mozilla /root/.cache/mozilla /root/.config/google-chrome /root/.cache/google-chrome
+	    sed -i 's_\"files://\*\"_\"file://\*\"_g' $json
+	fi
+	sleep $(($SSIDLE-$idle))
+    fi
+done

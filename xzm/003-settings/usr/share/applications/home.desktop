@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=xdotool key alt+0xff50
+Icon=/usr/share/pixmaps/button-home.png
+Type=Application
+Categories=System;
+Name=Homepage
+MimeType=text/html;
+StartupNotify=true

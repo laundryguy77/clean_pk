@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=xdotool key ctrl+bracketright
+Icon=/usr/share/pixmaps/button-forward.png
+Type=Application
+Categories=System;
+Name=Go forward
+MimeType=text/html;
+StartupNotify=true

@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Import SSL certificates.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+. /etc/profile.d/variables.sh
+
+# Generate random password to sign the database:
+#head -10 /dev/urandom 2>/dev/null | tr -dc '[[:alnum:]]' | head -c8 > /tmp/pass
+# Use empty password as its default anyway:
+echo > /tmp/pass
+
+# Different action for Chrome and Firefox:
+if [ -x /opt/google/chrome/chrome ]; then
+    nssdb=/home/guest/.pki/nssdb; mkdir -p $nssdb; chown -R 1000:1000 /home/guest/.pki
+    # Chrome 55+ ignores global certificates so we must disable SSL warning completely:
+    grep -q 'ignore-certificate-errors' $chflags || echo -e '--ignore-certificate-errors\n--test-type' >> $chflags
+else
+    nssdb=$profile
+fi
+
+# Create empty database:
+rm -f $nssdb/cert9.db; su guest -c "certutil -N -d sql:$nssdb -f /tmp/pass"
+# Import certificates:
+for x in $*; do
+    echo | openssl s_client -connect $x 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /tmp/cert
+    if grep -q "BEGIN.*CERTIFICATE" /tmp/cert; then
+	cname=`echo $x | cut -d: -f1`
+	su guest -c 'certutil -d sql:'$nssdb' -A -t "TC,," -n "'$cname'" -i /tmp/cert -f /tmp/pass'
+	cp -a /tmp/cert /etc/ssl/certs/$cname.pem
+    else
+	pkget $x /tmp/cert
+	grep -q "BEGIN.*CERTIFICATE" /tmp/cert && su guest -c 'certutil -d sql:'$nssdb' -A -t "TC,," -n "`echo '$x' | rev | cut -d: -f1 | rev`" -i /tmp/cert -f /tmp/pass'
+	# Import also for other apps:
+	pkget $x /etc/ssl/certs/`echo $x | rev | cut -d/ -f1 | rev`
+    fi
+done
+
+# Update cert database:
+/usr/sbin/update-ca-certificates
+
+# Cleanup:
+rm -f /tmp/cert /tmp/pass

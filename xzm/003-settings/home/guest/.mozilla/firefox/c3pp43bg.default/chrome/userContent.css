@@ -1,0 +1,4 @@
+@-moz-document url-prefix(file://){ #UI_showHidden, .hidden-object { display :none !important; }; }
+@-moz-document regexp("^about:about.*|^about:addons.*|^about:caches.*|^about:checkerboard.*|^about:compat.*|^about:config.*|^about:debugging.*|^about:devtools.*|^about:logins.*|^about:memory.*|^about:networking.*|^about:newtab.*|^about:preferences.*|^about:privatebrowsing.*|^about:profiles.*|^about:support.*|^about:sync-log.*|^about:telemetry.*|^about:url-classifier.*|^about:webrtc.*|^about:welcome.*|^view-source:.*|^chrome:.*|^file:.*") {
+html, page, window { display: none !important; }
+}

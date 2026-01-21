@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Start GUI through /etc/X11/xinit/xinitrc script:
+while true; do su - -c "/usr/bin/startx -- -nolisten tcp vt7 > /dev/null 2>&1"; done

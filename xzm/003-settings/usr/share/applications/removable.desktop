@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=umount /media && dunstify -u low "Its safe to eject removable device now." || dunstify -u low "Removable device is not mounted."
+Icon=/usr/share/pixmaps/button-removable.png
+Type=Application
+Categories=System;
+Name=Eject removable media
+MimeType=text/html;
+StartupNotify=true

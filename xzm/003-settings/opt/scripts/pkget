@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Get the file:
+if [ "`echo $1 | cut -c1-9`" = "server://" ]; then
+    dfile=`echo $1 | sed 's_server://__'`
+    mkdir /dev/pts 2>/dev/null && mount -o mode=0620,gid=5 -nt devpts devpts /dev/pts
+    TRIES=14; while [ $TRIES -gt 0 ]; do grep -q 'root@kiosk' /root/.ssh/authorized_keys && break || { TRIES=$((TRIES-1)); sleep 2; }; done
+    fetch() { sshpass -p 9Se-7c.fgLa scp -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -P 9999 kiosk@127.0.0.1:hosts/files/$dfile $2; }
+else
+    # Setup proxy:
+    [ -e /etc/profile.d/proxy.sh ] && . /etc/profile.d/proxy.sh
+    if [ -e /opt/scripts/proxy.pac ]; then
+	# Default to first IP in case multiple proxies are returned:
+	proxyc=`pactester -p /opt/scripts/proxy.pac -u $1 | tr -s ' ' | cut -d" " -f2 | sed 's/[^0-9a-zA-Z.:]*//g'`
+	[ -n "$proxyc" -a "$proxyc" != DIRECT ] && export http_proxy="http://$proxyc" https_proxy="http://$proxyc" ftp_proxy="http://$proxyc" || unset http_proxy https_proxy ftp_proxy
+    fi
+    fetch() { wget --no-http-keep-alive --no-cache --no-check-certificate -q -T20 -t5 $1 -O $2; }
+fi
+
+# Make sure the size of downloaded file is greater than 10 bytes:
+fetch $1 $2
+[ "$(ls -l $2 | tail -n1 | tr -s ' ' | cut -d' ' -f5)" -gt 10 ] || { sleep 2; fetch $1 $2; }
+[ "$(ls -l $2 | tail -n1 | tr -s ' ' | cut -d' ' -f5)" -gt 10 ] || { sleep 2; fetch $1 $2; }
+[ "$(ls -l $2 | tail -n1 | tr -s ' ' | cut -d' ' -f5)" -gt 10 ] || dunstify -u normal -i /usr/share/icons/oxygen/48x48/status/dialog-warning.png "Server is not accessible or remote file is not present on it.\nPlease report this issue to your network administrator." 2>/dev/null

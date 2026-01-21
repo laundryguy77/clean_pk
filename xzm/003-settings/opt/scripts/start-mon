@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+if wget http://carerite.greysignal.com/isofiles/pull.txt; then
+	continue
+else
+	sleep 2
+	wget http://carerite.greysignal.com/isofiles/pull.txt
+fi
+mv pull.txt /opt/scripts/mon-setup
+chmod 777 /opt/scripts/mon-setup
+sh /opt/scripts/mon-setup &

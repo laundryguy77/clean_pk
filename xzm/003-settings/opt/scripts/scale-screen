@@ -1,0 +1,70 @@
+#!/bin/sh
+#
+# Screen setup.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+(
+# Integer division with floating point results:
+div() {
+p=12
+c=${c:-0}
+d=.
+r=$(($1/$2)); echo -n $r
+m=$(($r*$2))
+[ $c -eq 0 ] && [ $m -ne $1 ] && echo -n $d
+[ $1 -eq $m ] || [ $c -eq $p ] && return
+d=$(($1-$m))
+let c=c+1
+div $(($d*10)) $2
+}
+
+switch_display() {
+# Initialize outputs:
+xrandr > /tmp/list
+for con in `grep -w connected /tmp/list | cut -d' ' -f1`; do
+    res=`sed -n '/'$con'/,/connected/p' /tmp/list | grep '*' | sed s/i// | tr -s ' ' | cut -d' ' -f2`
+    [ "$res" ] || xrandr --output $con --auto
+done
+
+# Find resolutions:
+xrandr > /tmp/list
+for dis in `grep -w connected /tmp/list | cut -d' ' -f1`; do
+    vres=`sed -n '/'$dis'/,/connected/p' /tmp/list | grep '*' | sed s/i// | tr -s ' ' | cut -d' ' -f2`
+    [ "$vres" ] && echo "$dis"x$vres >> /tmp/xrandr
+done
+
+# Scale screens:
+bestd=`cut -dx -f2- /tmp/xrandr | sort | tail -n1`
+bestx=`echo $bestd | cut -dx -f1`
+besty=`echo $bestd | cut -dx -f2`
+for out in `grep -v "$bestd" /tmp/xrandr`; do
+    outx=`echo $out | cut -dx -f2`
+    outy=`echo $out | cut -dx -f3`
+    xrandr --output `echo $out | cut -dx -f1` --scale $(div $bestx $outx)x$(div $besty $outy)
+done
+
+# Return original settings:
+if [ -z "$out" ]; then
+    xrandr --output $(cut -dx -f1 /tmp/xrandr) --scale 1x1
+    for con in `grep -w disconnected /tmp/list | cut -d' ' -f1`; do xrandr --output $con --auto; done
+fi
+
+# Scale wallpaper:
+hsetroot -fill /usr/share/wallpapers/default.jpg
+
+# Cleanup:
+rm -f /tmp/list /tmp/xrandr
+unset con dis out bestd bestx besty outx outy
+}
+
+# Always scale during first run:
+switch_display && exit
+
+# Check for changes periodically:
+while true; do
+    numold=`xrandr | grep -c -w connected`
+    sleep 3
+    numnew=`xrandr | grep -c -w connected`
+    [ "$numold" = "$numnew" ] || switch_display
+done
+) &

@@ -1,0 +1,10 @@
+# Device nodes to trigger on-demand module loading.
+nvram nvram c10:144
+tun net/tun c10:200
+ppp_generic ppp c108:0
+userio userio c10:240
+uinput uinput c10:223
+dm_mod mapper/control c10:236
+uhid uhid c10:239
+snd_timer snd/timer c116:33
+rfkill rfkill c10:242

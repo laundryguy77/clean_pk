@@ -1,0 +1,76 @@
+#!/bin/sh
+#
+# Initialize bookamarks.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+[ -x /opt/google/chrome/chrome ] && chrome=yes
+wget="wget -U Mozilla --no-http-keep-alive --no-cache --no-check-certificate"
+
+# Different action for Chrome and Firefox:
+if [ "$chrome" ]; then
+    profile=/home/guest/.config/google-chrome/Default
+    bookfile=/opt/scripts/files/Bookmarks
+    cp -a $bookfile.tmp $bookfile
+    id=4
+    mkdir -p $profile
+    chown 1000:1000 $profile /home/guest/.config/google-chrome /home/guest/.config
+    for x in `grep ^managed_bookmarks= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1`; do
+	if echo "$x" | grep -q '|'; then
+	    title=`echo "$x" | cut -d'|' -f2 | tr '_' ' '`
+	    book=`echo "$x" | cut -d'|' -f1`
+	else
+	    title=`$wget -T20 -t3 -qO- "$x" | hxselect -s '\n' -c 'title'`; [ "$title" ] || title=$x
+	    book=$x
+	fi
+echo '         {
+            "id": "'$id'",
+            "name": "'$title'",
+            "type": "url",
+            "url": "'$book'"
+         },' >> $bookfile
+	id=$((id+1))
+    done
+sed -i '$s/},/}/' $bookfile
+echo '         ],
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "id": "2",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "id": "3",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}
+' >> $bookfile
+else
+    profile=/home/guest/.mozilla/firefox/c3pp43bg.default
+    bookfile=/opt/scripts/files/bookmarks.html
+    cp -a $bookfile.tmp $bookfile
+    for x in `grep ^managed_bookmarks= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1`; do
+	if echo "$x" | grep -q '|'; then
+	    title=`echo "$x" | cut -d'|' -f2 | tr '_' ' '`
+	    book=`echo "$x" | cut -d'|' -f1`
+	else
+	    title=`$wget -T20 -t3 -qO- "$x" | hxselect -s '\n' -c 'title'`; [ "$title" ] || title=$x
+	    book=$x
+	fi
+	echo '	<DT><A HREF="'$book'" LAST_CHARSET="UTF-8">'$title'</A>' >> $bookfile
+    done
+echo '    </DL><p>
+</DL>
+' >> $bookfile
+# Delete old bookmarks (and browsing history!) if bookmarks were updated:
+test -e $profile/bookmarks.html && { [ "`md5sum $bookfile | cut -d' ' -f1`" = "`md5sum $profile/bookmarks.html | cut -d' ' -f1`" ] || rm -r $profile/bookmarkbackups $profile/places.sqlite*; }
+fi
+
+# Copy processed bookmarks file to the browser profile direcotry:
+cp -a $bookfile $profile

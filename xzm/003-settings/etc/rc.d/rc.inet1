@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Wait till required interface is up:
+#iface=none
+TRIES=10
+if [ "$iface"  ]; then
+    while [ $TRIES -gt 0 ]; do ls -1 /sys/class/net | grep -q $iface && break || { TRIES=$((TRIES-1)); sleep 1; }; done
+else
+    connection=wired
+    if [ "$connection" = wired ]; then
+	while [ $TRIES -gt 0 ]; do [ "$(iwconfig 2>&1 | grep 'no wireless extension' | grep -v lo | cut -d" " -f1 | sed '/^$/d')" ] && break || { TRIES=$((TRIES-1)); sleep 1; }; done
+    else
+	while [ $TRIES -gt 0 ]; do [ "$(iwconfig 2>/dev/null | cut -d" " -f1 | sed '/^$/d')" ] && break || { TRIES=$((TRIES-1)); sleep 1; }; done
+    fi
+fi
+
+# Start networking:

@@ -1,0 +1,51 @@
+#!/bin/sh
+#
+# Setup persistent folders.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+bdev="`grep ^boot_dev /opt/scripts/extras 2>/dev/null | cut -d= -f2- | tail -n1`"
+if echo $bdev | grep -q "2$"; then
+    if [ `echo $bdev | cut -c6-8` = mmc -o `echo $bdev | cut -c6-9` = nvme ]; then
+	bdev=`echo $bdev | sed 's/p2$//g'`
+    else
+	bdev=`echo $bdev | sed 's/2$//g'`
+    fi
+fi
+. /etc/profile.d/variables.sh
+
+# Skip if booting from optical media or over PXE:
+if [ "$bdev" != "/dev/sr0" -a "$bdev" != "/dev/net" ]; then
+    # Keep devices up:
+    rm -f $scripts/power_saver
+    # Format (if necessary) and mount writable partition:
+    [ `echo $bdev | cut -c6-8` = mmc -o `echo $bdev | cut -c6-9` = nvme ] && prt=p4 || prt=4
+    trg="$bdev""$prt"
+    if [ ! -b "$trg" -a "$trg" ]; then
+	echo -e "n\np\n4\n\n\nw\n" | fdisk $bdev && { sync; sleep 3; mkfs.xfs -f "$trg" >/dev/null; }
+    fi
+    # Mount writable partition (reformat if mounting fails):
+    storage=/opt/storage
+    mkdir -p $storage
+    grep -q -w $storage /proc/mounts || mount "$trg" $storage || { mkfs.xfs -f "$trg" >/dev/null; mount "$trg" $storage; }
+    # Persistent /home folder:
+    if [ "`echo $* | grep -w full`" ]; then
+	# Backup original files - needed for videoshow:
+	cp -a /home/guest $scripts
+	# Overwrite some persistent files so remote management may work (PepperFlash is updated in the background by Chrome, Remmina settings must stay persistent):
+	flashcomp=/home/guest/.config/google-chrome/PepperFlash; test -e $storage/$flashcomp && rm -r $flashcomp
+	rempref=/home/guest/.config/remmina/remmina.pref; test -e $storage/$rempref && rm -f $rempref
+	cp -a /home $storage
+	grep -q -w /home /proc/mounts || mount -o bind $storage/home /home
+	# No need to backup persistent home folder - save RAM:
+	sed -i 's_^cp -a /home/guest_#cp -a /home/guest_g' $autostart
+	sed -i 's/rm -rf/#rm -rf/g' $scripts/gui-app
+	# Remove unwanted files, they may recreate later if certain parameters are still enabled:
+	rm -f $profile/user.js $profile/cert?.db /home/guest/.config/google-chrome/Default/Bookmarks /home/guest/.pki/nssdb/cert9.db
+    fi
+    # Persistent folders (be careful with this as things may break when persistent):
+    for fold in `echo $* | sed 's_full__'`; do
+	test -d "$storage""$fold" || { mkdir -p "$storage""$fold"; cp -a $fold/* "$storage""$fold"; cp -a $fold/.??* "$storage""$fold"; sync; }
+	grep -q -w $fold /proc/mounts || mount -o bind "$storage""$fold" $fold
+    done
+fi

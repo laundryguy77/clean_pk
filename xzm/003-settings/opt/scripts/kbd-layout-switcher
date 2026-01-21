@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Switch keyboard layout on demand.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+autostart=/etc/xdg/openbox/autostart
+prilay=`grep setxkbmap $autostart | cut -d, -f1 | rev | cut -d" " -f1 | rev`
+seclay=`grep setxkbmap $autostart | cut -d, -f2 | cut -d" " -f1`
+privar=`grep setxkbmap $autostart | cut -d, -f2 | rev | cut -d" " -f1 | rev`
+secvar=`grep setxkbmap $autostart | cut -d, -f3 | cut -d" " -f1`
+curl=`setxkbmap -query | grep layout: | cut -d" " -f2- | cut -d, -f1`; curlay=`echo $curl`
+curv=`setxkbmap -query | grep variant: | cut -d" " -f2- | cut -d, -f1`; curvar=`echo $curv`
+
+if [ "`echo $curlay$curvar`" = "`echo $prilay$privar`" ]; then
+    setxkbmap -layout $seclay -variant $secvar >/dev/null 2>&1
+    [ "$secvar" ] || secvar=default
+    dunstify -u low -i $PTH/actions/dialog-ok-apply.png "Keyboard layout switched to <u>$seclay:$secvar</u>, press Ctrl+Space to toggle between the layouts."
+else
+    setxkbmap -layout $prilay -variant $privar >/dev/null 2>&1
+    [ "$privar" ] || privar=default
+    dunstify -u low -i $PTH/actions/dialog-ok-apply.png "Keyboard layout switched to <u>$prilay:$privar</u>, press Ctrl+Space to toggle between the layouts."
+fi

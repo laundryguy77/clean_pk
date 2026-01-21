@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=xdotool key ctrl+bracketleft
+Icon=/usr/share/pixmaps/button-back.png
+Type=Application
+Categories=System;
+Name=Go back
+MimeType=text/html;
+StartupNotify=true

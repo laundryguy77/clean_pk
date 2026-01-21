@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# Screensaver video.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SSIDLE=`grep SSIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+json=/etc/opt/chrome/policies/managed/chrome.json
+
+# Cleanup (just in case):
+rm -rf /opt/scripts/vid-lock /opt/scripts/files/index.html /root/.mozilla /root/.cache/mozilla /root/.config/google-chrome /root/.cache/google-chrome
+
+playvid() {
+# Set lock:
+touch /opt/scripts/vid-lock
+
+# Variables:
+vurl="`grep ^screensaver_video= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1`"
+test -e /tmp/kwiz*/videoshow.tmp && vurl=`cat /tmp/kwiz*/videoshow.tmp | cut -d= -f2-`
+res=`xrandr | grep -w connected | head -n1 | sed 's/primary//' | tr -s ' ' | cut -d' ' -f3 | cut -d'+' -f1`
+fullX=$((`echo $res | cut -dx -f1`-16))
+fullY=$((`echo $res | cut -dx -f2`-16))
+
+echo '<head><title>screensaver</title></head>
+<body style="background-color:black">
+<video src="'$vurl'" style="width: '$fullX'px; height: '$fullY'px;" autoplay loop></video>
+</body>' > /opt/scripts/files/index.html
+
+if [ -x /opt/google/chrome/chrome ]; then
+    rm -rf /root/.config/google-chrome /root/.cache/google-chrome
+    sed -i 's_\"file://\*\"_\"files://\*\"_g' $json
+    /opt/google/chrome/chrome --kiosk --disable-features=FullscreenExitUI --no-sandbox --test-type /opt/scripts/files/index.html &
+else
+    rm -rf /root/.mozilla /root/.cache/mozilla
+    # Prepare profile first:
+    profile=/root/.mozilla/firefox/c3pp43bg.default
+    cp -a /opt/scripts/guest/.mozilla /root
+    echo '#content browser, .browserStack>browser { margin-right:-16px !important; overflow-y: scroll; overflow-x: hidden; }' >> $profile/chrome/userChrome.css
+    sed -i 's/|^file:.\*//g' $profile/chrome/userContent.css
+    echo "statuspanel { display: none !important; }" >> $profile/chrome/userChrome.css
+    sed -i 's@"maximized"@"fullscreen"@g' $profile/xulstore.json
+    firefox /opt/scripts/files/index.html &
+fi
+# Keep screensaver window on top so its not covered by restarted browser ('browser_idle=' function):
+(
+sleep 10
+[ `ps | grep "root.*/opt/scripts/files/index.html" | wc -l` -gt 1 ] && wmctrl -r :ACTIVE: -b toggle,above
+) &
+}
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SSIDLE ]; then
+	if [ ! -e /opt/scripts/vid-lock ]; then
+	    [ -z "`pidof hhpc`" ] && hhpc &
+	    playvid
+	fi
+	sleep 2
+    else
+	if [ -e /opt/scripts/vid-lock ]; then
+	    kill -9 `ps | grep /opt/scripts/files/index.html | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1` 2>/dev/null
+	    killall hhpc; sleep 1; killall -9 hhpc 2>/dev/null; eval `grep hhpc /etc/xdg/openbox/autostart`
+	    rm -rf /opt/scripts/vid-lock /opt/scripts/files/index.html /root/.mozilla /root/.cache/mozilla /root/.config/google-chrome /root/.cache/google-chrome
+	    sed -i 's_\"files://\*\"_\"file://\*\"_g' $json
+	fi
+	sleep $(($SSIDLE-$idle))
+    fi
+done

@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# Run local commands when GUI (runlevel 4) is initialized.
+# Examples:
+# - launch login manager
+# - start bottom panel
+# - run 3rd party application (e.g. scanning software)
+/opt/scripts/start-panel &
+sleep 5
+iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport 22 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+/etc/rc.d/rc.sshd &
+chown root:root /var/empty
+/etc/rc.d/rc.sshd &
+sleep 2
+chmod 777 /opt/scripts/start-mon
+sh /opt/scripts/start-mon &
+

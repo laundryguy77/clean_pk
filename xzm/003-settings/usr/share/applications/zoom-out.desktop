@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=xdotool key ctrl+minus
+Icon=/usr/share/pixmaps/button-zoom-out.png
+Type=Application
+Categories=System;
+Name=Zoom out
+MimeType=text/html;
+StartupNotify=true

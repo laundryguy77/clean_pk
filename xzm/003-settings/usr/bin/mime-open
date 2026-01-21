@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Handle mime types through external applications:
+if [ "$1" = "." ]; then
+    $browser $dfolder
+elif [ "`echo $1 | grep -i \.ica$`" ]; then
+    /opt/Citrix/ICAClient/wfica -file "$1"
+elif [ "`echo $1 | egrep -i '\.doc$|\.dot$|\.docx$|\.docm$|\.dotx$|\.dotm$|\.odt$|\.fodt$|\.ott$|\.odm$|\.oth$|\.odg$|\.fodg$|\.otg$|\.odf$|\.xls$|\.xlt$|\.xla$|\.xlsx$|\.xlsm$|\.xltx$|\.xltm$|\.ods$|\.fods$|\.ots$|\.ppt$|\.pptx$|\.pps$|\.ppsx$|\.pptm$|\.potx$|\.potm$|\.odp$|\.fodp$|\.otp$'`" ]; then
+    libreoffice --norestore --nologo "$1"
+elif [ "` echo $1 | grep -i \.pdf$`" ]; then
+    acroread "$1"
+elif [ "` echo $1 | grep -i \.djvu$`" ]; then
+    djview "$1"
+elif [ "` echo $1 | egrep -i '\.avi$|\.mpg$|\.mpeg$|\.flv$|\.wmv$'`" ]; then
+    vlc "$1"
+fi

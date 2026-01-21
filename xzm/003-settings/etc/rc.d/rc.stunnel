@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Start stunnel:
+if [ -z "`pidof stunnel`" ]; then
+    # Setup proxy auto configuration for stunnel:
+    if [ -e /opt/scripts/proxy.pac ]; then
+	server=`grep -w ^connect /etc/stunnel/stunnel.conf | cut -d" " -f3`
+	# Default to first IP in case multiple proxies are returned:
+	proxy=`pactester -p /opt/scripts/proxy.pac -u https://$server | tr -s ' ' | cut -d" " -f2 | sed 's/[^0-9.:]*//g'`
+	if [ "$proxy" != DIRECT ]; then
+	    if echo $proxy | grep -q '@'; then
+		host=`echo $proxy | cut -d'@' -f2`
+		uname=`echo $proxy | cut -d':' -f1`
+		psswd=`echo $proxy | cut -d'@' -f1 | cut -d':' -f2`
+		sed -i 's| = '$server'| = '$host'|' /etc/stunnel/stunnel.conf 2>/dev/null
+		echo -e 'protocol = connect\nprotocolHost = '$server'\nprotocolAuthentication = basic\nprotocolUsername = '$uname'\nprotocolPassword = '$psswd'\n' >> /etc/stunnel/stunnel.conf 2>/dev/null
+	    else
+		sed -i 's| = '$server'| = '$proxy'|' /etc/stunnel/stunnel.conf 2>/dev/null
+		echo -e 'protocol = connect\nprotocolHost = '$server'\n' >> /etc/stunnel/stunnel.conf 2>/dev/null
+	    fi
+	fi
+    fi
+    stunnel
+else
+    echo "Stunnel daemon is started already"
+fi

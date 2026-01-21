@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Setup battery indicator:
+battery=`ls -1 /sys/class/power_supply | grep BAT | head -n1`
+[ "$battery" ] && sed -i s/LTSC/LTSBC/ /etc/xdg/tint2/tint2rc
+
+# Launch panel(s):
+#tint2 -c /etc/xdg/tint2/tint2rc-exit &
+sleep 1
+tint2 -c /etc/xdg/tint2/tint2rc &
+volumeicon &
