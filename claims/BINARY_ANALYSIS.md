@@ -211,8 +211,6 @@ You can replace these with shell scripts that:
 # Update extras with persistent settings
 ```
 
-See the provided `arm64-first-run.sh` and `arm64-update-config.sh` for implementations.
-
 ---
 
 ## Key URLs for TuxOS

@@ -7,7 +7,7 @@
 
 ## Overview
 
-The `clean_iso` directory contains the original x86 TuxOS/Porteus Kiosk ISO structure. This is the reference x86 version (version 5.2.0) that the ARM64 port is based on.
+The `clean_iso` directory contains the x86 TuxOS/Porteus Kiosk ISO structure (version 5.2.0).
 
 ### Top-Level Structure
 
@@ -10176,7 +10176,7 @@ Broadcom/BCM wireless chip firmware for WiFi support.
             ├── brcmfmac43430a0-sdio.bin
             ├── brcmfmac43430-sdio.bin
             ├── brcmfmac43430-sdio.txt
-            ├── brcmfmac43455-sdio.bin    <- RPi 3B+/4 WiFi
+            ├── brcmfmac43455-sdio.bin
             ├── brcmfmac43455-sdio.txt
             ├── brcmfmac4350c2-pcie.bin
             ├── brcmfmac4350-pcie.bin
@@ -10299,7 +10299,7 @@ xzm/
    - NextWindow (touchscreen)
    - zz-settings (final overrides)
 
-5. **Key Scripts for ARM64 Port:**
+5. **Key Scripts:**
    - `/sbin/init` - Custom init (in 003-settings)
    - `/etc/rc.d/rc.S` - System initialization
    - `/etc/rc.d/rc.4` - X11 startup
@@ -10307,7 +10307,7 @@ xzm/
    - `/opt/scripts/wizard` - Device wizard
    - `/etc/rc.d/local_net.d/daemon.sh` - Config polling
 
-6. **x86-Specific Components:**
+6. **x86 Components:**
    - NextWindow touchscreen driver (x86 kernel module)
    - Intel DRI drivers (i915, i965)
    - 32-bit compatibility libraries in NextWindow module

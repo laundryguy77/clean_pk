@@ -161,27 +161,27 @@ BOOT → X11 Starts → Openbox → Autostart
 ### 3.1 Kernel to X11
 
 ```
-GPU Bootloader (start4.elf)
+BIOS/UEFI → isolinux/GRUB
          │
          ▼
-    kernel8.img (Linux 6.1.93 ARM64)
+    vmlinuz (Linux 5.10.25-kiosk x86_64)
          │
          ▼
-    initrd.img (initramfs)
+    initrd.xz (initramfs)
          │
          ├── Mount AUFS union filesystem
          ├── Load XZM modules (000-kernel, 001-core, 003-settings)
          └── switch_root → /sbin/init
                 │
                 ▼
-         /sbin/init (custom, busybox sh)
+         /sbin/init
                 │
                 ├── Mount /proc, /sys, /dev
                 ├── Run /etc/rc.d/rc.S (system init)
                 └── Run /etc/rc.d/rc.4 (GUI init)
                         │
                         ▼
-                   startx → X.Org (fbdev driver)
+                   startx → X.Org
                         │
                         ▼
                    openbox-session
