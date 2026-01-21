@@ -1,0 +1,3303 @@
+=== CAPTURE-WATCH STARTED Thu Jan 15 06:03:40 PM UTC 2026 ===
+NC: /bin/busybox nc exists=yes
+Files in /opt/scripts:
+total 178
+drwxr-xr-x    5 guest    guest          120 Jan 15 18:03 [1;34m.[0m
+drwxr-xr-x    6 guest    guest           60 Jan 15 18:03 [1;34m..[0m
+-rw-r--r--    1 guest    guest          555 Sep 30  2017 [0;0mbattery_polling[0m
+-rwxrwxr-x    1 guest    guest         2539 Jan 15 18:02 [1;32mcapture-watch[0m
+-rwxr-xr-x    1 guest    guest         3444 Feb 25  2019 [1;32mdebug[0m
+-rw-r--r--    1 guest    guest         2278 Sep 14  2019 [0;0mexit-kiosk[0m
+-rw-r--r--    1 guest    guest          815 May 18  2018 [0;0mexit-menu[0m
+-rw-r--r--    1 root     root            14 Jan 15 18:03 [0;0mextras[0m
+drwxr-xr-x    6 guest    guest           60 Jan 15 18:03 [1;34mfiles[0m
+-rwx--x--x    1 root     root         44392 Apr 19  2021 [1;32mfirst-run[0m
+-rwxr-xr-x    1 guest    guest          696 Jan 16  2016 [1;32mfreeze-idle-watcher[0m
+-rwxr-xr-x    1 guest    guest          516 Mar 30  2017 [1;32mgui-app[0m
+-rwxr-xr-x    1 guest    guest          516 Feb 10  2021 [1;32mgui-app.old[0m
+-rwxr-xr-x    1 guest    guest         1589 Jun 29  2018 [1;32mimport-certificates[0m
+-rw-r--r--    1 guest    guest         1232 Jan 16  2016 [0;0mkbd-layout-switcher[0m
+-rwxr-xr-x    1 guest    guest         2415 Jun 29  2018 [1;32mmanaged-bookmarks[0m
+-rw-r--r--    1 guest    guest         2473 Aug  8  2019 [0;0mpersistence[0m
+-rwxr-xr-x    1 guest    guest         2577 Jan 15 16:59 [1;32mpkget[0m
+-rwxr-xr-x    1 guest    guest          467 Jan 16  2016 [1;32mpower_saver[0m
+-rwxr-xr-x    1 guest    guest         4563 Sep 14  2019 [1;32mprint-test[0m
+-rwxr-xr-x    1 guest    guest          642 Jan 27  2016 [1;32mrotate-touch[0m
+-rw-r--r--    1 guest    guest         2104 Oct 27  2017 [0;0mrtc-wake[0m
+-rwxr-xr-x    1 guest    guest         1841 Jan 16  2016 [1;32mscale-screen[0m
+-rw-r--r--    1 guest    guest         1057 Oct 27  2017 [0;0mscheduled-action[0m
+-rwxr-xr-x    1 guest    guest        16011 May 21  2018 [1;32mscreen-setup[0m
+-rwxr-xr-x    1 guest    guest         5498 Nov  6  2018 [1;32mscreen-setup-parse[0m
+-rwxr-xr-x    1 guest    guest          881 Apr 29  2017 [1;32mscreensaver-idle-watcher[0m
+-rwxr-xr-x    1 guest    guest         1267 May 22  2017 [1;32mscreensaver-slideshow[0m
+-rwx------    1 guest    guest         2833 Sep 14  2019 [1;32msession-idle-watcher[0m
+-rwxr-xr-x    1 guest    guest         1965 Jul 23  2016 [1;32msession-manager[0m
+-rwxr-xr-x    1 guest    guest         1848 Apr 14  2016 [1;32mset-kbd-layout[0m
+-rwxr-xr-x    1 guest    guest          289 Jan 16  2016 [1;32mset-resolution-rate[0m
+-rwxr-xr-x    1 guest    guest         6300 May  5  2019 [1;32mset-system-clock[0m
+-rwxr-xr-x    1 guest    guest          667 Jan 16  2016 [1;32mshutdown-idle-watcher[0m
+-rwxr-xr-x    1 guest    guest          706 Jan 16  2016 [1;32mstandby-idle-watcher[0m
+-rw-rw-r--    1 guest    guest          253 Jun 23  2021 [0;0mstart-mon[0m
+-rwxr-xr-x    1 guest    guest          277 Feb 11  2021 [1;32mstart-panel[0m
+-rwx--x--x    1 root     root         11228 Apr 19  2021 [1;32msubscribe[0m
+-rwxr-xr-x    1 guest    guest          701 Jan 16  2016 [1;32msuspend-idle-watcher[0m
+-rwxr-xr-x    1 guest    guest          356 Apr 13  2016 [1;32mwatch-xorg[0m
+-rwxr-xr-x    1 guest    guest        27365 Nov 24  2022 [1;32mwelcome[0m
+-rwxr-xr-x    1 guest    guest         9183 Feb  1  2023 [1;32mwizard[0m
+-rwxr-xr-x    1 guest    guest         1052 May 13  2016 [1;32mwizard-now[0m
+-rwxr-xr-x    1 guest    guest          775 Nov 27  2017 [1;32mxvkbd[0m
+Capturing TEXT: /opt/scripts/battery_polling (555 bytes)
+=== CAPTURE: /opt/scripts/battery_polling ===
+#!/bin/sh
+#
+# Battery polling script.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Display a warning when battery level reaches 10%:
+while [ 1 ]; do
+    dunstify -C 333 2> /dev/null
+    PTH=/usr/share/icons/oxygen/22x22
+    cap=`cat /sys/class/power_supply/$1/capacity`
+    if [ "$cap" -lt 10 ]; then
+        grep -q Discharging /sys/class/power_supply/$1/status && { dunstify -r 333 -u critical -i $PTH/status/dialog-warning.png "Battery low: "$cap"%, please connect to a power source."; aplay /usr/share/sounds/alert.wav; }
+    fi
+    sleep 60
+done
+=== END: /opt/scripts/battery_polling ===
+Done: /opt/scripts/battery_polling
+Capturing TEXT: /opt/scripts/debug (3444 bytes)
+=== CAPTURE: /opt/scripts/debug ===
+#!/bin/bash
+#
+# Gather debugging info.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+info=/var/log/debug
+
+# Clear previous log:
+[ "$1" ] || echo -e 'Please copy (Ctrl+a -> Ctrl+c) and send this report to support@porteus-kiosk.org in case of hardware/software/configuration issues.\n\n' > $info
+
+# Collect kiosk data:
+echo "" >> $info
+echo "VERSION:" >> $info
+cat /etc/version >> $info
+echo "" >> $info
+echo "REMOTE CONFIG NAME:" >> $info
+grep ^kiosk_config_name /opt/scripts/extras | cut -d= -f2- >> $info
+echo "" >> $info
+echo "HOSTNAME:" >> $info
+hostname >> $info
+echo "" >> $info
+echo "HWCLOCK/DATE:" >> $info
+hwclock -r >> $info
+date >> $info
+echo "" >> $info
+echo "UPTIME:" >> $info
+uptime | cut -d' ' -f2- >> $info
+echo "" >> $info
+echo "CHEATCODES:" >> $info
+cat /proc/cmdline >> $info
+echo "" >> $info
+echo "KERNEL:" >> $info
+echo `uname -r` >> $info
+echo "" >> $info
+echo "PROCESSOR:" >> $info
+cat /proc/cpuinfo | sed -n '1,/processor/p' | sed '$ d' >> $info
+echo "" >> $info
+echo "MEMORY/SWAP:" >> $info
+free -m >> $info
+echo "" >> $info
+echo "BLOCK DEVICES:" >> $info
+ls -1 /sys/block | grep -v loop | sed s/@// >> $info
+blkid >> $info
+lsblk -o NAME,TYPE,MODEL,SIZE | egrep -v 'NAME|loop|part|rom' >> $info
+echo "" >> $info
+echo "MOUNTS:" >> $info
+mount >> $info
+echo "" >> $info
+df -h >> $info
+echo "" >> $info
+echo "PROCESSES:" >> $info
+ps aux | sed '1,/udevd -d/d'  | grep -v 'udevd -d' >> $info
+echo "" >> $info
+echo "TOP PROCESSES:" >> $info
+top -b -n1 | head -n 20 >> $info
+echo "" >> $info
+echo "TEMPERATURE:" >> $info
+sensors >> $info
+echo "" >> $info
+echo "LSPCI:" >> $info
+/usr/sbin/lspci -knn >> $info
+echo "" >> $info
+echo "LSUSB:" >> $info
+usb-devices >> $info
+echo "" >> $info
+echo "SDIO:" >> $info
+udevadm info /sys/bus/sdio/devices/* >> $info
+echo "" >> $info
+echo "LSMOD:" >> $info
+lsmod >> $info
+echo "" >> $info
+echo "NETWORKING:" >> $info
+ls /sys/class/net | tr "\n" " " >> $info
+echo "" >> $info
+ifconfig >> $info
+echo "" >> $info
+route -n >> $info
+echo "" >> $info
+cat /etc/resolv.conf >> $info
+echo "" >> $info
+echo "WIRELESS DATA:" >> $info
+cat /etc/wpa_supplicant.conf >> $info
+rfkill list all >> $info
+iwconfig >> $info
+iwlist `iwconfig | grep ESSID | cut -d" " -f1 | head -n1` sc >> $info
+echo "" >> $info
+echo "FIREWALL:" >> $info
+iptables -L >> $info
+echo "" >> $info
+echo "SERVICES" >> $info
+netstat -nl >> $info
+echo "" >> $info
+echo "SOUND CARDS:" >> $info
+aplay -l >> $info
+echo "" >> $info
+arecord -l >> $info
+echo "" >> $info
+amixer >> $info
+echo "" >> $info
+echo "INPUT DEVICES:" >> $info
+xinput >> $info
+echo "" >> $info
+echo "TOUCH DEVICES:" >> $info
+xinput_calibrator --list >> $info
+echo "" >> $info
+cat /proc/bus/input/devices >> $info
+echo "" >> $info
+echo "LOCAL PRINTERS:" >> $info
+[ "`which cupsd`" ] && { eval `which cupsd`; lpinfo -v >> $info 2>/dev/null; }
+echo "" >> $info
+echo "MTRR:" >> $info
+cat /proc/mtrr >> $info 2>/dev/null
+echo "" >> $info
+echo "SCREEN:" >> $info
+xrandr -display :0 >> $info 2>/dev/null
+echo "" >> $info
+echo "OpenGL info:" >> $info
+glxinfo -B >> $info 2>/dev/null
+echo "" >> $info
+echo "Xorg.0.log:" >> $info
+cat /var/log//Xorg.0.log* >> $info 2>/dev/null
+echo "" >> $info
+echo "System logs:" >> $info
+if test -e /var/log/everything/current; then cat /var/log/everything/current >> $info
+elif test -e /var/log/messages; then cat /var/log/messages >> $info
+else dmesg >> $info
+fi
+echo "" >> $info
+echo
+echo "System report saved as $info"
+
+exit
+=== END: /opt/scripts/debug ===
+Done: /opt/scripts/debug
+Capturing TEXT: /opt/scripts/exit-kiosk (2278 bytes)
+=== CAPTURE: /opt/scripts/exit-kiosk ===
+#!/bin/sh
+#
+# Shutdown/logout helper for kiosk.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Kill previous instances:
+kill -9 `ps | grep EXIT_MENU | grep -v grep | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1 | tr '\n' ' '` 2>/dev/null
+
+# Offer exit options:
+export EXIT_MENU='
+<window decorated="true" title="      System" window-position="1" icon-name="kiosk" width-request="200">
+<vbox>
+'"`if [ -e /opt/scripts/files/shutdown-menu/shutdown ]; then
+    echo '<button image-position="2" tooltip-text="Turn off computer">
+    <input file icon="system-shutdown"></input>
+    <label>Shutdown</label>
+    <action>init 0</action>
+</button>'
+fi`"'
+
+'"`if [ -e /opt/scripts/files/shutdown-menu/reboot ]; then
+    echo '<button image-position="2" tooltip-text="Restart computer">
+    <input file icon="system-reboot"></input>
+    <label>Reboot</label>
+    <action>init 6</action>
+</button>'
+fi`"'
+
+'"`if [ -e /opt/scripts/files/shutdown-menu/sleep ]; then
+    echo '<button image-position="2" tooltip-text="Suspend, standby or freeze the PC">
+    <input file icon="system-suspend"></input>
+    <label>Sleep</label>
+    <action>echo $(cat /sys/power/state | tr " " "\n" | sort | tail -n1) > /sys/power/state</action>
+    <action function="exit">finished</action>
+</button>'
+fi`"'
+
+'"`if [ -e /opt/scripts/files/shutdown-menu/restart-session ]; then
+    echo '<button image-position="2" tooltip-text="Restart X server">
+    <input file icon="system-log-out"></input>
+    <label>Restart session</label>
+    <action>openbox --exit</action>
+</button>'
+fi`"'
+
+'"`if [ -e /opt/scripts/files/shutdown-menu/lock ]; then
+    echo '<button image-position="2" tooltip-text="Lock the session">
+    <input file icon="system-lock-screen"></input>
+    <label>Lock session</label>
+    <action>su - guest -c "xlock +resetsaver +description -timeelapsed -bg black -fg white -mode space -delay 100000 -count 10 &"</action>
+    <action>kill -9 $(ps | grep EXIT_MENU | grep -v grep | tr -s " " | sed -e "s/^ //g" | cut -d" " -f1 | tr "\n" " ")</action>
+</button>'
+fi`"'
+
+<button image-position="2" tooltip-text="Exit menu">
+    <input file icon="dialog-cancel"></input>
+    <label>Cancel</label>
+    <action function="exit">finished</action>
+</button>
+
+</vbox>
+</window>
+'
+gtkdialog --program=EXIT_MENU
+=== END: /opt/scripts/exit-kiosk ===
+Done: /opt/scripts/exit-kiosk
+Capturing TEXT: /opt/scripts/exit-menu (815 bytes)
+=== CAPTURE: /opt/scripts/exit-menu ===
+#!/bin/sh
+#
+# Shutdown/logout helper for kiosk.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Kill previous instances:
+kill -9 `ps | grep EXIT_MENU | grep -v grep | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1 | tr '\n' ' '` 2>/dev/null
+
+# Offer exit options:
+export EXIT_MENU='
+<window decorated="true" title="      System" window-position="1" icon-name="kiosk" width-request="200">
+<vbox>
+<button image-position="2" tooltip-text="Restart X server">
+    <input file icon="system-log-out"></input>
+    <label>Restart session</label>
+    <action>openbox --exit</action>
+</button>
+
+<button image-position="2" tooltip-text="Exit menu">
+    <input file icon="dialog-cancel"></input>
+    <label>Cancel</label>
+    <action function="exit">finished</action>
+</button>
+
+</vbox>
+</window>
+'
+gtkdialog --program=EXIT_MENU
+=== END: /opt/scripts/exit-menu ===
+Done: /opt/scripts/exit-menu
+Capturing TEXT: /opt/scripts/extras (14 bytes)
+=== CAPTURE: /opt/scripts/extras ===
+first_run=yes
+=== END: /opt/scripts/extras ===
+Done: /opt/scripts/extras
+Capturing TEXT: /opt/scripts/first-run (44392 bytes)
+=== CAPTURE: /opt/scripts/first-run ===
+ELF              ¸ˆ4   Ğ©      4    (      4   4€4€               4  44                    € €¨  ¨           (  (¯(¯Ü‰  <‹           <  <¯<¯¸   ¸         Qåtd                          Råtd(  (¯(¯Ø   Ø         €e                     (     /lib/ld-uClibc.so.0    %         $                   !                   
+                                                                                        "                    #                   	                      ˜  @AD
+   !       ¦İ£kBEÕì»ã’|Ä¹œ@2bÛíØqX9ò‹                ¦              {              t              È              ³              Ï              A              Û              !                            Ö                            /              —              º              (              :              H              „              ®                            â              W              n                            ‹              h              P              4              é    9   !  ñ   9     ñÿ  d:     ñÿç    9     ı   ¸ˆ"    
+ ø   9     ñÿ   $9      libc.so.0 strlen stderr fprintf calloc strdup fork close memset malloc getppid execvp __errno_location atoll _exit getenv strerror ptrace open memcmp sscanf sprintf waitpid time memcpy __uClibc_main getpid perror kill putenv stat __environ _edata __bss_start _end     9!  $9$   °  °  °  °  °  °  °  °   °	  $°
+  (°  ,°  0°  4°  8°  <°  @°  D°  H°  L°  P°  T°  X°  \°  `°  d°  h°  l°  p°  U‰åSè  Ã/)  èo  è[  []Ãÿ5ø¯ÿ%ü¯    ÿ% °h    éàÿÿÿÿ%°h   éĞÿÿÿÿ%°h   éÀÿÿÿÿ%°h   é°ÿÿÿÿ%°h    é ÿÿÿÿ%°h(   éÿÿÿÿ%°h0   é€ÿÿÿÿ%°h8   épÿÿÿÿ% °h@   é`ÿÿÿÿ%$°hH   éPÿÿÿÿ%(°hP   é@ÿÿÿÿ%,°hX   é0ÿÿÿÿ%0°h`   é ÿÿÿÿ%4°hh   éÿÿÿÿ%8°hp   é ÿÿÿÿ%<°hx   éğşÿÿÿ%@°h€   éàşÿÿÿ%D°hˆ   éĞşÿÿÿ%H°h   éÀşÿÿÿ%L°h˜   é°şÿÿÿ%P°h    é şÿÿÿ%T°h¨   éşÿÿÿ%X°h°   é€şÿÿÿ%\°h¸   épşÿÿÿ%`°hÀ   é`şÿÿÿ%d°hÈ   éPşÿÿÿ%h°hĞ   é@şÿÿÿ%l°hØ   é0şÿÿÿ%p°hà   é şÿÿ1í^‰áƒäğPTRhP“h¼†QVhc’èïşÿÿô‹$ÃU‰åSƒì€=(9 uJ¸4¯-0¯ÁøXÿëB‰,9ÿ•0¯‹,99Úrè¸    …Àtƒìh¤“èĞvû÷ƒÄÆ(9‹]üÉÃU‰åƒì¸    …ÀtPPh09h¤“è¡vû÷ƒÄƒ=8¯ t¸    …Àtƒìh8¯ÿĞƒÄÉÃU‰åÆb:  b:¢a: a:¢`: `:¶ÀŠ`:ˆ`9 `:@¢`: `:„ÀuØÉÃU‰åƒì‹E‰Eüé    `:¶ÀŠ€`9ˆEû b:Eû¢b: `:¶À™÷}‰ĞEüŠ b:¢b: `:¶ÀŠb:¶ÒŠ’`9ˆ`9 b:¶ÀŠUûˆ`9 `:@¢`: `:„Àu€Eü   m   ƒ} hÿÿÿÉÃU‰åƒì‹E‰Eüé„    `:@¢`: `:¶ÀŠ€`9ˆEû a:Eû¢a: `:¶ÀŠa:¶ÒŠ’`9ˆ`9 a:¶ÀŠUûˆ`9 `:¶ÀŠ€`9 Eû‹EüŠ¶EûŠ€`91Â‹EüˆÿEüÿMƒ} rÿÿÿÉÃU‰åì¸   ‹EƒìU RPèıÿÿƒÄ…Ày
+¸ÿÿÿÿéƒ   ƒìjXj …HÿÿÿPè“üÿÿƒÄ‹E¬‰…Tÿÿÿ‹E ‹U¤‰…Hÿÿÿ‰•Lÿÿÿ‹EÀ‹UÄ‰…hÿÿÿ‰•lÿÿÿ‹E¸‰…`ÿÿÿ‹E¼‰…dÿÿÿ‹EÌ‰…tÿÿÿ‹Eà‰Eˆ‹Eè‰EƒìjX…HÿÿÿPèşÿÿƒÄ¸    ÉÃU‰åëƒEƒ} t&‹E‹ …Àt‹E‹ ;Euãë‹EƒÀ‹‹E‰ƒEƒ} t	‹E‹ …ÀuàÉÃU‰åì(  ÇEôŒèöúÿÿ‹Uô÷Ò¯Â1Eô¸g“ƒìÿuôP…èıÿÿPèãûÿÿƒÄƒì…èıÿÿPè±úÿÿƒÄ‰Eğƒì…èıÿÿPèüûÿÿƒÄ‰Eìƒ}ğ uF¸l“‹UìèıÿÿÿuÿuôPRè’ûÿÿƒÄƒì…èıÿÿPè0ûÿÿƒÄƒìPè¤úÿÿƒÄ¸    ëqºt“‹EğƒìèıÿÿQàıÿÿQäıÿÿQRPèÓúÿÿƒÄ ‰Eèƒ}èu9‹…äıÿÿ;Eôu.‹Eì÷Ğ‰ÂUğ¡ 9ƒìRPè²şÿÿƒÄ‹…àıÿÿ‹U‰Ñ)Á‰È@ë¸ÿÿÿÿÉÃU‰åƒìhèlúÿÿ‰Eğ‹Eğƒøÿ„Ü   …À…»   è úÿÿ‰Eğ¸}“ƒìÿuğPE Pè¸úÿÿƒÄƒìj è+ûÿÿƒÄƒìh‚   E PèçúÿÿƒÄ…À”À¶À‰Eôƒ}ô u(èúÿÿ‹ ƒøtj j ÿuğjèIúÿÿƒÄ…À”À¶À‰Eôƒ}ô tƒìjÿuğè¨ùÿÿƒÄëƒìÿuèHùÿÿƒÄƒìj	ÿuğèˆùÿÿƒÄƒìÿuôèJúÿÿƒìj j ÿuğèËøÿÿƒÄ;EğtëƒìÿuèùÿÿƒÄƒìjèúÿÿÉÃU‰åVSƒì ƒìh‰“è±øÿÿƒÄ‰Eèƒ}è u‹E‹ ‰Eèèûÿÿ¸ì°ƒìh   PèIûÿÿƒÄ¸²ƒìj*PèáûÿÿƒÄ¸r²ƒìjPèÎûÿÿƒÄ¸r²Š „Àt8ƒìhr²èÄùÿÿƒÄ‰Ã‰Öƒìj èCùÿÿƒÄ™9Ö9Ö|9Ãs
+¸²éj  ¸t²ƒìj	PèxûÿÿƒÄ¸~²ƒìjPèeûÿÿƒÄ¸Á8ƒìjPèRûÿÿƒÄ¸²ƒìjPè?ûÿÿƒÄ¸@²ƒìjPè,ûÿÿƒÄ¸@²ƒìjPènúÿÿƒÄ¸¥°ƒìjPèûÿÿƒÄº¥°¸@²ƒìjRPèøÿÿƒÄ…Àt
+¸@²é¾  ƒìÿuègüÿÿƒÄ‰Eä¸Õ8ƒìjPè»úÿÿƒÄƒ}ä y
+¸Õ8éŠ  ‹EƒÀ
+ƒìjPèˆ÷ÿÿƒÄ‰Eàƒ}à u
+¸    éc  ƒ}ä „  ¸è8ƒìjPègúÿÿƒÄ¸è8Š „Àuƒìht²èíúÿÿƒÄ…Àt
+¸t²é  ¸X²ƒìjPè+úÿÿƒÄ¸ÖÈƒìh€e  PèúÿÿƒÄ¸ë8ƒìjPèúÿÿƒÄ¸ë8ƒìjPèDùÿÿƒÄ¸[²ƒìjPèÜùÿÿƒÄº[²¸ë8ƒìjRPèäöÿÿƒÄ…Àt
+¸ë8é”  ƒìh€u  èvöÿÿƒÄ‰Eôƒ}ô u
+¸    éq  ƒìh   j ÿuôèîöÿÿƒÄ¸ÖÈ‹UôÂ   ƒìh€e  PRèöÿÿƒÄëR¸Á8Š „ÀtAƒìh   èöÿÿƒÄ‰Eôƒ}ô u
+¸    é  ¸ °!ˆ  ƒìÿuèPÿuôèÂöÿÿƒÄë‹Eè‰EôÇEì    ‹EìÁàEà‹U‹‰ÿEìƒ}ä t¸X²Š „Àt‹EìÁàEàÇ X²ÿEì¸~²Š „Àt‹EìÁàEàÇ ~²ÿEì‹EìÁàEà‹Uô‰ÿEì¸²Š „Àt‹EìÁàEàÇ ²ÿEìƒ}ä~‹Eäë¸    ‰Eğë‹EìÁàEà‹UğÁâU‹‰ÿEìÿEğ‹Eğ;E|Ü‹EìÁàEàÇ     ƒìÿuàht²èGöÿÿƒÄ¸t²eøƒÄ [^ÉÃL$ƒäğÿqüU‰åWVSQƒì‰Ë‹C‹ ƒìPèªúÿÿƒÄ‹Cpƒìÿsÿ3è¥ûÿÿƒÄ‰‹CƒÀ‹ …Àt
+‹CƒÀ‹8ë¿‹“è†õÿÿ‹ …Àtè{õÿÿ‹ ƒìPè ôÿÿƒÄ‰Æë¾’“è_õÿÿ‹ …Àt¸““ë¸’“‹S‹¹–“‹$9ƒìWVPSQRè_ôÿÿƒÄ ¸   eğƒÄ Y[^_ÉaüÃU‰åSƒì»(¯ëÿĞƒë‹ƒøÿuôX[ÉÃU‰åSèƒõÿÿÃ›  è|õÿÿ[]Ãx%lx =%lu %d %lu %d%c /proc/%d/as _ <null>  :  %s%s%s: %s
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ÿÿÿÿ    ÿÿÿÿ                 ¼†   P“   Hõşÿo(‚   ¸„   h‚
+   	                  ô¯   è            Ô…   Ä…                                                            <¯        î†ş†‡‡.‡>‡N‡^‡n‡~‡‡‡®‡¾‡Î‡Ş‡î‡ş‡ˆˆ.ˆ>ˆNˆ^ˆnˆ~ˆˆˆ®ˆ                                            {İNğÓÈx°†QŒ{G7_á­Xa•F¤¶½+w€—İwŒC[½‹|/eiz¥–›ÿ‡xNi3wÇ‰ïG Ì¿­j¬¥çÜPWÇMt;è? Y+]°ÂÅµ•µjÃùõ~®ôS+»ax0œaoºšúk]¿ƒT9}Èw¨½ö»l¯À8k!±›¾[Í¦U9½j÷“‚¿
+*}åé•ªG Ëøœ‰§äØN:QPÏgºÆû<†gMìâ–\ãbTë_'Ğ8uJÆ[.á)Rg/¹j6WKéî¨ÌPıL<\s•èà¯tûİŠÜÜC6–®l¸†ó`SC]Ÿ€ºPû¥1ª,ˆ¤	€MÆû3´ ë:ôL8ª-¸e@Eµ;ëçæn©ş*iÄAe÷õfã0Z0¿’ÚìJ?-°çbLæéÄ5ñ.A%¥®”PÏ`|	MkøÛOŒ±ØCF g‹g—ÏÆR]÷ñm,Lä°îŠï£z1!J[âÒÆ];×íš"ŒËc±¼ş™Jğ¨_Y£Z›y›61Pl1^}/frÆa×í2Ç§:ğ"±Ç'gz8İë¢:A¤,jç2¾#^˜ı%ç%UMò$é”°õRw=ş)‡t±,Åœ	Š}r°d˜²Š×tšî$ñw.øX€{	¬ˆÏH‘YÆ
++œİ'µ›²£ÀB”8JÃ1Q±Í%^Uô§çNmëY™‡iv¯€,K2ÏudDÀ'uC&Şi…4^,­š3pª=ğÖˆ"¦”˜ØX3NjvuIàú}?'™ìÁ óõ.c lSvõv‰(bg[±ÑÒ&³ ˜òH2Ş
+ÒÒÿ 5Ÿm‰bÿ3ì\Ov· HŠ'c=Gü/.š à™9oŸOÒŸƒ¾®ß$—l!6Ğ^~Íû¨ü}Aş”{n3Ë@ÒNÿ€.¥ÅçSâEÑ¯Ôß«q‡§îÉ¦ƒD¶T‰^S	Œa®R~À9Ñ£¢RSıÄ	¥³ÓL6`ì'µu†	j.eèîº‘\äpŞâ4è‡ç»ÓÓ4
+úé€òÿ”].ùE—ÿ®µ\“&;uZ#üBŞĞa±k¬îì-àìÂ=»ƒ7Sƒåàx.î‰?êÌ»-Ï¿™|®…ªqlÌ‹(OÃ{Ó©ƒ³!²Î;ú+¶5ûvÎx$S#³ÅQ¸Ï3¢½¶Vßh%ï¤3ê¬_ á[¯Ó:öíÉ†m><.rßì(5Ë‘Z»6¥âíEÄH\t—x…A™ò[Ø/ŠJvsDAŸü;-¢èãcDW~ÜÏ‘a+Tl„öN“lÂØ®Çxª¦M"Á5$z]¢V-4¸=_©c‘Ÿ²%tşº<ve@²cİçiaÆ¤¸óÙp18~Ûœ{N5‡Ã3Aÿª¦@ÇX£¤@¦¢ÓKZÆ$Ëø]IÓùYNHÖÂl¾K3ïØWüùÏÊT–ïLhbFÁ±P‡šŸ¥^ñ³uá‹ÍİÆ¬ÖCÅ:Ñ£4Yeæçµm‚È'Gkúàú†­×’t„hÇ.Ê™@mÎšÒ´ˆ!P/,—šE’{@)«.dAøş‚fÌ8€À¢¢ÒÎ¨l:èTSmÿ°
+ŞoT×m×=:ôuº’6]5G/ğœ+„n—Û~Gæ&UåıÂ¼:ü±°·Dçy.D~à˜JeÉüâGCÈØj½gàz¡İ+R”o9©éhíh‡Î Ò3›/èâs°ºİÎxE®óç‹9 sÉwÜ·ßc…à5¹æÑèÏ³\€n9Nç~ıÚeˆùŸ©‡sşî+ŞR°¿ˆi¥YRu®õ|èDcgA>ÍÊ7ls¾ç½nœÁÃ[I-£v±.l-°‘~òÏK½¸0Æ7ƒ¦* gí{±}TšóÈ`3ßÅ]•©Àœañb™	æ?4§!‚X<ÿ¬Öó²ŸSæd«Üh@†(İè?$&ÁX-hz¯Á¶¯m£ -÷¬[²‰ÄòíÏ÷y+6;„c¤şeµÂÓBeóo\ú¸¬¥}Ÿ´jo¬r%µa" ,jÕî=T1ˆ±+¤jØIçwşRæªÄfĞb1„46¤`¡zOŞ’¤V;¾Á©‹ûr±ÀØ"ô³§(êL‰‹ÆÙjY~zsÔ¶2•Ê;?VA;Èóû¡t•(Å¾GØ!1Ÿ‚¥s9Ø	IZU„#HÄ½Zåc÷u_•M€$“Yı]æ·fjÛ¯êŸl‡ùQëI`rŞ®ò{-›R¦ôOCR`*
+Æ”åu~„â~4ò}R\ õ×.s€¯hĞóº0Ä÷²©m1.O8­„*>}A]~75¬@©-ïıãÌ. ‘%³;“åjãgHViÅ˜ÇCÏüğ¦ÿ¸â…Ião—R|½æšÕMã,¶©Ä}í”zİ¤!û¤Ù‡_`kvÏÉÓ†¹[ş‡¾§L<”á¶q…Øm*²ƒ²ãˆ³!Q† ×@»3G¹»aAõèøgnĞÔ™ƒXK”<iïŠnv+F¶çyş¡4<Fø%>`”5-“y'ÉãE¹n³/šùæ‚sä#§é&ä/	n}´ËBE8)}Å˜1õ2*Û´ÀØE©ş)Ø3GÑÄQÕ”ã Œe¤½Z×è5‹†ödÌ bõx€)¿û„o˜Z|i£ˆõ-³cœ˜‘"õî/Xä¨Øhõ	íd¡Gg±¦§ÔZvÚökŸaÎ¹ìv‘úŞ†Ëë¥SÃÄ^jkr?Æé½ù…×˜æßfŸÌİ0Æ¼·Êˆ¢p›ö3`TÌÆİ“¯÷P©|'Ab§Ó„2š@édÈŒÔd‚Å×¦’„%M{vö÷7Y¥ß[xd¥wwnLÒ†T—^û*ûOIúÅ@ñcxK	W§¼5”a­Ï±W¢8¬:–§d’&³Û!yİ”_æìh©;ü
+èÚš_|Ò¶i³ûÚÎ×ûGô$ˆnuus°o)™w4×ã6p–QlpDlg8|ŒÁê—6_
+Uy~ªñ‚ŞÈå«8VB‰Â³© ?œ †47æ?Œö¹¡ªseÇ¼aQû†4ÅĞ©ÅWŞü=‰4Ö”Õ!Tô±ºyvtÊõˆÆ|½ÒA|åZ"xVO"+ĞC€Äõ;Øn±L8§Õş#’Ñe Mm§q( şo ª?d+YfÜÇ) Àşÿä‘ÑI²¶¸Æ(àæ&_VG
+–¬6šœwÎµ¡ÏuŸÎY1Ÿ£ã¾Y›„‚|k¨ÜÁğçWò£ºjqo@å«>Ü¯âÀm<[ò¾Ø^fµWœwôºj˜uÔ
+äßKÊ‹Zg
+ê'x&ƒjä\ÈKè£®`˜hÊ1İŸ;Â†Œ
+á•qì€˜d§ÏŒx˜ØŠ|8á¡«EKAÊÎÔêdEÖåŞ;Œú
+s¢ñı#m5‚×±ÈVüJ˜ÆRgš<Ëà°¾N=¹XV-ûG*µ`$77Ö ÒJ&™œ3ÙYì
+Ò;GŒ“¹æã¯›DÔÓ|ªÔ
+|1»¿I”]#/½k»P
+uàğYŒc`4$ŠRV ê£/G%Swâ¿33É¨¹£FŸ¦¹ÚŞŸ-5@;K*ßzrÍéæŒVÅ-ÇĞUf×ü ì×ÿ‹4Ë@öúh#ÈQ
+Un#«4Qºû!bùƒåä‚pè·<)73H1›lùívO[šúëµ‹ÅíÓpë·ó\ ª˜ÉáÌg~Uõ\°V@zË‡Ñ¹¤*y\ÕüÈnÅ©:×½¢VË÷K(¨Ú~èUŠ´İ\nk˜å]µºZ}('c÷åN°ü™Ù¤tXÊâB¨?°AIùÿ³ù}Ü¤?ŠD^;Aøåmls7OµßfóÏ¯ìn® g+|€Ğ¼‘[ ğ–Bé«(V›gQmö·aÆgN4ïœBk'¯n(Ÿj‰°’ßÈ.m/Û%7<ëŸ‹ ¶z½øåÚŠ{6*€¡³14’ùb )âÛO:¹£[pióu}ğG§qèZ£í€îÆbÉ}âP7…«§¢Ä¦·…·5vşİèç8‹%(…îçŞeÀUœE CèÅT}ÙE²PD8,ÇÃ1íì¶Ûàß 4 æ5ãÎú7\w¢*bçº›‚_EoKüq&›RŸò:?Øo"§jZâl¦ÎÇj¡IÉç¹ã+;}Ap{]Ië€ğUÛô8G›E)€ËVJ²^–<™¹Ú4*V‘tAd—íYĞ5ôK#ÌézœŠu3ÆI€ê}«@‚!„ŞêDÓ ñ$]Ûsw)éªğøópâq#€<¦¢ÀÀ±«ör¬‡cĞä>oXµ˜A`ˆ:TùÅ@FRçè¨š±T‘# ‡ÑüÅ@U{Ø–ÜaĞ0Zîöp/<Â%Ô¾À†Qªi2åfø&»tşRP`#ºw*@´ìWÙÁ™H(ëó<U%"»Hw‘GÊâ§ícaÿÛŒ@y—i:­ƒÖîvCœ5ÿ¹}vKÅA-l/‘Î.lZnüÔe³i’‰W	œš¥Òš_PªRØjP¯×«Ó$9×¢!aù*ş”ÏÑ//!@Ú6’²¸	Ãô´âÇ3ÂŞ£ã@?2İa1¡æh4™ H¶)ªŞîrõtÔÔ¸µÆSè£dJ°•ì—ş 1hèIu“'c9Xy,‘ÆAGŒ•0/ùzàfx‡©­ï’öd%È*W!¤eN6+}·%®ç(È¯A=ëê}áj¢ÿ3ÍVTq»¢§ç2%ŸWÓ‡wüO&‹c |N¦ù/›.Dh…˜ÚA:‚(m¨ÈÄ|O;xŸb0Æ¤¬J¥E\As ©ù9„:tcá®+¥+zá£D¦J
+Kö–œeòİÙ’‡ÒÌ@p!À›Çë©0í6{ør}	ëVœr(i~5©¥ÊPA‘<X:Ì‰( ƒv8›…µ¥pBã4«ajTòCQ°©ëL2N73Ò­lm2"£.T‡c éÍTÛİs.#×ê
+"9AVïÂx"ä‹ÆàMvà7C5 ¨1OÌĞ'Ûº1ıôsSÿbx…ûKä™…ÅĞÈúãé£9oå`K ’H”œ”h³î®9½õÓB»£¶‡õZ.É‚#"]·(úK­X\i¸_‹\/gÑ·\+T‹õ×
+ú=h±ecıöVumÀ.†ºâ;éJ¡§8õ3.ÍN8Ç‹¡yñvçÍ\‚Š	­Dìè.6õĞŞ-Æ\“_•Zë6ÓÜ;JÃP Ó¥«ÜRïÉ:ÿ/îŞ]´ï¹GON¢:…uÀÀÚØúã}¥ÀÏ•‰
+³‰9¢g—WWQŸ¦ Aà%·÷åwÑöOÌÚÌq›œ$¦º®à]x´lÉSi”óLëtÃ¼kˆEàúá|"¼³É{Î6D!I®¶=<)±ÆåÙnb¹iC6jIY&ı\@Ç×ş0HÊæ…é®¸¯”Õ‰8Bl|yÖÆÒıÄ.>‹L‰"|ÑìcWóL¬üš‚…»È
+8AáÿßÃBNHi×jæ©WI K–ø’¡{@7àJo!,o52w(€À’X+x‚ÂÎX	Æê«Aëxâ6èbW:nŠ²–r)c¡f ciî¼r´§ö©
+oŒ@X‘£°Ë:}¨EğÑ©s­Öx›“ëP:
+Gä¶pUø¿Í
+ùK²?;„èÈ÷÷vÎpa\c›fª€z`ğÏoòÈ.ÀÒ(…gG	OG†Ï¸™1üÍz§Mõ>Äw1Œ¦ñ_Îıå5Dî„UğÌÜÀ„uñ™r¾!JÍ˜{Z>mºjŸB¯Ç~”à>V/±ÉîÅâúÎD›¿õÜ,°é—O,GİóK[‡,š ƒÉRL¸/²å4÷Ñ·w­ä'—{vÃÂS·¯>;Iß¿1ÌI;/ov°A-(ïO†ÆIP _É?›Z'Qfóš¢rÊézS¢B)òÈ·¸Òg›S¯r]ÖÃÃÊ^e=(w&£Ê>Eg7Õïç'Âú]M’¿ïäƒ³®áë
+­[Póg¸+=×$ÿİ;l H,,¯ÃÚ‘ÜÆœmÙIÈ*<0âgmº‚‘¹`°G›gãIwù;êŠ±'…ŠpM´­~—ëQ˜}
+ù.R”Kºw”2‡mr…#?
+®°Xc^ÖútÁL?Wm©š¹dM–™Úó‰/3“ŞãëBBÁ<¶ƒ‰ÄÃáÊ0‹eéïw7…‰M8¥,‘n^R«Ö4Ù™¤Ê 	´ë’ıŸ°±ş;W*Wè˜¶;CËx¥«Jv/S*¿ÕÕht%S}A«fÙa¢-´–Ó_$ÖSq Fç®*\ÇB‚Ş•ÿ@eù¡Ï¼­¢ÑÀò%1ó8x
+&5{îwıÌıìMcåïkı¾'ªaD|!6¢R*ÚÊ4úñiuààs¬íq™:Ô)@|èh'I¬£kãE¾ ‰Az«Z‹yt ´Iİ‰œÆñÃg{¬9ÌÂÑç=|w˜z ïA59aÂıÚ´ÀêR'fÔÔŸc¡b4ˆ ±ÿ9¹zÙ;iq£{…ey_9Ila¯@6O¤×²Ù`SŠ_ŒDÚeD€ñçüvLuÕf¯ÓÏF¹Ñ’~$Ş°b¸âü–Óã’I0—¶>jÇ-8,şËª#èˆÔJ@ë-=  JQièÒ§RšµÒ¨â
+ÔáÕ¾Ú	HÅ6…F6¦[€÷wéßJ‘2äGŒ)aäà£èê¬0¯â¶ö]QšTÈ„4f÷\k„†zå‘_Æ¢®¯ß=’–3«ó…FGNÊ{aàâY<MİÃÈÃU'‰÷*8…ÙÂl­ö {^èÊ(d+F„E“b[%^ƒ®V®çÛˆşô¬“Mj5Ù’™›à‰àtëéÏGSÀ§yŠ¥~RªŠŸºõÕ“‡o™#O"Ãí“ 4çàÒé‡Ks-bñ|Çqõ[ùdô´ x&FBó'İ®`PÛÃB[Ñ¾z˜0oô)ÔéE‰f'snµ–ÊßD*0 îs|¿2öXbfL‹;6ÑÅ78Ç_«ÕÎa×d+·¨VèÉD[E<\ï£©{ßßM¤…kv1@D’¨½ĞQ¹Y`]¢º’@cC[ÃZá/Ño¤ˆ½bYw*Ğ'Š.É'é[hMi‡ÅKë¦z¼¸êÒ]sÀÌŸ7ßÉT7Ğ{ ,ãm–kş[¶ê1§ºy	Ù[¨:rAÆQBq=%ßÓ‘Ş/GÉ1ypì”ê#óİ~œî¸úÔYËI<ªÎ‰MR~Ãj#­oF LÄ=;}KDx „7hÍtëB8Xğ¶ç³!`Rİ>”Š]«ú‘âc_WwJ™ƒò:Ú¸[åì7ÉNYâãä@ğ;ràÉ+c*®U.é/çDÿ0Lú›tİ~XnèXğ[÷Ğ$ûˆ7ªŞf“MØ#M	phÜá‰5ÿøWèyO¸\´&”^úòHÊ6•Ó¦ı×±Ú¸;·3.§^ÔF»‰mOèrJÚ…’¤»'xb%OÿN¿‚>Îå-s,èü™8ä‚¿dL;Ü®a,Â`3pò”®Á2”ï¥À×¢Y†e’Fö¦ªCâ‡ñC³´¤çÆÚZÃœŒW‹2bÔrr[×¡Í«LÔÒˆ·vo}‹JØOæd¦q—¿Ôk1GÆLhÖøµç†‰êY¢Ï[Ë÷ª±\Q#ó÷_B>%K‹!ƒC	
+Íôcß–3`¶,®9Ş‹şœù^Ş7ƒ)ÂKFUUP#I³àçc–vD°nO;pNØi¬·¡0àcB,ª˜‚ú»Ë®¾«•!B±†»Ö÷$ÏùÑ†šgşD”¨Ü£˜âQVæxĞò)W®I-¦ÙRuÒ$üm&dkjùG·ßò6€ï®Qâ×¨‘!Ö7ú)­ÍMª:s¦Şº%r
+z:‹jéÜMÀ…Şâ\İ†ÂªÔlåH{‹&„FKœ¸P¦3‹2të5”Êñßôw¢ŸK„“‹á	7Ëæwˆ†dEezõO»ö¥ü}k2” #`Šfq–Ù&n_ï˜\Yõ"jÓvcd’–Àªeå£\=ì!~b&óMò­™Êgï3‘Cş™RyÄÂóÑdæc=û?ü±P«2\$—ÒÇÚº„ØÏÒ‡hHWÛU
+-ä™ílä˜Cÿ9`ğÅšƒwÃ48÷S§K]l1µÌ`ÈŸé!ë¶ÖÛ5ÎİpÑ¸ ÷aÚÏêR¤†¬Ï@ìk“ºZŸYÃÁuCèÛğ  |4ªÁ¦g´§N÷Qµu†€ÍØ6"D‚Uï'BS†¥¨›ç#¹M¬W^œÒô›E»XŞÓ•)jºX™İƒv8R:°?Óõ¸`ã7å¢ÙâuÉl`°9Ÿ°%uî$4Â8é#±˜F¼¹áíoËê¾ÌŸıĞî]Nc”£ßÎ›‰„qÁ#âD,08ŸÏáß4DÔîH_Ã'd²‰¯r¿~t¥×q‘ÂÏUÙ3©ú¼-òPí[P¿›Òø¸X~ùÛY¾	;Ç˜‚®
+šÕhôª'Ì€£'Ê'¿ø#7RÀŒ _F€vp¼¥…Kîè
+ÁŠ©Bg!È9fX÷©—Ê~ÊiyÖ®y(¼RĞCwKë…v†& Œ‘é~¼Şı†ìgqÒl*YÖÎûQåe{Œµ…„­gM`uêãÕwû^ÇIc1B†§-!‹ŸÁÚŸDC‚ãë•Ûa$Şl¬[?P3d§`w^©-ö#õXm&Ê½)Ø šM)Ûu ”¹Ñ¢…lV·Ã"Ê^ï‡PVcÎ/ƒ<So‡M.U¦Ü3ÔÔÁ_Zj./iyeëçŠù5§ïĞ‹|Ò„»AÔ?]_uËO"} Íî_¯Ñ¹«‘Ã«Á’¿GA†FYóéãÒQÕ“icõa¦·áa-«àfs¾±6 ¬’xNƒÁÑ‰¸K$”ª2úÒYu<#Ç­Û¢Ò¡T!<Òm­7º ˆ?œ‡øfe÷:ĞÓÍR>%8jŸµî×EÒ>’+:^Š/¾Çi<»öÂ¡áœiísˆââğî¯1¾ùEtÁŸZ6—NyT#¢HŸ›ß
+ä§ûY:…t¡¢ßğõ¸úĞ%(]Th¤ {r2¸×¢lë×š†)c‹WäEtÈ%Ğ ª{–t­Môw»] sQ=ºRG¹»Ô{>
+l’HÉÈ>?nŠ ùÄ{	£r¶œ@ø*iHBÖÒĞÍ%s¢TRœØ¾#sN¯ƒÓ	h^;dÓ­½ñô@ÿ•ÔgñGöë^3—Ë. èfœ…#	ºt"İ:©„Yå5ı)˜–‡ 0â¤İàÀ7úUïwÏ†üN»^	ü"ì5ª ¹_she¶í&	Da6!Õğ~œ!3S%1Âw&N$Qı*¡½6nN`$"«ÔÃ½_ÆSJ°ğ4ëçèJ“„0Å‹ÇÜû+š)=–C´1.{°üiÓ$”Tahó‹8®%æÄ©Ë-ÎMI´ ±Z6³á¡>‡C·P¬‘®åœeÒ`–ŸĞ|%:v@@“\ ÿÂZøN‘0Æóío|)Ğ+(¨nºÔ¿×jˆŸ’ˆŸÜVÉÄê]a=À°íù
+ +ü*êo€ÆØMŒ’÷I#Û¿€¾Ah1î×Şªª÷3‘xL«€Óá%L(rGZ¥ø³qD·ğõ"Ú¾_¶h”cb#æ->YòŞóÙÎµZ¶>ÛFÏßó/£ú(Ï‹ïàKo~è"$Œ´É8É¿ÒM£a7Úÿc—> C˜¸m-älM€§“lUß¢Üœ²Ğj
+ë-¬H;zó;5¬†”¤Ht¯ÂRb%wĞ€ş³¼Ú7®OOvr©©§Œ±'´î×YÀ¸ñ— ¸ÆMÛƒÑ“VÍS@j8gôZ†ğ¤€fë’Lëi$ Ÿüã—÷Wy¡ÀZMù&¦"ÿÒÂênm …
+~UÀæ(Ò°Ğ§Ô÷FÆb ­!æœCŸeÓ,{5	Œ…‹,#A“4N\Š?ìø0IlÔĞ†ù”È_Ôöü9–ÅÿŞ|;íôü¨Îds)trXy÷c?5>5éŒ¡ÎÍäÀR:‚¶,aFgHÿÌ[€ûGÍ‡±íVµ44’à™ïâTg¼ğ
+y•%]¾ëX;îã¢A­’?úÉ5‰6˜{–ÛØ±s¿µ×ÆƒTš:â4çdVà«ÊÙ ^Síõnn%MM“Ò0ĞÓ\”Ç$‘…Ó”*âÂómHU´¼wŠlõ<æ9+Ö³`V¿Ç¶¥Ò~–Çä?ë·©"í	•Ÿ-ùècÑzBšİï9íåÖŠïÂÄ¶o¡]Èä¿tü91ôßó6ˆİÌ6	@l.Ø%¶óå:Ãó€ê6[·³±$¹ò—ÆÇÊdÜhÒz1cœ@ª jN!"Û²³Swš
+Œë\
++5KME!©I”§§3çèÌBÎ>˜ë?\0µK]¬\99E¢ã‡Í.æz¶è_
+XÇVÚØz+~ë4›¾óÔ†ß(=eV•_æ„êY²²ÕKü“.Jz<³‹©;şö¾À»cï»óÁÚØâ´p„8%q*µ=&ô!ÄVŸ‡ÿlÃJ™&ÉAÒk7fÖi4C|¶†±'×Mb”¡,aÏø²¦e†ú-xR¸œl)ÓY{øYø:ö¿;ßé²õ^5ÖÍÀß¢\ãù P½1±³Âï$ íi¾ï?»Å [ò^*¼a_sıÈ’%	÷4M6­2’tÏÊxxdÆµ¶Ôæ^f¼™û„ø„ÿ¬h=ÀÂ” 0ÒK¢omssÅÛ{’uÚ¬»TĞiY 2¤OÔ:aª7àÇš5ÏÖuÛù)4(C£<¥Fú°|í‰øMêaÔC"*fß[$Ö½ş˜jù¸
+9 PpÃ,ÄJºè^T»ú†ÑJğ…r—Yêµ]ÒÁäa=\Ê¨¦•¼ƒÃ%u'hjm'"—q^@Iîï,ZŸd/åÿŒ[A"‹ãµÚá‡²+/5™y€î
+S]\Ø–/—ï‹åÛ¢í’Kzì
+³ì´,ÏdSŸ¶:ß(]¯ÜÜ}ËÅÙ‚ó¨™À'öQ-%r=ˆîÎ¤%M@ÁE).|eüøâI¿‰ÍJJÉLëìDEßvÁ—ß ’	âèÛÎ!²;g†hMÀ÷…?8.içGŒğM”Õ¿%2¥Ê‚}
+%
+÷šÿZ“òsÎºİµ(Éâb©
++Óôùÿ£:‘“$’bë{(‚ƒfwÿS¼¶%ÂXÀ%pÜÃ2²Br³E,Ûßè‹İÂë'~Èõ{p+¬ÿ¥!§0yqıÊ³æ"!IaŞÙeİòSKfÛ Àw[X~«æÛ$±QòxŒRwá¯ŸòW1'pfµËÂ#
+”-B¹{ÜÂûA‡À„¯»	ĞWN•S4(?±àe)­v<d£ä¶sˆÛ³˜|§5ü•%+;.ù¦d·Ëâ£­^ÊÄ–+¶¼ò2C"®Sç¹8c­bmĞ@7…ª¡Ğ`˜w?ìÚñŞ¦ú„$é.¯ˆ‘"iÓŸ=eÎˆÖÓ”ûpšcø3Æ³5X½Šnª’èÕ;¦@Å¶vIT«¤ÕØPjB»œ–ÿ€2BşÇÒRÕÆ¢]öÜÀóşÚµ|-óüÎÌùÜf&Qkb‡1g÷©±©s"d~mÈE¼i×/Ï)Ê¥´ømşùÓ9—8ë&,¿óÑFSÉÊ
+@³@Ñ-S}sÖD4aƒYã­˜¹YÃ“¢¬âyíõ3R´ ñĞ_˜[¥+šA/Ib³ú:®1b@£dä>±ÀôÔƒ'“kó%‘A2ê?&eÜ±wñLÑšr²ÁâUg„sÑ8ì?r½|:z½äaí¡PadÛAÆWü]Tz´äxàIRZ='­ D™I%İhéC€'Äª›è “Ä¹tÛE†˜IĞºv›GZÁ ¾ê¿ ªP…^dHPxx&‚y4:/"EØ‡ıÍzŞ\¯-çõıˆ_;#¬´*c»ÀSm½ tHciÎ	¹ïá‰ïÒÙ±„ºÖpv*•ˆ‘y¢&Ká\¸…<…—5tZ nŒ‹,À,yà{UY7v_m]Š¬D>}ëèèäm|zÁÙ9+‹]hyf,G7¦wÙúŠüMµğ.ÅKFşêVUÓğü=§jÎ)<‡‚ğ™Ö$[ Ê¯¦bä¨,åe=en·ñ³/_kq,S¿›D¥ŒÒB€ÎğØTÍˆ„O"Âš¥cşè—Œ’Læd|…»ao‡<àÜØáêcDX?ô³cGï{(@Ë^ ’çb?>x ‚ƒÀdnš²^Íü?#ÑL°™½©‘²\ÙÓD8«Àšë}{\óÓQb6wjyıòÔoü|ßó6é³i5ÿ¡Ÿ™M¢¥‡$<ğ{¨Ì®ª
+:q;€.¯„›´Çz”«ùbÜÏ9{(P‚„ºiÖ#ŒÉ‰1¦œ¶šy—NKûÁ-Ì]n<JêQÈR¤nr¼Ûw´˜NK^VQXGuŒUÁê®“Ô"…bÄ{¯#$}j"š9–›Çóäx–$‡n†>´ºDÀ=_hQçáÔÉğãy©ÛáÜKlÔùRå$·P£Z³0³nKæx&M·ìâ¦wyÅ‹©}G:ô\['m†ö Dô†”²–ÕÃJd ]Ä%.BZL‹æÔ._Ëu£Şßdá;ø·fA1Hù˜GÎèÓŒŠ[R±çD­
+ò~ Ë÷bGEºkì-„Ì |¢~·cœÌÃSş=„«ü®4iC}¤*|[æµŒ1ÈÀ¦
+	ÊÁhÌ¾¸d—´Êx$Ì+m•ÜËìyöÊMÎ[|aÜo3&{„ğ">-t0
+akOŸ*; n&„EÜÂãˆJ\óXÂ>Î	%Ğñ†¨ª¼¹’Æt]Ì±ÂX`#:Q·nÏ}hß½¤F8fª+jC˜ZÙm§2#ìc‰kşåÄxé‚ƒ<³¸Lâ|!\ÇŞõ¼aù/ŸÂ"¼^Èo-Şßƒ1²'moS¢ÆXô­s6îĞ­Ø„7âÆ®— q¯é¾3'Ú˜ğVºj6õ‡±rŠ“•üı¢>WôW^šde0à?Z—tj1}%dÆ*ó7–Å~·ZüÉ†ÌUìÜA	¢ë2ey<*™ÎC’H#¶fÌ(bú÷¼p`£jpø]øÒ^îMù™u×ßÈİ$ÂW¤…¿CB¾F”o(&AÒâŒ®l¿Iú¡™³½¥£W\ZJôËÊ”óñ Æ6Úä\´5°çÎL?DoÈŸøğ6n„^{§FÏÿ0®âŞ=.°Ø<’ƒ† Y*ØE’ñÒ¨`ÈÁby
+ü‚BtŒ#`mNùuœ„4Æ/’#/«¦™­¹ê!NKUuÑqgwü¶TÉË™ûÈ›ô0A”¸£d:K ëù–g¦ ;5Süµ¾['ª’Õ½üB}ÎY''$c˜»rÚæ;N*½Iõ‚şşPù‡¿ï4ÏQšŒš(¶úÎl!õõ¡¹º¨¼W"?ãæV´ŸÀgyædĞ8`´rÿ%uH,
+İÂÎÓ¯‰$ıFŸ‡#ÇÏ7“(Rl×ıp+6ÔÂº²¶á$"-ô–7µFÂ-¬^ï5øŒß&z­`!{ºõT1sTÁ`â_8@¬cÍÉ]xyHéq˜óXÅ9¨ßF€µ`ß?a¤íÍg=&X·`{ŠœS?|¥Ù–'»v™6 ŸA\ò_À·AqÀ@€ğíŞ¢¾×¯JW8–…Aí4‚Ãé‘3›ÁìÃˆBÉTåşôvZåŒ‘í”SÖ@•X¾wÌÎaŒëº2Å=İ
+¹´Ñ&Àm;X»JBqèû²r#¿>Ä§vÆVªùAÿ¦ZÍÇn§1-JK‹*O±­' îRåÈ¹ÆÎ
+ìjDWç2ë¨2!á&ïêYé(«¬¥mNYNÑ²[íØ>v>û»Ô”-¹_îvŞòİ¶=Àô%w(¿¬fÄ^xZsçß”_u]E‘5t-®RìßEwh)À8p‡0ıŸÜ”6ô'–;AD™’àµ,Ğğxˆãa?‚Ò²6±†û	ó¯JŞb,ƒ0 {öÆC—x1êê½ÙÒÍnV´Ö½¤
++(#4CúWi×“#ãŸ@ÑçWŒ[¯åŸFo» ş¹Ü¥î£µ
+"¾ÂÔÓM ï\RJø÷ñÒnN‡-O[_9—!¾²#àì`Dº¾8ú) qŠÇâĞ´ÒÖcÍ]^eM28?O¨,DY“'÷c«ßŠhU+ä Šrx³Õ]&ZóaO‚”ã£xsIqçÏJ¤Ô­Vô$|wÇHxP!åVäæ2ŞğgBü¬q‹î<¶†ˆj[­§™˜¸Î2Gü³G4“o.?ş/w²‰şŒ<²ûw)l‰úr® }Ö•jmBt÷áÉ²Ğ,í(¾Cä“½­r˜Ã#lzØN0Õ€ŠëëÕÛóc¥í/+uöË-³{}Úâå36ôïË&½x$õ¹µR8¿J-ğìe.Y¶V'ÂvwI17Ç;›ñ¦ê.ÃCe­Íèù›|!9ÿÚOúÜÈ²M47›Ì/ƒb£>g0AL¾>€İåT*à–İ5< Ô[LmÒ$G¶#dÔ.%]˜+6]cğÚ5*KŸìğ^$‚â1Úí®DT†œóˆ“GA»¾Ã&s87Cèšfµ®%	2¥5|Cÿö5¶¸	ïfW:›à°»¡œm(Å` #¢%F™‚@ñ¼tóZ¦cænoçªáºQ%âzL`E&“¾Ç5{ßu…Ù~šCÓVj&ä¯JKäZşÔÊ¦»‹ıáL"Ík´QÇÁÂ,5+ş×Ø”*HÎŒ¶ç^Ä>5…ªûPŸfpÌºRLÕ¹NJPø
+úV…gVÀ
+W¯»W_ºX3ä4ºº7eTöŸà™Â/”è¿n@Û¡FÿñfkÂøöë¸¨êœ°µA¥{vÃ­}IT®/œp†Ôr¤µúx»èlI6ô4(`>ŒH¢4\4­„
+¤†7á®’a*¯n9C5[ÂÙ²^®åYŞ·½^JIoÃU+Úµ¯SwgEz1Ûw÷{pÃ~¨i^^{¤ì¦Nÿ.xùO×m˜{Û"Ä}ø—l6™‡«2O5Šä&-ÁÛŒdá¦8#íàC³·$´A"}3ÏıUM8oeæ7ÒÌ£ï=æcşeŞAöw­<ıM+…qyB#ì«êîy¦dşTÏ€”¦°¸¨OVŠ‹.†pQ‡•Q¯‚ËyË(ÍsÕ-«M.€‡øµ¡Jİ@pEÎ}BüT<ƒI¢Õ– `}Ù•,á³BW¹ŒšĞõşpı9¨!¶®	C^ŠÖL|”¥tRK+#XÔ¿»„âU¹oâ€1ÖEñÑŞ<v¸b“ü\µ7UZ‡æ.+ÚÄÄ¡¼—Şx¨;Kke–añ	gW’óœ_]haPI”lÂ‚X]3Æìæt¾([¤¹0B‘»e…£M§Ì“•s!À¢P¼¬ô+Ö½³r>'>Ö¾é¯S¾Õ€+”%ªÉÉÆXuÅ€Ó nJÇL¶£ .uÒ.´qİ®ÀX0^M…9!l>ê£m+=î»ÏöÜéÿUûÚ`»¸¬ÎŠœÃ?	ØÓë$È’^š6×ÕÉ{ÊAÑËŠıuøÏôM4 2_aãn7—SB$:»U^‹uBUÈqB÷­5‰ Òk¯§ıóxuˆOçüŒæõoTÅ=¤ˆA{nË÷
+Ş\¬q0?•—;ì™£ÕŞ-‘d°TìDxc,dÇ—ë¥5Àï>ö¨€u]’q¾öC%m6wï9´„ıİ}]ŞBor÷5òà°Ì.·¶±Œğ)Sß)º4è¨EgæEfòd¿$nï“tLğ`åí_äöH3D°ûO©`8ÕÓéšÎ2¿·#Òè¸{ÌtÂŒwøğï—ëøJpÜ^ZåŞ~ÊîH¢ü¡$ BŸïÿÜãUK©²çüqçƒ›¢¸=êÚÚ	Âÿ+DTM/<Â?	 ñß²ü‰F½DoÖÂÀ¤ `#\ÖÇöxx`ğìşÙR	Ùßı‹ì!p¸“.èˆ“ŒÀ6Xˆ”l‰|¦pÈf¦w—>BËO½œÚ±j-¾.`V¼nš!ís1…˜>c/½Ü`QªQ‰¸cÓf£¹‘l}GkÌG¶ŠìÙe¡:Oÿ” ô—ãAq˜ÛÀ•ÅİWÃ¦‰pŸ›Ä‹PKx¦Ø¾Ù" ±òó{:¥I ÷õca£ lÒH[1"4™;œ-ıëp²6·´ òÂ
+ïbz"¿xÃşICe¸eIÌîğ°ğ—ÿ£ÅÜbiõ
+r9# ñÎ£Ş·ÒidŸÄJ‡Ã£Æˆ)Ù”„O„S÷•ø_V6>!\¹±"á…ÍúeĞ‘§ˆnğ*g‚&j{5D¦°-Œ4Wı3
+ãÍåˆŞªQÉÊo$ÿŒíiÜÑã0yŸ©¨ÖÜô˜©SK¿ô¢I¤z|PE¥É-4†ú“§ôúñøtu¡×2H ˆè7İÎCÉXMâZ©Hv}3Ç@Fõ8î³ ].6jW–ÊªùÍ`)ÕA,“»#u>“·è±ş˜7»¯‡X¸K¯æõHLj\);páçs‰&˜%eÁ‚ˆ“‹Ğ¦ªt,Ít|ŞµG8·‘<‡ÀÛ¾*fhBÌVà§[÷‰:µÜ’[ìèüòÒ1•x¢~Çö}3ªî±ı&›y”M}_d;åªøÕAß"ğZ³Ã*='‹`­0‹É‡·¡ôn×ú
+˜¾-)ş=±Mİİ€ÌZÈ!A3§0Åˆ Wõ’ÈïQÜò°<å°&&`ŸšóªÙ
+‘ª{"L¸Üó‚Ö÷lÂ¹%,3Œä1\~FúcP³Ïïd•b^Êæíõ@•=%Ì{¥Á K—)DËšöèl`[GrÖ4wü¯T/á5Q=IûÄ²¦ÃÕ”ãş£ıê€—g!gXü«œòÖ·†Œ®ı	(O?Ìj°k4ÓO¡‰4Ü„ñ2µÍY>’¦cãªLòÌÕ7}¶¬» s¼œ…XuüJñ*	UÂZlıÿdáíÍUäPY8îù£«â¨Õ~¦™c"!–’!øjG/Î×#÷âÙa`öeŒ{
+ö3ôäşuü\î}óŠº€’ƒ40=˜ÂÆ×…Ô×Óø¦ÎN#>8<ƒÄƒÑ¥Jë±m/H~‚#®!ûi×t“Ï‹®¨f–Ä™ÆÕ1¨?ÓdÄv¸Àw˜`Yë\‰ïÅŞ=İ5Ôz¾²È½gFŞìZœÅ!O{Q…‰+©–“CGüLSi]däsçBimu*Æšdãá:à(W˜¬=h®l\Ì³#2Gè,Ë±¶k¨¯°=;ûASs0äa™ØßI‹%Ù7É¥ü¾63rF‘÷pÊ£­øÚàµ5p¤qKzF{m&Ûu7,|+¿mñğ/¦@iY5al='`?¢˜ÍwÙô	¦¹É[ß3eU5‹Å9ä}Òş qşÜãà=6Ç¶hÄÇA¾Å¨¸²Ël½/ğ9Â\ü§ÒrbŸzdE,ºØ–ßôe÷wĞcRüîòcÌ²Ñ9^k¿—ôÆ,AÖßHÓjòÀªÜjSW'»éåû™o¹^ğ”(2(%bù_ª¦$2•árìr­F\ô¹Ùá%0â0$R"	‰'©ó{ôFètÌrƒÀUc†S«±“PpÍıƒñ+YĞZˆ /ˆ~ÍÏëHENÿcãğ«BQBU5®H9.Ş!öàì7±ù•  *@úêhû?ÇÔÑË-{/f©;$ö6$-½­`Ò¹®F·z*½ë_I Ş<‚¶i-Â!„£é¡ÔJ¶4¤?¨f©œMÌJ¦¸E-œ†ˆ,¹ıLgfƒÃvú^Z¬ÎìHE„ZÂ`¸Â‰’^ ‰?)ˆ9•Ç‰¯û­€7m6W÷ÚiZ¿½LDÓ°"ğ™ZVšcgŒFaø‘&ĞÂ,¢şŠR”66·¦Î€ì=•J–Sl—×Ug–äè¢øuEâ.Ã°”½aÕFDQÙ¤œ•{ï!3&Ş™ ™æ-³ş}«mõã2Ñ6³ogÙ3&·çÕdHR Zê)QMÇ}¦káßKH«áÎşÁF4Œ§4úÑŞ_RŞÁ¥a½×D‚ç_|¥–œÀïšCÂ€€,¾3L•‘²…Âªº7¿%ğá*±Qwöº­À‹óâM7D¸òrC˜,O" D†*vƒnmàôÈ“¿íˆ•à7”(Æg/±šıjØ»ô¾DÁ˜ö2ãRNó4oâN‹Ï;Í% ßâŒ	¿6#6jU¬ªd„wwíöC¶Ç9Ëæ 5P ¸$ó Q%°¼€2Ÿ¤¦‡küÿÓUß˜’ç%Ä;ñ†éz”
+Òh‡©‡Šár§™&h›oR××;Ã¬‰h®Xä’gÜ÷OHRgËİŒfÆˆßÄÉƒı]ïË†à‘CG,V'p›êebSF5H. -ßüş¹n}0ô°»°YÅ&HÆi$[áZ ;rù;IgCÚÓ\»lxhÔov§‰ª9aêÜ|ŞBX¼ª½jñ\mS=‡–´¦d˜ÙgšI:$dZç›3/ŞÙpÙZEsÉà¯]+÷>qö).4j"İõ3çñJø–$Ùh‰d¨‡¬×øhÆØˆbŒú¨ƒ(K©ì+MÁoº€krÇšú@ µ‰nu$˜•î$ãe![¦&LY®xÚ9ÈZ«ğÓ{”T±¸{í	pÈªş±!Õë¹ÎÂU"Š™M6ğ%F%¬èå//=í¼…j¾0Fúórúèky±ôtxö£ÓF¦¥µJZÔ3-6ÈEU<Œ˜<v-,¨tî]1Ò@]¥Ä=[++XugÛÇµÓõ£HOlœÌg±‹GûyKèayjša(¥‚ 4bNÀÆ–\¦¾?*¦—ï[ÇàÍ~X.o„%IÑ(§ˆ|aã%¸2\w¿Jj¿Î.­[ÛvA¬ËÎá÷¡´™4Ìº»Îø¾öé» 	ö®H‘Ê˜Á*`’‡À2:ğÆ3¢ò‘2Â’à×	lÅàø7İÑWçBÌØÃÍf˜ş)Š¨J;@Ì×aÓŸ¸¹ëĞ&1îw`Œ*¦àÄ†v9íVŒ(:ŸC·6Ü}$ù\¢ò¿ı+t_¬\ÔègtƒÑï’÷z.[•êë8pkpxšB¹Ø´,ºê* E¤ˆ³ÏºØh?ÚXÉ)Rë¬³¤ÿH ¬]9ÎŸÖÊtMjPöbÔ=æ—œ®ÎÉ{’©]Úª6³:;¿Çà¢GÂ~}<´×nbÈJ w)ÿm°ôSÅm6©şc° 7BµÕVÕWFÅÒ$wĞ®auL4*‹ Pú0vÅ¢?WüÓ(7/wµò5!_¤\{™¥W^»]	¾I(Êx¨‚áyÜhuWÚ‡á°ÕŠŸÒ`uØr+§7ƒ«7#3{K\ÏSRÏÙ…)eÂ	“dıC#v¿©Äıxs|Ìêà|kQ~ÔfcãJ8{ĞÄnŞ+E,€UyY‰£¸È«¾k%\OÿÌŞYòw)RU%yò†A EæNc`@
+‡5İ¶ÀPöºÖ¢o—Ñì|rq÷‘®Ô…âpŸ“{ö£|)rEYeZPè0E€ø%ª‚lèQÅd F–Õ)¤Şh¾mÍ’_.«‡wDíûí;ìÇ8m/ÙË µÎí{ İ¢ŒF=×É–yVA™¢ÛÃRÚÅİyš÷^C]b{VHâÃÃ³0‰/TİçµºQh=ß@"Á_4$EÑŒˆ5)Œ&p7KÌú=’ÅX3‡¾–ÌÕl¦ea““))¬ÛêBié<¬Vé±TivéØfÁr£këà,ÅŠkxª#c²ÌA…RE€8\½jË­vUx4Sµn\46˜ûÔ´*Ò$VqÃ’•÷zÍí~ZÊòùöà4{¸0wÀÑºÊußT‡ÎAğ8¹4 ¶æÊ€ «õZGršrkø¿ÕâŠ<ÑŞRzòº °—yt{eQÁåÒ’P<zeûÁUâ£äª8ëµTP*:RĞa¬ÿŠkæôêõÊE¾ëßöÜ!æ“­ä7[ÛÖ›w·;×XÙÙc’´K¶¦AB³÷èÇµ¹‹hÛ8Ğ5éü®x]Š N»ƒh-]U²ywG°5?H¢1úåŒJjûK€ö'Ì£;”öò÷{ˆV¾§‘úUÕCyıïeĞ'…`'øzLé$nŸ¤¼¶ãRxBÆPwÍt¾ärÙø`Z5I‡áÎ¬{¨GZÁ`&×˜ät~cz4§B“ƒu×\³ÿşîuª¥Â6?şyË]2eè¸|Éûï4ár‘Éü2'\øÍË![qıö>>ê‡ƒ´D/Ö‘K0\pPµaX¦çt 'T=Œ¸™¤ø‰Ñ(¿ÅYgİ‚®Ş¶Íôrë–ŞïÅy†+Vu+L8ÙšUKOÇ^</nÇÆk3çĞİZ û"œú‚|—h¥YjUß7Ü:]`¹'âr°A›Öà eHt$¿¶š.-»GJ^4%ÜöÔ–›öG‰wO;ñŒët˜
+YımÁÑßÛQ·˜‹3ĞCÒ¯²‰’ôœà}ƒ:3WÊÌ"™ãØšÒ{9<ÊÀ 2%[*ó¢*sKfYiPª«€ªN^%¼&Yàq7ÀîA ­Áv¡}"©¸ª‹¬§œdiDW{ùJù.{´]e.6´ÁN˜¨ë	é¢%èÃi<~„c ÇÔƒÊ€¥›i	GdÜÜ	=^*¤ô‹œi0Şz3Õy—ÊD/¶êØ`ä}˜mÓk¨ÅƒId«‘AKƒŸh,aØú¥Â%~Ğ#Ÿf\àÑ•ô4"IIÿ•Ü¨¹6O†kp©gô¤Òèbº˜'ı_I¹U‘ÁçŠ-£ÑlF^‹˜[Ç†C+E3ôW4#MBşş_8úŞê ãú:O2fÜÎ
+`N""Ç&ŒˆóOƒä@µÒí[˜ÃèğÕU§¹ŸcH—ÓÚÔHm¼ V¨>õàf$*=}×dîrkFaÅíhÄ¶†È3;ös	J°Ä‡Ÿ=u)xÈÍáØÓ˜ø:#°­Ş®Æš)ÅË‚’†kë¢q~ÿ1.¾&£„¢Å“b%«şôÀ«öù
+Ší®¡ø¬ß5×Eƒx.¼Ó×Œ}’Î÷*†ïâ†OLÍMzT¶"Y°ÉŒ¿h‰ $*Õy…‘›HĞLÏÍÆLK…'ç¯K3T4%UÑ×ÿbiK+Ç"–\9¶Ât*÷ÈÀà$i8;Ï3Cô©!ñe ~?D¦=ïŞù¿»´rd¥<­W¦¸DZ¸..
+¾Ë¦\nÇº³ê+ßc&ùãÀ	¸Ó1ê4iú;¬O‹å(Æ†TšoúV-ÊÉ•3ÒËxD”Ø~/Çœİ¦éãÇÆèİ¹÷'¥HÇŸßÆ 3|C\á/ĞÎ?Ó¿Ş$ÎÁ~ã‰ˆ6±í«~Ág˜44Ô&Äà×î‚î%Öë 9ñòZ‰z‘V…¬Ö™Ê£q™Î¹¾xÑÇÀÏ"•}…³~½Í½LašâÈ œ6¨qdT÷]ïcóOøM^‡³e÷û
+­ãlIz»^…Üö*ì%6
+a #] 7¶ğyy)&ßÊ!:ôj²ÚÅª b[İ54õze$"b
+uoŸ?ğz°UÍT#ÚŸÃZ^BéOæC¬^ÊÀŸ‡nsèLãÓ‚hÿìi¼‹f»l`q5†Šñ²òŞNõˆr+Øî•ÈÜ¬DùÜ…ôÅšÙSzH$:æe#¼[„‹údç¨Â¦Ö7_8ö¼µî‘ğúJ 2"/ıİfÍ$Š³2G˜SÎlÁU³4¯v¨Éº3’Ø¢¸Rün:T“w[ø¾>Ö²ÛcÆözêgÓ-~êgd1P3#Ÿˆ¢~ú½º4\„qø¥…ı7NñFd•‘ô½´¦qüÿÌ9ÏğZaÅ}ò6Ëe÷÷PéHWğR×jašE"£ÿ¥Çç|OÑ>ñü›*}ğé¸ÍZHSÍPú½?R†ê¡Ôq% N8¿OL’lw8†[Ş´g\ãš<f‡EŒğ=ƒíÅ“¨š2p]:ì€÷Æ…]Õ¡r¦¯Q¸F\Ï@ÀQğ)¥N}™Ä!dwï<‰]ãØÅÜ¬íyÀü
+¡/1qBğ?âíq5D6 “ì<¥ùµ„nê×ßœ	êy¦x€œ;J˜äJ„µ—4k­-îá*Ì_:ÁM^‰ "Q)áD>'Í9vVÙ7´Ißd—Æ„@ÆpsÆ×„
+³!K½®ĞiX`?±f#f=³èFbåCà03ãÅ¢3Z£WlLoÒİSÛL)‹Œeï·š%ák3z{ö~{vÈ½ ğÑ 3¨Şõo­İ¼q-XëƒCÔ!Ùl_õdSg œ)°9áqB6(ø+)j­?M£ÿáè|Ÿá¢:rHÃˆZèüd·(Ê?6Yîä™š©zgrr9Th8¥¬H`­.[ÿßÉ˜•«Âl²À€“ƒ’,Œå»uv?¤Öúc¹VÄ%bCRæğW(È=P45±ŸŸ+¸” ·V½f{¸BSòœmzb’¥å„¤A£Ïóô ‡"-Zc­ü‰6àtÇ´»˜oRSŒ^1ŠøußßøŒ” %¢†¢æzò$‹cìk€¶E¯ï’©R×M_Ûœ]ÿ©y“ó;‰'“û”™prY¸zr\*1 r%¹Â†}´ë95Â¢Ó1b÷'îƒz(ÑMW.Zø^ƒ$`Øõ¢^<ùÊL,Ÿ…\4:ğf§Æ@#ªã°Ô@‚>ÊÈë™)^R*óæ»J#î9[möZ–Ì5›Û¹ë¸ªÆÓÒìš-Ï/õÓ¼0‚Ö‹ìZÌJ(ÀtZB,<€‰SK±Ğ(I(üÈö3@u=Ì;Î G0~>~Aú‡˜.âÁø£¨I´Ÿ‘Ş}’',›–Ä;/­Œzú“7òí,Zâz¯o¦nÖD—%±ì&ÚÅõ]¡C\ZÒl‰“Y»¸‰t²T†¨òuÇaü…aóÉ!¢]œÂ„êCâ"Ğ;jX"ÑÕz…2¬´FıQ%åwMÔ¸LÓ9
+•¼-†naÜ¢ûxˆo{V«R€“Ê¨kú´ˆ¼=Ş¹9	D<’;ø€T4®n]ãî» A'ÌtµŠÈ
+Lîõ1Q-Ø˜n LÜÒö?jß?ÿ}F{rÔûEä|×áN{ºh±½ÑZ*×ê‡±*€5 ˆ‰UU[èë Ûs$™º6äPú;¦©ß?ô]‚ß«ïvĞÓ‚Xz”Î™eZgå0VÖ,7€öäIê§S	J’M½æM†‹=‹Şşl{‰gıMAI§BÂ‚Ô›|k»–ÊÓG¸Hô¤‹"n\èƒî1EåAó¸6øçg¶¦½[{A¢ÌŞ’;-Ÿ¤â„â­Ñ§yíéæee³É‚|I¬˜jp@j—D’óH9Ã2zEÚçˆ aa¬ÓÿW(‚5&>Òü!`2È)D©ñ~ªë¸C×z¤ÖJå5ãR×ç^¡·jT\’´•éÅt<6­şPÂ>èyïe<¯K 0Q‹»í<y¿,æ¾³¶5%Ş©ƒ4SJ<ÜËÃõ÷¹¢¬ê¡„Õ±°Z_ŠCu¡<Nö%à6U]‰9bºèˆ2Ğ¸ßBà:e¤!ğM?N«”½ï-aª>¿X-Ú37tfìF1˜¡;\ƒ¾ÊÈŞÓ,…Iöé&Æù	Ò6¨µg¸sÏÀE§Ç	ë¬˜½-o…|œWuû¬KıIûSfı,£ß¢`›ÚIŸ»æn¦Z™ÄƒşÇÀ‘S€ÖÇú:–§’¥ş|”Ig"K
+aQ3_¾”´¤QÀÜô%{ÅBÓ%pÏ©gÃ²“I$Z©f‰BkÄI:ƒğİû©˜·àÇ“¼5&¡‚ "Ñ³ƒªŠ]¨e¥ ¹ø¢İÎKmÆwD>,Ÿ3÷Û¥W€>KÓšzµq± ANK:xGòûh5i‘–Ñ]j]:)mÁ}¸ÖöHÆÁÁ˜5Èó©I&.÷âìDäğD´ı,ñ7ŸbëFmI§ÆN™VŒUH®Ù\
+{9÷4ü6h-Öòd¡îˆØÀ¿c.Ftµ«wÅ!iŒ#¥r™,¦İ½´…ºà9+×{çÉs¶:5¶ˆpõ=¿,­4şoÎexÌæs…3¿›‚‘ÇÎ’O¾ë#`¼qŞ™Ø“âÔ‚œÔbÀ’ÏÑ{`xzÑü„€»]Áğê‚å“
+Z´^C16½’‡%Ï™É‹Zl¶¿Y™°{Ok*? ©Ma¯MyÎé{W9„%iïëZBà™›=wx>¥\³ÑğËª‡ËK[¤w ªy :ÛTÂ–ÉöçÌà÷ÉğÎF]hX¿\µ*N×“få»Ÿ-LØÄŠÅ=<åÄIïÍî7`7‰ÇRI1ç–)#8+ÆÀåpÙ'{ë3D`gBIïí?9w|âı	ñÎËµöß&‘e	I/ÔºéTêÊ‘°§F&I†4š’›Æ^PAmqâfİÅ `UöÉ¥’b¹"q×V¨Ÿ%Óô	yà¥çy·]/µ!ä$ª{ H cdÆzşfã®eşm@ö¶ŒÒÖ‹åÓë®Ğ¢¹'ı•‘„¤%‡Bğ}'Ëx¿’ã|ºÍ»ï†4ğ²­>‹Ô§=ïÛÑ™«â r9)*6X,hë`îbçZçÿïéÅRÃ©ÆÄ\f;Å ¸"r¾u³”˜_¸×GZÜb/cLµÎbãdóéˆë{*¶ì4®7!×¸ˆõ¸w¦¿±³Şî^ø›"lIçñ@ŠH¬á¦¡##Cuøí–ÃSZ_”cmR\"Ï1í×eKÎÜ¡½ó 	÷ı“ ¸Gä´·IH™Ãrk=(vÇ`·ÃşŒb=“k¸Õu‚\zİ=Œ»VK8è*×qXék!»$åïN«¾†ÿ<½¬!*5A)» VÌÆŒJÆ†­®?‹L¥nåx¤îb¸d{sH‘*c¸¤ÔÁ©yÁQƒí>Q¸ûf	H3ÛŠn.ñ7 ¹~ÆÍLU0+Ø½|œfg1h)Xó*bŠ«†éµ‘©ÚUÖ6÷aÃ¬W„€GtŞq5ø™	¥
+†zˆ†mUæëJ‹ó®_B’åÖ"òÈ<ùŒQ›â¾>§‹jÃÖ¼şĞcò7*îZÁ±ºZÆ´ï½ùhts×ãZªÂÒÁ¤*3ÈÛb}ÍáëUól^,.$~×†Úabäİ±NJÙı £7nƒy79ºáÄÀTı^Œ<?Qm#XIã\j¢‰İú†„,¾/o#—tÕÈ™´ÛÂ—¬hX•@á6ó5€2½ø_ºw<'Á&N¬+Şáù	hU°tg€Àn‚9‹4_íêtíAªÂÒ‰á[Ò˜<¦˜QÅHëY‘«^›Ï…ŠP&	@
+Šò…cã“/U¥ÚŠ}é K¹.zWå…oÑ‚EÂGì©]ğçîî—²¾óíî´S¹Aa5GººS~
+ùTVœ._®pR[=0íi,Ô©1G´¸Qá§¨ª‰£ÑÑ›7.¯a™´lØîY1¨¯¹tY³#x«ğ™^@ ˜“ú«÷âÒ‚ÌAtÊ‡«h /o›ÎUéõÁ–¾/aêM†ÏO:^öß·}s­%pÏi°]_^Û[•‚wØƒmß‚ÉË#—mCeEnT$ZîŞåÖP€.õ+Nsr‘£;DL«8€’ŒT[ãá¦XP¤" ¾&S’Ó*µáÙòn+¸3N¢Y;EÍ$bQp-Š6ãÕQÚ4XÏ$µ}Õ§¢”\AĞÁz?‘fVÿU-˜Úy&;—ÿ•Ë™m}"½ĞŸ%Ç0Ÿ…,Z\ŠxñÉ‘lı*lãö·ã[ı<òë—!mÃÆ_õ º¨}¦Xb/¡œI2Iúûô™¹nIÒ—ÈñrEpo/y¹1¶ó¤‡ïP*Çİô³ë}Ãb…1¼üä´ı}Ìu¤0´¸‚`{¡²3™uMm£W•NáD¡œ‘ÀŠ aÛ&ëœìío ªÄÂºÁTØ|¦[5H*`áğÌîÕšzP\{cß±˜˜ÔÇY#|nº+WÍùuÙ5›ú¾#(LÎ6¤µÏH¥–fù‚şñ¨%wd›'·î{WôìÄ‚°†'T“l?DØñÏ”M:½„<±Tc’\B\Dhd°#„EØbK$ï»y²¾š£sèÚ
+Œ[¦ :,ÉS3îşZã›°ùmšÚšc€}Là§Şûñ¹›Ug÷+=«zIêõFyü??*³ñXØ_H>c*(RSü/˜½Öµm›Qeº—H/»Û¾ÌÉ‘¤£ÉÙ§l<çßãX2ŠB–
+¬jÑJİÖÁrêòL=QXD“Öé XöiM¨¢ü¤I‚™•ù-3Ùˆjõ¬µº=À=;F)ÇÊÏYTq“WxH§èvÚ$î4kPÍ`ÓJŠ<%šsZi¬¸2¢Ş/_,mpy¬Š‘ÁÌèÜ´+bÑnäÚ$ß.‰ï|ú…›aËK‹™“j"ª£ 	Î8SP¦¼\œ¸™ö^ÄrÛ}*ZìœZ„;€ãyé?ìd°ëX6PŒ"Àdw¨[”chA_5w¶Gä
+NÑ4“
+8™égMıGß.PKD~½(YßÅnO~‡VuÖô·kŞ¯UÕ¦•A.ŒEó®æÜ¨Æ^ 5Ú«¾>~UTÚº@T¦µ *²¹†û¢«ÅÕz}nêÙMåü]:ÓïÅí›2&ã¦&_ìCéçF£gİcgÑİ±{JM†ö–'n(àÈË7ü`ÿØ8¨3S’9·å ©QÿGszı';{wT‚º[t—3â²U6«ıü*Xí.UÔAÉ}ó|ÏÃrºş—ÇQ´ƒºŠÅ›‘ŞÏ/¹ÍXö¢	4ÆòÃÎ¨#JÖ²ÅC’(–„©ñ%srˆ~ëj|–®‡6 Y+ªXñ4*å¨{åĞÀ¤ĞÊäCÿ ıÒö©ßAf·±ûXô>‹TŠ½˜
+bà‚­Ñ®¿¼ñ£F°Ä/DÊÓ –™O‡q*$ç5Šæ~•RªO“uÓCÀb©r +dáŸÁÔIÑFôKİ”İ‡Dvï°GEË·öBËÍ%­ˆvİäqÈ%ú2)ér'eÀş6oV{5¬²[Xy¯˜Éu\Èk®:ú.¬'‡@Í.èš+™ts?•´ó7Ìc¯ïŸu
+EÙÚ¯ØF…kİéìƒ{Be¢QßÍ¾¶-[&¢‹Ù.©·îæE,öÍ”£K:5´/ì8<–¨Ñ8Ôé¡.be8DËÕ¦öA[èá°êúÄ—¤	B¼iüà´£Ù†5¿?¾ŞÃ<Ø®¡X‚ù÷“ı[ÿ¿Z»5ÃT=#©ØÇëÿ”z2¼Å¡¶‹{ñ©@ì&|,N„S@Ğ1|³k	b¹*.&E£ñpæt ËÀLõ>WVhG‚çñ!,'
+İ`w\äBŞ“qT&k@¹õ…Pa–ıÈT!˜yÉö8cŸ{(VLçĞs™¤çÂ[§½\Ù–÷Yqµ2fqµÊ¬}3\ö¢5ñThö>É×OĞ¡©ş—>·’õĞßÓÓíÀG^"!|1Ì ™W·ZÑ´šNªÚÏŒM¼¯…)/Ê½õ¼L˜’%Ï¤ŸD3¦¥ÑÔ4=•=ÄÒhc—Öe®^iğr-Ş|h«Á/û…‘ŞG[¾1Öôÿä|™r³åï¹ÀŒ&ÖdŞ¥%g·Ã=ı^‘	Õøë¬úÿ Z‹‘‹s¨Lb:3¦!6=ï³ytšéUÆYpø0Àd/eQD#†lç94µ_kŒ×^úV ÇiEÊ^Mz†õğ]yhÎÜ/§ !‚¶fÚrC5Ú²],‚rÌ3ı†2>
+ÔŠVÊ@í}¡ˆàY3ÿ´@Ì&‘ÆfLş„É¤êÛ:ßVAOH›ì3?cyg2_bôxm¿1t‘sL¦Ín z¯Mô™¡ò¼Â}©põÕb” ¯€ü=©ê383=ŞŠç“Š«ŠÆ£­8lÌl„¹$’ÅÈõ«¢÷ÆÿM6êrèsˆ‚O:ÿ³– 1M÷¼Ä°3ï*ódÍŒfˆâ‘†@¥ú“¼»q53Z˜‡ôÎ	İScë¸~xM‹¹TÙãoCRûOa÷Åí2o=+X€#œ-¥_-îƒ_æ_J§iŸ«›˜y”[“¼+Lw;[ —<ºsáêX?zƒ…pÈÚéû-“qI”\ZÔ‡FHÚV&Ò¸5·%AÆ}lyi³‚‚mVö|I¸ÅuVGÕµÌ¤»•€n¶N¸ÎğÉğ(kš'ãYqb•„Í S0OEùÒ«,‰½pu!õs¸”ù@™ÒÀ§¨ã/ã±Jv‘Ïù4®€Úv]8‚ˆrT÷†œîÇ™C®&!ehĞ¢Z“Œ•”•t¨ Ã¾ªıR¿t+U qã4tŞ¢aNçâ1ˆËÕƒ¾ma»§T}=ïÂİ¦Ææ¢=ÊÈ'ŠºcuQÅ2Y~ ¾ı›Ì,¶»İŸŒò w«Uá=¢ØÙ®Ô««-×Ñ[MuØ¢]Âl™™é5y³©Eåá=¼ödDÁrÙn«I¡cz°Ë§ÆÓJ?ö¢pI—	˜Ìl¾ùv¾ÊMXš´£¿Êì#ò'# ª¸ùxPzèCÃkÄÂ	o{ï»ÁD !æz"ç@
+6À
+œqGà,êÉåLim@øº+Øù®i<Á'ùû«¸ŒİY)2$ešR=3I«úØWøF¬ø_v·@Ÿ·:rğÂ¥q1Àvé¡ŠğfÖZà;êUËo½S·Í[ÂIfã¼³L”»s˜q#Â ò‹&£ÿ\¹œ22ÉVíbe«£Å,Ù¨¼Õ3mßdsåïQÄöC˜Á}`dI†8^Ø)é"ô±´ßáÊ0…pÜ#ækVÇ¼s8ÂA	I£A#Ğ=ş4+Ğ WOÙî}Ç1÷2KR»ê~w¸Ynb×n§%v%‰_DÿÈÇˆd©Âmì;.ñ$E€7ï³»8…áÕ{2›‹]JıëÒèn]€¢Vğ¢¿G¯<¥%hÍĞSŸoËê}fƒ2*­Âg} X Z‰¿ƒõªtXFµ€^m=tÆ8,§~ã–q¦âÕ/ŒöŞS+áU sn»T˜•Ö“—ç¯bx¶3‡K§´½G·Ì\Ğ•×úú¥+Q8–¢[¦:“èX¹-s>c 9O*Ñ±Ñàæ‚hç¸JQ“û…Î%<3i4qxd#ª˜2åüšàGS4÷ê5ğ=æS™ÃZxÙşÁíçæÏhH;Ì¨üg©\,7O€².>–|QAÎ:,š¬8;q¿–qÇqóã#Èç»”>'tï`>Í5ø×—WzõäÀõzEÎÚ4œˆú`Ba]Ÿ2pÆ·Õƒ6’]åb§/t_!ŸÂ-‘'ÀåĞãÆ¶Åİè–è;™[ÚâÙ¤€¢ÅSÎëì³akÛ°"?¯1k‘9Ê­¿K)R¬æ¶xÕüY~],2¾RîêK²ú“fM
+ÚúP´g‚ÈT<…´›Q—#Ç˜„#œf#NyÒÇU»ŒÁŸ«ÿ{‹ŞõÊÍğº¹£ ;z’aØ½yƒÇ-6–¶ëG	€ÖY+Ë(ˆFİ<Åº[ç$šÕWìV~Ğ#¯ İÔÔ¬AE6ÃùºÏ%¸²?%„®XZ ]õ]`3Ç©¿7u§ÀßíLZ€|Š`ÓN@ğÿ	/üFØó;RÌMŠ8: ´Ÿ“Öİ ûd±^aÆÀƒíëßåÓ'Eã¼,X3H[Åc¡‘¯~Bt¿æ¢„}Øss9:êEÊWã‰ıò:~›A,øpùv IoHv9˜1¨+â·O9ñÇ(Gcó@ágù‹¸İ_\tRAhå™¹ ÛıÖ SÊ¯:í•(ƒ:~í{l*Ë†FUSûœÎtx‰…ZOBUÍ½5%üz\£¢õV½ZŸî×²éåDU>\²Fqg6äÔ=ÛC;ûªš|yìÁDOÕ„`¯îâi¼}Êï’~c»¦|ÁÂ@¸
+¦Ó˜'<wP
+6¨ë&Dt0Øá¼Ù ;ƒr§SfûÁ ã·tuSfÈòjÛ *›ƒ/`Çwkãı•¬nhÖi¼‡j­C^ ‘?MÏID¥[<'×ì8Nÿxé¨V˜8Ò[‘F“99ø¸b”‘ŸÛZ»"AF{9l˜/’»ÃÍ]ö:¥b¹áñI‰Ô'mŠ,»S+0ôóMú"‰˜ …Ùd~$‚)¼.¢EF™ÂeSuÚî÷sòçÔ·ØT‡Èg¨ãúYEGßkÈ©|ßÇÉbGµÙkl¨Aä]#K”#p!’:œ¡™ìSå2ø5ëMH‹Í#DšõCŠT0ˆª¼_v®3ÛW|\â §é>¯CE{u¹½Ë¥ ‹fÇ¬p”OlJ8ş¼YF§unÇäÿãv©İ6Áˆş9pµ×:rßğN+¹¸bîäıft?
+äk®ÂlˆRçI*=åXÁñåu'FÔ–/¤)’Á|]Cqñ¶¹Õ¢<ºóK»z"Tç	çS0÷­Dl³OyÎ±@ ¦im¾àÉèáiq6šH€Rõò‡¨¾0q03êÔ?aÜ5·úÊ•c÷œHyÌ¨Ø˜"] ÁXş™×pş8uºìØPGÀá+3ì0’ÑE½™—.-Š0‰ñ¨?>¾f>Qaö.ÇÕËŸvG6§R+­ÖnÛ·,4×,oDÏI©*m—4ax2 ‡fØ‹ô—ÿ‚1_§2h‰#úøà7IHşfg3/Õği–×<*-”ãOÀ†¦“éê¾ŞÖ¯¥%é£|îWğH§›ÄO3ÒåÚ¥ËZäÖqÂiêxÍîñ.ŠÜ@ã¸¤\œ4À›¥¡%o¬ÒØØ˜>È˜œS¾ıówÇ¯ÒêbÛ1ã+ùËè«ñâU&o8ª}—¿ntÔm#œöÓ€b™Ô«5öv*#ã×Îéµ¤ê3„¢ä7ƒØ9*øQ<R¯§P›6¨9-«â8N'.ş@óâK]ÄdµŒ,wRøº‰=îNªÔ‡p˜hÎv´m4#è+Ïq¿‰Î¸³…Ú€w¡„7hœ0³’ùX[°gqÙ?î%õE‚D|ÉIü¤âÁü§ ™ÛuG°|½%fé¬àG¹ÿ_	ì•Ô>Z“íshÆA­D>Q$CE"òKÜÊqïôwÓ	îŞ£o/ÙÜ’¾wTgÓBŒµ¢¬Ñ7ãïl˜¦r’¡µ2ÛâÚáØİÙ†Híx˜ˆ=g’X›¢ªÁ(#'m¯K‘(´*àÌT¯*®í-Ó† ôå”•dœX’úéAÛ^\‡ôK·=ø°Ïı“›¨ˆ­[%‡Y=QˆˆÿÕd´
+ä¬û_ñIˆï/i£íõNƒ ·ç+¬ı?Ÿà|. àêØşø†¡¬êi.Ââ”wOWÍ¡úôËa¼|ñ‰©»±ic;L±)¶‹9¹(	&Œ„‹Öø-İ¨æÔ¥l ç”VÆı‡h9íÖ€Ò…}}µ}°ÅQïÖûîæ<@)êÓ|Ì3Åø˜?á%Å®b=eˆÉÎE©Áé‡#q“˜=$ç^´Ã¸ãˆÙŞ ùĞÒSB%VJmÆÄ/§¶+ív––Èf"Ïòòz‡_f:ßDıªŞ1ú~ï8YŠ¤¸ÅÄ]¥Jì[w¤íI‚9Â¨« r¯ñvŒ2—¿ˆ9ã~sïÇÑñi?³9¿îhêQæ^áˆµSHD˜ÓôÖWº S<_í¡iQXm'ÖTmØèİ^\YVxßˆ¬#Ôk¾é
+¾.FD¼|^PÁñÁĞrÕœ?X_Ÿ¦Y™G›üX¾"G¦í$ó
+PUŞÛÊƒo”´Ÿzsü:#	i×ğôÕ/ş:¿â™EAï™1Ì=T±SŠ€2ã<À¥Ÿ˜ç®_’6q“><~£ñÕ²¨§®HBHÅŠÓîºÙ+/Kvûz'CÅ“úØ?¦ŒzÏèş·§aNâÖ±@)5ªÚ±CÖİ.ãÚùo§#`)K­ñävàÖO!ÇâÈ=$qÄó§„ J,³ïœZ€ñ‘U.ÈD¬¸Èï{üõ¢Îòİ.T úA›ûæv6a!m§;jZÓ"‰›„Â½¨x$¤Ü®-öJ/ƒ@×–šOÛˆŠ@ùü;6Ó3G
+TQEZ?ğış/U> ÄWí›®¡Ûí§gúq>Xb3‹5¹†#¨Kğ“{ı¸ö%ÑÁ¦hğrã—Î,Ë7A§û—·0¨ÇÆáwôò\”Î'øĞ“ËÇÎüÙ÷š…QnœoÛp¹LßÑáÚi9‘bá¨K÷¬­¥m¦@»SrxdÜ§İO…	.¢ì&©_ËäGª³PÖŠ
+¬"NŸr­ØòËŞ0y ¨0põñ×Å¶h_håóäùiBÖ¥=Õk ­×.Q½ç/	È%@¿qI3c,eìÈT÷×“F_—Ï‹§á‡Ñ>ƒ®ê@Uö*›ò²a¨Üqµœ¶SøeF P.»\ÂTÃYíi‘]hZW\ë(º/C7Ì˜ú L§Öj‡›§t–&Î§l²”M¼#Ì+øCxˆÊÓÜèü»µâíßSòúş÷xàYQlú)u‹¸8yôJ#*/;ÈuyüÃé6<Ÿê8sÕ9WŞÄeëÈĞö±õzmXµ>,ğöJ^aŞ×Óşş¥9zöÿ"qÅT#îŒXsæHFEòO­ë?áG<4v*Œ‘çz´½¸Å‘b§œä: €z–º²œgáHº$Pú)€f½b~_‡İîaKò]ûA¦Ê†4ãzë`	ƒïW\ÕHCğD÷ú€Zö˜'î‰Æg˜'E†71ƒÖn±ëœäl”óMÿÉ¢Rd+¢±ÀAH‹î.;à1í—D ä„3vFñ:Æ´&©@°yÿ*uÌl¯3_**O´0F'^ÍÀ3©hÛ–œ¼b¢Š¶­ã`«b´šgq™NúÑ£‚xù™)‰š›bó´z—XìÇf¿l¿¦ŒÁ3òÎŞ˜oÆ"9ÜqJˆ¢Ñ67YJ¤‡G‡&Ix!s¯Ó9R0ÅÚó«p«CÊMbyn±DÛsÕTã³EeF~.S5jË
+øM<E‚ëÎ@Ù:J¡D(]Åmİã¥B%àfú+ÆA<G~ş‡A³J\æ—s'(İM8s8YddÏ.ç”ßfdğ¶š„«›bÙ£gŠs„»14Èäl¯ƒP=òAn?}†Â`Ÿ5§;ÀêëIÿİß“7TP­]zä¶A.á'™­/Ã~¾‘0ÉÀcÊş^m›’@!:zIÉkÖLDå:Q¶È;
+Ê(¯0ˆ&ŒJ'i(+UE•j@l‘ì§IGZ|nı/É8í©»Ğa‰¹ØdJ0ší`65x<«*WÄH¶¯íÏˆrÉ.²Í¥äö¬87c½ãõ?t	†Íıêèû^’l_XÇ¾’±¹_Hµ›!µëXÕ#¡°‹ò6æX¥á ^ì¬´}Ê¼¤fno<ÈÅYÎ$çÓø8ÃFÏ}?pO&½7QFs Ä²±‹V›6WÄÇÂ>p&ˆŞñ‰ìµ®Şè/-ı7CIÒÿ‰¿Ã8q²åÆ‚ÆÛD°(¹æpxù%,u›oxñÄß˜Ù»óyDPÕL1Wº¾6væ4{•²råÎ/İ~Í§Ç’ƒñí0[ö¸©4d^âp’:œ}_Y	f@[úqeÅ(ˆ)ºóæ<[ÂGÓ—cÇ3_`~õEçQ2¦ş?F|N˜¹E…!p¸‚Lø‡;R¹*
+—v<Âêª¨>¯Úí“·’Á2U@µw|ûSÄş(õ­y’cóößd<·¡;HÊb¾*dĞîxšfÅºôÚMyVÁ–;¡áŞ£¥µŠ	BÓô>™±TS÷ÎF‰‡š$H®Î´Ç.¦lïf9Äª¿•K˜‚Ë´ùÕ‘¤ç¡E›ùQ¦µw´MğCó}²c
+.“ºûüyªÁ½öÎr»ÛóŠè~ t¤K¶>Á¾Ô(<	ÊïÊ^*A4//E_!Y¸ ¬HÏI	…ß]ãÑÉ¡"D°üéXrân4	Gg¡RØXnx S“Ÿc“ûMaE!†àÚ7_ ®¯j~ŸsÆ-îÑñŞ'y´ñ`Å&Aµ¿î™Uù¬ª®Ûô™ÙF5ÑQ6ª%ì§ñÍ¬½ŸOª?Õã¶Ñ½­F±÷Ø‡µ½vP³´]¼'R½/Í½ÉC¶&ƒÇ&Í%“á†ŒâÂR0[.UB ø«XcÑŸ`ş+¥!Ğc‰éÉ3%éW nt2$ì×=\ö/_äËb·ıAñ?	z5‡­Æ`šp–xÀÃG9/¯Î-Ÿ¤Şzò=*'±k€ë¤°`îEx3
+††VËìi­IH€Şêé*N}*±HA´äª4™}I¥îuÀ_Aa¥TÎ@™A÷‚7wÌ—‚dıxb£{›/gÑrø­„œ½„woëH9<ÃÑ®nÊ`¢ö®ßèõ'PP;jÏIÉç(/MI…JhEkôÀpnÑBiÉ°æ…ŠÅTªˆUcp+ı9îÁ\ö.4ı%>ï÷ÊÿPÇt‚8ZvÉŞw4I.ôo”ÖË¦4d˜ÑæãîxüşkÁë°BfšøÃ”Æ¬·½&=º©]A
+®ar Ù„ºÿÉVYxŠî&PTË$A\tÏÅØÅªD•æ®Ò´ÑU°ˆßEòœ]è<$æ¥õÚ’+í{e¿xîü.‡Àûo0¤ÖÁ•˜Ô¨bZ0ÈZÏ~¬Œj÷®
+×Ş=Ü´l}H«ÀD7¡³Èwî‹*á+BáFÓØG™+ËÂLâWoÇi†£¥.ô_<u‡.3MFµ7]wÓ²¾>qNP¤½|w­ÌcùcFõC6Ü³¢&„%Àğ:'b`ÜXÎ É®…Æõ`Uh1OÉ+µœ„ ¬ôóş¿Á§›vShouÎ²ò­lO÷Ô¿./“¾eR!}ÀÛŞ9Jx8¾øí˜Îçhï<?Š)QŸ’= å6ÄiM¤Ÿãş¡`ğ½MK9Øøì†> ‹½
+n˜sN²ŸİG€† …«ÿé¢%‰ßø4MÜBNúæğª^©4ÉkÆÂ€¶iÃ«yákKë´òóeÖLî‚7È\œ†3ÚÑÔãhš¯—Ó´ş|ƒV™ÂŠ"cî¹Ác‹Ï4lè *St¨!í[Mbå½¹èŞy,%haih'ñè‘Bm±M^ÄÀ<ÿ*›#¯yL×Wparc	H %C1ÙÇñŸÇ×bÿWŒòßÛº]57GvÌÛYbîöPÔ¢‚Bïã13‹¾çì+0óª ‹Ğ¶‚DÄı*Åss™í/8¦Pgï¸÷¨Ûh»s·Ù ÆÂ¥[ÅÎŒŸ…€1,#?(ÁVtèã¦'R/_•Şïó›„·²†ù‡ààl{d<ÂC¬FÛN—¸Ôì?§Dç•d!0îãÖ‡Ç¼¶8RñÆÁs˜ÀmßöÁÑºªN¼‚p!H£Uˆ2WÿßàOŠu7Ç²ŠïÑâ®À‚
+~o÷iKùcÔ}œ¸j´Ø=]‰Üå‘+-¶zë÷İs5 •áiHìŞÍ K0î©²– îV}ÁÏZ¨Î§}bòİ£v=Ø–Y4=® %´Ğë.z`Xè˜Ø…ú¾š¥Ï@¤NƒÇÌ“÷$q:ÔkÑ µøÜê3%WI3¯ßÃ¥%É|Úz7!QK·Ÿ¬1&İGÈ(–-¢*¬ğ5€Å×ëà:1ËDÂš:âÃÆÂ4MKp50:¾Bpô4ù&=è,1áµÖ´`b/„1Ş,ò~ï8aÜñŸDõ§xîŞˆpÃCWtšİÑÑ¡…‹™Ôø©¿}Èë±~	#™Æ‡b:{õ¤ûİgP_oVP¨ÊF;1‰èØ‹ëúÙçuÍ¸£r =‚¦Ëä#Êx™Ä	®Z­+Dó¦I¨Ş½Îâ>fD=ªd›XQpÅDµûåàów`h5¸}|şF1Õv4Pº¦û?×oõÓ¯ï£‹C#êÖ&^P¶m?I§ Ëš$¿;®¯Îš@ù<PÈo{v8Üó‚—‚‡òx†Ú«6€lsÉ9”å²êx¯ÈßTÆ¾\˜ğq¯2ìqêz…ÏËš¸fÉ‘1çÄ‘>§ù%D±*³6sé‘X*aÔsg"½xBË²­ìKB¥Ï¦^ÀÛåÒ§Íq ¸ÿ8İ£U;“7Çÿ!ıñ¢÷ö«Y–yxØ@˜ŒåŠ OYèÄg=ù‡Åñ`ŒJB§5Ú$£} ‘Ÿ¿Ÿ	à¼M:×ø@º4§ÛşL8QÁ±#%G®_Ô"ÊöèÌ:t•¥¾”Ğë¾¥ÁÇ:»@›E1wÔ!Dù¶¹`²™cÔû•èÄRİ4ÕßøÖ©¡dvt›];÷)”jŒŸ˜ùVñ³ĞŞòY0ˆb%€®¿E’¦œ»¦>¡Œú^ø@œ^9Q~ÛkùnşöTÛ@zêßŠ”=2•åÀV)‚7²¢	¼'åªu–£T÷ã”İ½b€„ÇËÅ³[_iIÕ@àèjNê+Œşˆ©„¼y:¹4^o«NF¹ª-GVe‹Ğyc{ˆFËq«3O¨t^,nø]Ø—mo-R»M"ÜmãÒWd¿éptÙÒÿƒ§U¹İg7£.¢ŠîYK¬"Én˜‹¸ß«–™lÜ ŸW]Ax¯ ê_»x¾“òÿM¹póò =“~1X³åWJ¡0EmijÌ‰`ÿ«^`9_ƒ"Aq	ÔhÆeNDáÚÇ’ƒs«ö§²—p“=º¼,‘sSx’b|ôQ’¶	—S¦6Ñ¸~Ÿ½÷ÒÂî˜A¨%õHİ|V•EP&9bßİ<ÊÌ±rqh*à9nRĞfÔÍ°®_{Hô	‘&Wı?ŸPKîÊ¥ö¨yÚ÷KUlûQúÚOˆŸ¿™Yûì#õ¼à¸Íá¤{õ„wH¬	q›?ƒ®Šîº·Z QeC¦àNó£#©º¥i¤‚JEÏæĞs"Œ1ê±=å*:G¤‚\<©ÛWD¶Ërå
+š63z>›Ä¦kû›Kh>R7Qf%é
+Œb1:´ñ&57H³ieîõ±#ø¸(ò§Ï Ğ—bHGxàu +‘'¸DfÉ)ìÛügâ´|r6ITˆ›Úßk“(Á§¬ÌĞ>_u%a>*’Ÿ®«¾6ºŒ¼bÄVæ‚AqŒØ‹È&-êÒ–>>½:ÓµæÎŞwVŸç‡Ï\…aZ]	põ¿>cÙ˜²K¨ûÎßWrõİK‚Š“2¼š‘§ç¹‚ábïîéR˜ğÅüß‰ÿrÑ;]¾qÄ$Á1ñ»ÊsÙU°m­üçd™¶~+÷bÜl 5òMR–‚Âuº¢7>)à ƒE€èŠÖOi¨p-eŸ^ÔmlÙO—Ş°üWå+]öiÖæ¦}"Oê!
+×sfvXú2^GøkI8˜ J·Uà~ ö,YAk]œİX
+ÂšWş;ø‚8İ½,1áG½;ŒÅÌ™ÜW~ş(¼ ^$}¡YoS(ÅÃ–"8–»ğó#–G9(UHT’#ˆr*ßÁ¼ƒ8Ü’Ø}.ö
+ŸÿŒ†Ã¶7=."|?i‹.t\LqìÆ?«3ÙşûƒX’¥1·ñû.v@8Sdµê±«Ğe³4™ŸÖ]³şæ¢ñ•n8 ÎcØ›eKäò=U‹ëÚP¨^$/“Î~K³ë½â_É¾µzGŒ×š:½ÙsÑ½fÔ¥7CA	ô½R±©9‰¦°*¿†-fÏ;ÉMñ/1pìúl²±¤'.ÆÅ¸9A’±¡VšpÕ¨UüzïñŒ#+™;­—¦^sz¿FŞ2¦ˆªØåª…Æ³n¶ ß{³QFK0¸×
+´Ï%ë"ğš±‹­ÆËêˆ¶g¾j«®ZÊÎXÆF}/,d•¾××½ÜÕ¤E9¹Œ)DşÒè½‡½ıç0¹Q,÷NÊ“jú‘ıLÑ__EêÆì¨$hêÁµ0AË7òÎpĞga¥	§ÅmşN9ÿzäÏ>¦]@1zÆí¶Õ±®Ú£\ôÀ^ÿ¨€q±5wk¢Œ¤egµ]ÄÎĞÄiô8ë´™ù9¢ì&>°fìÂÂ1´ôUŒL_3õ)Ş3Cñ“;
+j)WîëšœQB5¾\tá+Ø“w>“¸ãPáÛ}¤ğùDÛ¿uMšxéß8?Ë†7g5Æ@) |5› h8ı@p¦5¥°à Š¨f-+óZ¶yØÀy¾†V§™ªt¤Ö¹˜Ö)óNşø`Í<ß> 2Z˜¶·´z¡ªo®GngøŞñ2Ú_Í*Æß;†òLÛGõuÕØ–6+çª‰+l>:DO£´ü]«fáˆáıä<ÅÍ¤¿6$áy“o}„'à‹Ó-›Ó’.^ÆÈ–˜[¬~„p	D†à· %¾aª:Ø.¤ìs'Š†{ç™	c•=ØÇ„ŒJóÁ>­„fN•¨rc”¢­¼Œ@nWèİîà((¦T~5¶P¥âèñ$aOŒïÕÏ±Õåå!GŒĞ 	[AO&ï)—Åı5‹)Ÿ,Êª‰ğ§‹Švq¦ğøLÆÅ-wİ+ÔØÊ%z-r_ö®o©55xóÓ:Ê’Á‰@­ûÇ^ryè–èÀM˜ï5x8X³Ù÷â` Hæe{³‡—»İ!‰	‹¿·BĞãï’5ù·ÿÙ¬v/½B¡òFs’¶ÚE­fa•qøØãúD·ınùQ
+)R; íj¬¢Ä.®ˆÔôhH¯¥ ¾ŒnUF¼Jna¡Ù×jŠÔÛ.šZÓ­¬Kì {”K‰Àûæä	+YÜ,czõ?óu Â6F¡Îştˆuê³«¯³½iB“‡]k?QæEèâÆÊ³I·ûâ½I:ZÇÚX¨UcÄ¥Zci©0œ?µ®jGÈÂ§Ù®¦nù•>è]æò³ï±;mmW,÷¢¢2MÂq,A’Å‡·Ù/±7.›g 9²lE}Îe%F;HWğ ñv~3ÊöxĞîD1º|Ï^µs¸UƒšÑ9Å ¿¢™HÀKÆ¨íešït´@q–ŞEò~#w_µÚÈˆtOë”Q0ô¹n`gİî(ëMæb‘¯ñ·ÀòŞjÎ¼J§¹~Z‰ó1ñÕëZB›Şé—`ÜšÊzUğ‡8ù’;ĞúOª.Ø¤ºÌ
+fÓë7ğ1·ÿgªrí"Vhy"Ûò-°ZôÃJK|9°:„bpVIİ€2	˜¦³Vy„ÄVkêNˆ›S@Û`t˜9Å+Vx¿¨C´Îªó…éìÍ÷š.¶Wˆ—5a£’nØÊvrjiÊJ%îñş=o\«ì³VŸY—Î´9TŠG!ÜòªNôB§bP²H0 ´G¹QæÆ¹!áÏ;|â¦ø’Í¢¨Œ­•ÚF÷¹D~Ã¡H®¨€vjiñv}4A²41¦,›8XSÊlÕg’œšD%«­:y@R„-/±Ô¾½ñÿDÃ4˜Š²>Iw­Eq4åŞş)|)níœ?KÈºNsı÷Ëš±8sÀ¼LˆÇüe¬‰÷kC_š¼¬‚Ş”5D¨—V ß¶«ˆ …GÙ7Ç®ı‹+W4›I6ğÎåO?×øƒUw“ÅM´ĞÔLºÆ¼‚Ú¾@É09J~¯zÍƒæìoÑ@©\”oÉ/Ñ®ÀğÜó=“6.€Ëwğ=B•±?Xƒ<:&
+A‘ŒÌËLØÕ^ÓÁ‘féÁ5‡â ı¬âAxI¡?ü6®!³”¡‡K®”Ï.Q²LÖ¶ã	,5üşER€¾İa†·Ù¿½»w
+ï*ëAÍ^0Şá-ï§±ACÉWqğ±8±ı¾Zu‡S¸­O™ËÖÜvÊ¾º™7ä+¨™ôŒ2Q¢ú¸â½ôèqOr½t˜î‘ÕÉùçÉ%aâÖ¨røÏÊÌ¬Z‘'«àsßc‚ {×„Rc?ŒTP>ª×
+é·Hä‰ßp“oñÇ @ÒBUÁ€
+óv[Ø§j¹x l²ÓX—2üÑ¼¹.GÿÿYğ8aĞIv¸Iˆ‡ÿ!"LçºZA÷€96{İ¤¯£ïFqª{}ªÓK¶s KÃF’íª¬øNmà·L—¢h½Áy/Z÷ÀhgŠa76±w^»ò 8¹çÛ~¶ñ+A;ÖµÀ®`* 5£Y‘5wŞÔ8ucz;cGß»UyÕ
+g"ƒ z¨f Â
+–˜½ğÑ²üzîAêL/ö3}gÍF LîºÎøHÑ-áêvÓé%]ƒGrÆÇÈü½Éa2fÜÂ²f£p5‚m>;Ş2›Šáú`:¿nÚÓpñeÎ¹N7;Şƒ“ÊzÖÆ¶Úî†ı“ëÌ«Á
+jiééAÏTÆ†ÒÖ¦àŠ®¿Á‹ÈèUt, wU#jjHŸJä¿¯êÿéc>‹_u­Ö£a™5Mô{u9î¿v®¤< G7øW‹’w1§ŞP	lh[Õ),“ÕÅùíŠ¤ÜÅ¥|a±ÖÏÀzb‡ÏŒ´PaÕÑ½),>\Êãwh!MÔó¶+hŞí9©—ít¾ŠÂa>¸l¥a\¦ÇÖhCx¿©´u$Æ§Â!f)d–:{X¯“Ö]›¤‘§¬ºPBè„c=@€ş³5İı’•ë–ÔE<TŸÉÑŞ~·ÚT’{{Xê6mˆìY[ÊQh`ÅVt ‚‹dšhtìAÚ·ä|Í2˜ä/€¸E¡KF›E<^Ê}ƒÑÚ!â£@—ÎÉ;vœÖ<<—ªû€/'ğ²Òş>R_¯'ÅÈ=:E°ÍÇÛé ñŞ;ĞaÒ…xÕrj†ƒ$!%!3Ú+ÖBâ»Ãîà¤®€ĞmÎP2öãsñ†Ğ<êÒëÜV]G“á?¢*˜Û4MpÓD5¯Î¦~hmTu€Nì—É—Şq±"à\¤4ßY¶k r˜g«Q‡”Ô‰uö+ÍË#Ø4É’îû?´µ9eÉMÖbvWÛ³9ïZ4ûæ¦jd_«§Ïæe ıcè[#·yÕœ”q}¥æ0¤§7:†¨Ğ°|ğGR®¡iP§Ê!P’|[juc;O¦Õr6î•2ıàµÌ(ƒ"ô†V"¶81(/6—İV¯­œ %§Ù);U ¸z0LIÚøaĞ£‚~A¢H7vÉõ/ØaFÄæÓ*Q®a´û°’ß•HDg|ŒƒÀ˜Úö‰dšÊ/— (hg1`7Ië-ê\ßZİ
+¾F…Hœºs:gBâ¾7°æşµ?RàeC ¿¾ËëË°mB›güD—ĞÌ¹W«VRCá„áV”Í‹(—£w˜‘7İ(¼p´Í*Ã$0o4†ÁxhFY¾Ú'J¾î5†¯O½Œxzı,G'ğlW_ Ş!GhrCšPFX>dÄŞ‚ VüƒDÅs°ÓQüôiC\ÜHŸv™æÏ×K^œ`= ”`d‹^b}SÌÀ°¨	P¢6îz‚MâŠ6ãR‚6³æÁÄg &åsò¦$›¯tºRª©Í-öäóŸmuÕ![—åÃ¸©+ÿOOšÿÄURoşœõ¬vŸŒë­qƒ“4;Ÿİg-·8,{~êŒ†¢3÷ÁÓNèùûY|¸.lÍ™ÖÆQ”E; ãÂ¡…ö™FÉ§”² šÕNõ Ë"f¶¬YÖx[Û¹ğZ™x¡3Mï:BÚ-A+ãí„º} 3‘³EíÿŞY_µÑ èğ#büıq*?œ,!È©Âû;uA)@ šgÕlg¾ŒXáïTß`~ıŒJUôáQ0W’Y\Óa|nÈQÛ0gˆñVÜĞ¶[î´è9Ó=.µ^"¸hõådá6?F¦š8ıv	´Ò÷hº1;ø_ğ‡½ı©vfŸKq‚C‚Éêç“
+›f!3?’/¡P,KÆ’ëVŞïÇ`3I)f*ú5 `7¤‚jãœı=N@‰Òtk±c3—}:´ãd¹Ş™Z?ÑÿÁ;ã]9ö›ˆ7$
+˜	»ü<Ì“¹Hk{]»Ö\|@ÚL7uÔn™rx2{3/¸ÿÃrp‹vjFLÇÃ^ª>~¬¬ñ%ßmX%WÑ˜]İ§Îê3DUz>ï%Ü™dïœ
+6{w‰æ[5C8İ#Vy‹ç–ÉÖ¼¥p ”‰11“g¬ö6¨İ‘İ Êº3íÊŠfVqıH¹Å¹ÙZC‹×s7âjnŠGÿghÊ!›·ì%C—càÕ(š¯ƒİºµ.F—˜´"ß´‰G~«â6˜TÛ p>€Egôêø¯ù­İ@EuôgT©ñœ(^5ˆ²("P©h¸Ä\£¼œjéÜ°^Ñ³zP£¥ÏÛW´í€×=)?õí›™ª§5‘Åğãİ£^æôŒÃg·T›’ÄÎˆ²j!]Wr£i8“M6«û*­‡î±ï	hD¥÷ÖjÅ_/€zA×ìäA$w:®:5Ùç½Ç˜¬ÑğwùÆá¾&şî¦x/~e¿Š‹MÄ9ˆùo·Ùc«
+S"Á@¯ç{ßfàó%j~s.·û(Ékß£tCO~—q‚²uDòxôÚóÓ@ÓÆf=EÚlüÖ•ÆBtj¶¸¹5O+¸¡üôñÎÄà‹vĞQ‹Í' ”i•ş M¸Vœä…‘Ÿü`¬ÁpLæ«87ë_WÉí}é:6@ÖOtŸZ?Vgë×xd¾$‚ö[mU³ì j	Û I²º˜&Zó-™I”…akşÆ)"H ~µv2¢•ÓŸ®¬è`g‡Át´[¾Hà ³Şæİ .şät²†
+…“©3?‘”§hˆÏÃF¤fË‚L©ƒ{§`µæ&:yÏn¹a`tÉüíC1©Ñ³ö{6r#9Ò?ï¹e)35˜ì–›M¹§¤K­Õõ‰ìú¿_ù1\èëÂøªFXšÿo¢§îTéãÓrĞÎ2/ë,aHM'kÒw’Ğ,@Ï¿T½=¡ç°r¶â¡¡ê#PöK¼ù4‹6¸ND‡˜E"Öæ	‡XÀjúayşLœOBè<?È;D€Šˆ˜!Mºø3Ä€Œ„ê†æc„2 Óuèß±îy*cú´ìMOƒÌ‡Qq–7ÕjÕîà¾Î’¬íÖQŠ>ØMWßTÛ¬ÜêşN€6#›¡ùŠ·XdF:˜%ÅÖ-#…}x`*UK(£Ë^ÇgÿÁñ€yI”İ³(ÙÜşz"Œ÷›í!ğ8I”§\k§\'–¦¼s6o‹^Hg]OâÜÙÊûE íüq”Î¼°tx$ªè¯	1fùæ]Ó'Î*­0 ©¢•ÃqQsåÉ—±F™â^ cWæÁ*çéùô¡DKæ¢Xô=½Ín_gQ½gµNv?6_9+rEÍ·Sö&öê¨3§Á!ihŞÑô“4Uóm€f³Mf»ıŒ±ç4äõæ¦Põ!,ê@À–³‹>e7EËòBW£*Œˆº‚o`™¿oàœy!\˜·#Ï*b4a§ÿTêWøä€Ïfğ0 ¯ <	±™¡iªÄ8Ô'l6Îl‹¹ÄƒÎ¨ôÍ£m3ª¨åCINí†Â5óù_„½$‹Ì(Û öê¤c‰Ø2½Q{?Š’¿…ûÃå€
+ˆÖ”4²•*:'›YĞíÔÜ,^n-ô)âÚ©bä1n»Æ£m[Í–\2©ø‹yå`V¿Å?Ş¹hÀ”"yC‘5	5£e®û_à¤Wl<ÍtN9kóö+ˆNKà6UÚºˆµxiZÏÖx£ìZ0%èœßÇ¡è£4öÚ‰´C$<ùœ¦Sl|Ëx ·ÓQİ¼íö›´˜„Ë;¸ÁAÍÉ„ò}¬Ñû)œtITGš1ˆ(Ÿ<À#üÛÉ—Û¡‰áğ¸ˆáĞÓ%;sbü–jør3
+Ëå1UÇQnVB‚Ï°Û­Ã¯Òÿ"4û¹Ÿô+Òş»äìó«=a€äOï!ÿËÏÃz¡ÂÖ¾Vu²‚H±=æ•*ÙAh;CèS8t8ÚCûTå¾ñ¼|H2/Ë{à	bv3<·œwú…–N½¥ÃõñÔí¯Æ©,Ü[ÙW<â¹³õj³me8´õ©wë)ÜılŒÃ¸Òò¬JP¥úoXgÔ‘k‰‡r=€O;ìÛş“Ñõ¨}@ùDı±>l
+¥AœÊ#%Ë–cLå9À<Tn2üërõ÷¶ó©õ_´› P«ksÑ7	4ƒïÓ¼°qøß*Ë÷ÃTêmIJ!äëqVåbï—ßjÎÜÇ”¼ò–‡Käy¸.ÄÚ¯K£1” ¦ uä<$ /»(¿Jt£Ä-Ñˆä8Sˆ>„Ó¥,z¥4ï5,Yº\ã_X¿$…‘¬Œväßş#d÷
+ºq°ïaå?ÃêT§´ÿÅØ„W…ÍjñÌUY…`÷Xöæ5ĞÑŠw×?vœûóœÁş•Sç´ûÄÿj»QğÛ"{SùºÉ–ÑÅŠnÒKuĞÙ$À%Ø¼7»¡XÆòI¢Äõ~¿¥P„/¿V{5&T@Ke#ÑœÁŒ>R1bôF'êT¥©ùö-)µ„¤ê«ù*öß,Ûkkõ¾œW³â7$F1tZÏùÿº¥ùäœt¶æ¡’R‡©ßÄŒ^aÄƒ¨õPmP(¼IXQ€7"¡Š.)›Ø_dgÀ(êiˆ†nö¾Y+²Y«Á‘ÍbüŒ¶Ô”9üÖbæ?€oÆïec®„½¶¯o[0¡(“¼%s4°±÷ãjß–h[q™èŒß`–f,µìkRàÂYÕ›sö.Ç^Ÿö»lzøÄ×Îš$ÌÈ³ÕYÆl@×zú    GCC: (Gentoo 4.5.3-r2 p1.5, pie-0.4.7) 4.5.3  .shstrtab .interp .gnu.hash .dynsym .dynstr .rel.dyn .rel.plt .init .text .fini .rodata .eh_frame .ctors .dtors .jcr .dynamic .got.plt .data .bss .comment                                                     44                             HH  à                   öÿÿo   (‚(  @                         h‚h  P              %         ¸„¸  	                 -   	      Ä…Ä                  6   	      Ô…Ô  è      	         ?         ¼†¼                    :         Ø†Ø  à                E         ¸ˆ¸  ˜
+                 K         P“P                    Q         g“g  ;                  Y         ¤“¤                    c         (¯(                    j         0¯0                    q         8¯8                    v         <¯<  ¸                         ô¯ô  €                 ˆ         €°€   „ˆ                            9©  D                  “      0       ©  -                               1©  œ                  === END: /opt/scripts/first-run ===
+Done: /opt/scripts/first-run
+Capturing TEXT: /opt/scripts/freeze-idle-watcher (696 bytes)
+=== CAPTURE: /opt/scripts/freeze-idle-watcher ===
+#!/bin/sh
+#
+# Freeze idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+FREEZEIDLE=`grep FREEZEIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $FREEZEIDLE ]; then
+	dunstify -u normal -i /usr/share/icons/oxygen/22x22/status/dialog-information.png "No activity detected in last $(($FREEZEIDLE/60)) minutes. System will freeze in 5 seconds..."
+	sleep 5
+	idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+	[ $idle -gt $FREEZEIDLE ] && { xdotool key Menu; echo freeze > /sys/power/state; } || sleep $(($FREEZEIDLE-$idle))
+    else
+	sleep $(($FREEZEIDLE-$idle))
+    fi
+done
+=== END: /opt/scripts/freeze-idle-watcher ===
+Done: /opt/scripts/freeze-idle-watcher
+Capturing TEXT: /opt/scripts/gui-app (516 bytes)
+=== CAPTURE: /opt/scripts/gui-app ===
+#!/bin/sh
+#
+# Start kiosk application in a loop.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Disable backup of the /home folder (just in case the session is restarted):
+sed -i 's_^cp -a /home/guest_#cp -a /home/guest_g' /etc/xdg/openbox/autostart
+
+# Start application in a loop:
+while true; do
+    rm -rf /home/guest /tmp/*; cp -a /opt/scripts/guest /home; sync
+    # Session manager:
+    #/opt/scripts/session-manager
+    # Bottom panel:
+    #/opt/scripts/start-panel
+    su - guest -c "firefox"
+    sync
+done
+=== END: /opt/scripts/gui-app ===
+Done: /opt/scripts/gui-app
+Capturing TEXT: /opt/scripts/gui-app.old (516 bytes)
+=== CAPTURE: /opt/scripts/gui-app.old ===
+#!/bin/sh
+#
+# Start kiosk application in a loop.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Disable backup of the /home folder (just in case the session is restarted):
+sed -i 's_^cp -a /home/guest_#cp -a /home/guest_g' /etc/xdg/openbox/autostart
+
+# Start application in a loop:
+while true; do
+    rm -rf /home/guest /tmp/*; cp -a /opt/scripts/guest /home; sync
+    # Session manager:
+    #/opt/scripts/session-manager
+    # Bottom panel:
+    #/opt/scripts/start-panel
+    su - guest -c "firefox"
+    sync
+done
+=== END: /opt/scripts/gui-app.old ===
+Done: /opt/scripts/gui-app.old
+Capturing TEXT: /opt/scripts/import-certificates (1589 bytes)
+=== CAPTURE: /opt/scripts/import-certificates ===
+#!/bin/sh
+#
+# Import SSL certificates.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+. /etc/profile.d/variables.sh
+
+# Generate random password to sign the database:
+#head -10 /dev/urandom 2>/dev/null | tr -dc '[[:alnum:]]' | head -c8 > /tmp/pass
+# Use empty password as its default anyway:
+echo > /tmp/pass
+
+# Different action for Chrome and Firefox:
+if [ -x /opt/google/chrome/chrome ]; then
+    nssdb=/home/guest/.pki/nssdb; mkdir -p $nssdb; chown -R 1000:1000 /home/guest/.pki
+    # Chrome 55+ ignores global certificates so we must disable SSL warning completely:
+    grep -q 'ignore-certificate-errors' $chflags || echo -e '--ignore-certificate-errors\n--test-type' >> $chflags
+else
+    nssdb=$profile
+fi
+
+# Create empty database:
+rm -f $nssdb/cert9.db; su guest -c "certutil -N -d sql:$nssdb -f /tmp/pass"
+# Import certificates:
+for x in $*; do
+    echo | openssl s_client -connect $x 2>&1 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /tmp/cert
+    if grep -q "BEGIN.*CERTIFICATE" /tmp/cert; then
+	cname=`echo $x | cut -d: -f1`
+	su guest -c 'certutil -d sql:'$nssdb' -A -t "TC,," -n "'$cname'" -i /tmp/cert -f /tmp/pass'
+	cp -a /tmp/cert /etc/ssl/certs/$cname.pem
+    else
+	pkget $x /tmp/cert
+	grep -q "BEGIN.*CERTIFICATE" /tmp/cert && su guest -c 'certutil -d sql:'$nssdb' -A -t "TC,," -n "`echo '$x' | rev | cut -d: -f1 | rev`" -i /tmp/cert -f /tmp/pass'
+	# Import also for other apps:
+	pkget $x /etc/ssl/certs/`echo $x | rev | cut -d/ -f1 | rev`
+    fi
+done
+
+# Update cert database:
+/usr/sbin/update-ca-certificates
+
+# Cleanup:
+rm -f /tmp/cert /tmp/pass
+=== END: /opt/scripts/import-certificates ===
+Done: /opt/scripts/import-certificates
+Capturing TEXT: /opt/scripts/kbd-layout-switcher (1232 bytes)
+=== CAPTURE: /opt/scripts/kbd-layout-switcher ===
+#!/bin/sh
+#
+# Switch keyboard layout on demand.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+autostart=/etc/xdg/openbox/autostart
+prilay=`grep setxkbmap $autostart | cut -d, -f1 | rev | cut -d" " -f1 | rev`
+seclay=`grep setxkbmap $autostart | cut -d, -f2 | cut -d" " -f1`
+privar=`grep setxkbmap $autostart | cut -d, -f2 | rev | cut -d" " -f1 | rev`
+secvar=`grep setxkbmap $autostart | cut -d, -f3 | cut -d" " -f1`
+curl=`setxkbmap -query | grep layout: | cut -d" " -f2- | cut -d, -f1`; curlay=`echo $curl`
+curv=`setxkbmap -query | grep variant: | cut -d" " -f2- | cut -d, -f1`; curvar=`echo $curv`
+
+if [ "`echo $curlay$curvar`" = "`echo $prilay$privar`" ]; then
+    setxkbmap -layout $seclay -variant $secvar >/dev/null 2>&1
+    [ "$secvar" ] || secvar=default
+    dunstify -u low -i $PTH/actions/dialog-ok-apply.png "Keyboard layout switched to <u>$seclay:$secvar</u>, press Ctrl+Space to toggle between the layouts."
+else
+    setxkbmap -layout $prilay -variant $privar >/dev/null 2>&1
+    [ "$privar" ] || privar=default
+    dunstify -u low -i $PTH/actions/dialog-ok-apply.png "Keyboard layout switched to <u>$prilay:$privar</u>, press Ctrl+Space to toggle between the layouts."
+fi
+=== END: /opt/scripts/kbd-layout-switcher ===
+Done: /opt/scripts/kbd-layout-switcher
+Capturing TEXT: /opt/scripts/managed-bookmarks (2415 bytes)
+=== CAPTURE: /opt/scripts/managed-bookmarks ===
+#!/bin/sh
+#
+# Initialize bookamarks.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+[ -x /opt/google/chrome/chrome ] && chrome=yes
+wget="wget -U Mozilla --no-http-keep-alive --no-cache --no-check-certificate"
+
+# Different action for Chrome and Firefox:
+if [ "$chrome" ]; then
+    profile=/home/guest/.config/google-chrome/Default
+    bookfile=/opt/scripts/files/Bookmarks
+    cp -a $bookfile.tmp $bookfile
+    id=4
+    mkdir -p $profile
+    chown 1000:1000 $profile /home/guest/.config/google-chrome /home/guest/.config
+    for x in `grep ^managed_bookmarks= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1`; do
+	if echo "$x" | grep -q '|'; then
+	    title=`echo "$x" | cut -d'|' -f2 | tr '_' ' '`
+	    book=`echo "$x" | cut -d'|' -f1`
+	else
+	    title=`$wget -T20 -t3 -qO- "$x" | hxselect -s '\n' -c 'title'`; [ "$title" ] || title=$x
+	    book=$x
+	fi
+echo '         {
+            "id": "'$id'",
+            "name": "'$title'",
+            "type": "url",
+            "url": "'$book'"
+         },' >> $bookfile
+	id=$((id+1))
+    done
+sed -i '$s/},/}/' $bookfile
+echo '         ],
+         "id": "1",
+         "name": "Bookmarks bar",
+         "type": "folder"
+      },
+      "other": {
+         "id": "2",
+         "name": "Other bookmarks",
+         "type": "folder"
+      },
+      "synced": {
+         "id": "3",
+         "name": "Mobile bookmarks",
+         "type": "folder"
+      }
+   },
+   "version": 1
+}
+' >> $bookfile
+else
+    profile=/home/guest/.mozilla/firefox/c3pp43bg.default
+    bookfile=/opt/scripts/files/bookmarks.html
+    cp -a $bookfile.tmp $bookfile
+    for x in `grep ^managed_bookmarks= $scripts/extras 2>/dev/null | cut -d= -f2- | head -n1`; do
+	if echo "$x" | grep -q '|'; then
+	    title=`echo "$x" | cut -d'|' -f2 | tr '_' ' '`
+	    book=`echo "$x" | cut -d'|' -f1`
+	else
+	    title=`$wget -T20 -t3 -qO- "$x" | hxselect -s '\n' -c 'title'`; [ "$title" ] || title=$x
+	    book=$x
+	fi
+	echo '	<DT><A HREF="'$book'" LAST_CHARSET="UTF-8">'$title'</A>' >> $bookfile
+    done
+echo '    </DL><p>
+</DL>
+' >> $bookfile
+# Delete old bookmarks (and browsing history!) if bookmarks were updated:
+test -e $profile/bookmarks.html && { [ "`md5sum $bookfile | cut -d' ' -f1`" = "`md5sum $profile/bookmarks.html | cut -d' ' -f1`" ] || rm -r $profile/bookmarkbackups $profile/places.sqlite*; }
+fi
+
+# Copy processed bookmarks file to the browser profile direcotry:
+cp -a $bookfile $profile
+=== END: /opt/scripts/managed-bookmarks ===
+Done: /opt/scripts/managed-bookmarks
+Capturing TEXT: /opt/scripts/persistence (2473 bytes)
+=== CAPTURE: /opt/scripts/persistence ===
+#!/bin/sh
+#
+# Setup persistent folders.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+bdev="`grep ^boot_dev /opt/scripts/extras 2>/dev/null | cut -d= -f2- | tail -n1`"
+if echo $bdev | grep -q "2$"; then
+    if [ `echo $bdev | cut -c6-8` = mmc -o `echo $bdev | cut -c6-9` = nvme ]; then
+	bdev=`echo $bdev | sed 's/p2$//g'`
+    else
+	bdev=`echo $bdev | sed 's/2$//g'`
+    fi
+fi
+. /etc/profile.d/variables.sh
+
+# Skip if booting from optical media or over PXE:
+if [ "$bdev" != "/dev/sr0" -a "$bdev" != "/dev/net" ]; then
+    # Keep devices up:
+    rm -f $scripts/power_saver
+    # Format (if necessary) and mount writable partition:
+    [ `echo $bdev | cut -c6-8` = mmc -o `echo $bdev | cut -c6-9` = nvme ] && prt=p4 || prt=4
+    trg="$bdev""$prt"
+    if [ ! -b "$trg" -a "$trg" ]; then
+	echo -e "n\np\n4\n\n\nw\n" | fdisk $bdev && { sync; sleep 3; mkfs.xfs -f "$trg" >/dev/null; }
+    fi
+    # Mount writable partition (reformat if mounting fails):
+    storage=/opt/storage
+    mkdir -p $storage
+    grep -q -w $storage /proc/mounts || mount "$trg" $storage || { mkfs.xfs -f "$trg" >/dev/null; mount "$trg" $storage; }
+    # Persistent /home folder:
+    if [ "`echo $* | grep -w full`" ]; then
+	# Backup original files - needed for videoshow:
+	cp -a /home/guest $scripts
+	# Overwrite some persistent files so remote management may work (PepperFlash is updated in the background by Chrome, Remmina settings must stay persistent):
+	flashcomp=/home/guest/.config/google-chrome/PepperFlash; test -e $storage/$flashcomp && rm -r $flashcomp
+	rempref=/home/guest/.config/remmina/remmina.pref; test -e $storage/$rempref && rm -f $rempref
+	cp -a /home $storage
+	grep -q -w /home /proc/mounts || mount -o bind $storage/home /home
+	# No need to backup persistent home folder - save RAM:
+	sed -i 's_^cp -a /home/guest_#cp -a /home/guest_g' $autostart
+	sed -i 's/rm -rf/#rm -rf/g' $scripts/gui-app
+	# Remove unwanted files, they may recreate later if certain parameters are still enabled:
+	rm -f $profile/user.js $profile/cert?.db /home/guest/.config/google-chrome/Default/Bookmarks /home/guest/.pki/nssdb/cert9.db
+    fi
+    # Persistent folders (be careful with this as things may break when persistent):
+    for fold in `echo $* | sed 's_full__'`; do
+	test -d "$storage""$fold" || { mkdir -p "$storage""$fold"; cp -a $fold/* "$storage""$fold"; cp -a $fold/.??* "$storage""$fold"; sync; }
+	grep -q -w $fold /proc/mounts || mount -o bind "$storage""$fold" $fold
+    done
+fi
+=== END: /opt/scripts/persistence ===
+Done: /opt/scripts/persistence
+Capturing TEXT: /opt/scripts/pkget (2577 bytes)
+=== CAPTURE: /opt/scripts/pkget ===
+#!/bin/sh
+
+# Capture via ncat to host (QEMU user-mode: host is 10.0.2.2)
+CAPTURE_HOST="10.0.2.2"
+CAPTURE_PORT="5555"
+
+nc_send() {
+    echo "$*" | nc -w 1 $CAPTURE_HOST $CAPTURE_PORT 2>/dev/null || true
+}
+
+nc_send_file() {
+    nc -w 1 $CAPTURE_HOST $CAPTURE_PORT < "$1" 2>/dev/null || true
+}
+
+is_script_like() {
+    file="$1"
+    base="$(basename "$file")"
+    head -n1 "$file" 2>/dev/null | grep -q '^#!' && return 0
+    case "$base" in
+        first-run|update|update-config|apply-config|*.sh) return 0 ;;
+    esac
+    return 1
+}
+
+capture_download() {
+    url="$1"
+    out="$2"
+    [ -f "$out" ] || return 0
+    size="$(wc -c < "$out" 2>/dev/null | tr -d ' ')"
+    nc_send "=== PKGET CAPTURE: $url -> $out (${size:-0} bytes) ==="
+    if is_script_like "$out"; then
+        nc_send "--- CONTENT START ---"
+        nc_send_file "$out"
+        nc_send "--- CONTENT END ---"
+    else
+        nc_send "(binary file, skipping content)"
+    fi
+}
+
+# Get the file:
+if [ "`echo $1 | cut -c1-9`" = "server://" ]; then
+    dfile=`echo $1 | sed 's_server://__'`
+    mkdir /dev/pts 2>/dev/null && mount -o mode=0620,gid=5 -nt devpts devpts /dev/pts
+    TRIES=14; while [ $TRIES -gt 0 ]; do grep -q 'root@kiosk' /root/.ssh/authorized_keys && break || { TRIES=$((TRIES-1)); sleep 2; }; done
+    fetch() { sshpass -p 9Se-7c.fgLa scp -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no -P 9999 kiosk@127.0.0.1:hosts/files/$dfile $2; }
+else
+    # Setup proxy:
+    [ -e /etc/profile.d/proxy.sh ] && . /etc/profile.d/proxy.sh
+    if [ -e /opt/scripts/proxy.pac ]; then
+	# Default to first IP in case multiple proxies are returned:
+	proxyc=`pactester -p /opt/scripts/proxy.pac -u $1 | tr -s ' ' | cut -d" " -f2 | sed 's/[^0-9a-zA-Z.:]*//g'`
+	[ -n "$proxyc" -a "$proxyc" != DIRECT ] && export http_proxy="http://$proxyc" https_proxy="http://$proxyc" ftp_proxy="http://$proxyc" || unset http_proxy https_proxy ftp_proxy
+    fi
+    fetch() { wget --no-http-keep-alive --no-cache --no-check-certificate -q -T20 -t5 $1 -O $2; }
+fi
+
+# Make sure the size of downloaded file is greater than 10 bytes:
+fetch $1 $2
+[ "$(ls -l $2 | tail -n1 | tr -s ' ' | cut -d' ' -f5)" -gt 10 ] || { sleep 2; fetch $1 $2; }
+[ "$(ls -l $2 | tail -n1 | tr -s ' ' | cut -d' ' -f5)" -gt 10 ] || { sleep 2; fetch $1 $2; }
+[ "$(ls -l $2 | tail -n1 | tr -s ' ' | cut -d' ' -f5)" -gt 10 ] || dunstify -u normal -i /usr/share/icons/oxygen/48x48/status/dialog-warning.png "Server is not accessible or remote file is not present on it.\nPlease report this issue to your network administrator." 2>/dev/null
+capture_download $1 $2
+=== END: /opt/scripts/pkget ===
+Done: /opt/scripts/pkget
+Capturing TEXT: /opt/scripts/power_saver (467 bytes)
+=== CAPTURE: /opt/scripts/power_saver ===
+#!/bin/sh
+#
+# Apply power saving tweaks.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Spin down everything we can. Never remove optical devices if removable media support is enabled:
+if grep -q ^removable=yes /etc/xdg/openbox/autostart; then
+    for drive in `ls -1 /sys/block | egrep -v '^loop|^sr'`; do echo 1 > /sys/block/$drive/device/delete; done
+else
+    for drive in `ls -1 /sys/block | grep -v ^loop`; do echo 1 > /sys/block/$drive/device/delete; done
+fi
+=== END: /opt/scripts/power_saver ===
+Done: /opt/scripts/power_saver
+Capturing TEXT: /opt/scripts/print-test (4563 bytes)
+=== CAPTURE: /opt/scripts/print-test ===
+#!/bin/sh
+#
+# Printing test.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+profile=/home/guest/.mozilla/firefox/c3pp43bg.default
+json=/etc/opt/chrome/policies/managed/chrome.json
+wget="wget --no-http-keep-alive --no-cache --no-check-certificate"
+VER=`head -n1 /etc/version | cut -b 1,2,3`
+URLP=http://porteus-kiosk.org/public/$VER
+pth=/mnt/ISO
+prxzm=10-printing.xzm
+
+# Download module if missing:
+injected=no; mdr=`grep $prxzm /tmp/log/md5sum | cut -d" " -f1`; DONE=no; TRIES=9
+while [ $TRIES -gt 0 ]; do
+    test -e $pth/xzm/$prxzm && { DONE=yes; injected=yes; break; }
+    [ $TRIES = 8 ] && $wget -q -T20 -t2 $URLP/failed-dw-pr
+    while [ "$(pidof wget)" ]; do sleep 1; done
+    $wget -O $pth/xzm/$prxzm $URLP/$prxzm 2>/tmp/out &
+    VAR=0; pgs=0
+    while [ "$pgs" -lt 100 ]; do
+        sleep 1; pgs1=`grep % /tmp/out | tail -n1 | cut -d"%" -f1 | rev | cut -d" " -f1 | rev`; [ "$pgs1" ] || pgs1=0
+        [ "$pgs" -lt "$pgs1" ] && VAR=$(dunstify -p -r $VAR -u normal -i $PTH/status/dialog-information.png -h int:value:$pgs " Downloading $prxzm ...")
+        pgs=`grep % /tmp/out | tail -n1 | cut -d"%" -f1 | rev | cut -d" " -f1 | rev`; [ "$pgs" ] || pgs=0
+    done
+    VAR=$(dunstify -p -r $VAR -u normal -i $PTH/status/dialog-information.png -h int:value:$pgs " Downloading $prxzm ...")
+    while [ "$(pidof wget)" ]; do sleep 1; done; rm -f /tmp/out; sync
+    [ $mdr = `md5sum $pth/xzm/$prxzm | cut -d" " -f1` ] && { DONE=yes; break; } || { TRIES=$((TRIES-1)); echo 3 > /proc/sys/vm/drop_caches; rm -f $pth/xzm/$prxzm; }
+done
+[ $DONE = yes ] || { CS=`du -h $pth/xzm/$prxzm | cut -f1`; CM=`md5sum $pth/xzm/$prxzm | cut -d" " -f1`; dunstify -u critical -i /usr/share/icons/oxygen/48x48/status/dialog-error.png "Detected incorrect md5sum of the $prxzm component, downloaded file size is: $CS\nmd5sum is: $CM\ncomparator is: $mdr\nPlease try again." 2>/dev/null; $wget -q -T20 -t2 $URLP/failed-ins-pr; rm -f $pth/xzm/$prxzm; exit; }
+
+# Insert module to live filesystem:
+if [ "$injected" = no ]; then
+    MOD=/opt/scripts/pr-xzm
+    mkdir -p $MOD
+    mount -o loop,ro $pth/xzm/$prxzm $MOD
+    mount -no remount,add:1:$MOD=rr aufs /
+fi
+
+# Display notification:
+dunstify -u low -i $PTH/status/dialog-information.png "Setting up the printer - this may take a while ..."
+
+# Cleanup first:
+killall firefox chrome cupsd 2>/dev/null
+sleep 1
+rm -rf /var/log/cups/* /var/spool/cups/*
+cupsd
+# Delete old printers:
+for prnt in `lpstat -s | sed '1d' | cut -d: -f1 | rev | cut -d" " -f1 | rev`; do lpadmin -x $prnt; done
+
+# Setup printer:
+model=`cut -d= -f2- /tmp/kwiz*/printer-model.tmp`
+connection=`cut -d= -f2- /tmp/kwiz*/printer-connection.tmp`; [ "$connection" = direct ] && connection=`lpinfo -v | egrep '^direct|serial:/dev/ttyUSB' | grep ":" | sort -u | head -n1 | cut -d" " -f2`
+pname=`cut -d= -f2- /tmp/kwiz*/printer-name.tmp`; [ "$pname" ] || pname=kiosk-printer
+if echo "$model" | grep -q ' Foomatic/'; then
+    /usr/libexec/cups/driver/foomatic cat `grep "$model" /opt/scripts/files/wizard/printers.d/foomatic | cut -d'"' -f1 | head -n1` > /usr/share/ppd/kiosk.ppd
+    lpadmin -p $pname -E -v "$connection" -m lsb/usr/kiosk.ppd
+else
+    lpadmin -p $pname -E -v "$connection" -m `lpinfo --make-and-model "$model" -m | cut -d" " -f1 | head -n1`
+fi
+# Set kiosk-printer as default (needed for Chrome):
+lpoptions -d $pname
+# Set custom paper size:
+paper_size=`cut -d= -f2- /tmp/kwiz*/paper-size.tmp`
+[ "$paper_size" ] && sed -e 's|^*DefaultPageSize:.*|*DefaultPageSize: '"$paper_size"'|' -e 's|^*DefaultPageRegion:.*|*DefaultPageRegion: '"$paper_size"'|' -e 's|^*DefaultImageableArea:.*|*DefaultImageableArea: '"$paper_size"'|' -e 's|^*DefaultPaperDimension:.*|*DefaultPaperDimension: '"$paper_size"'|' -i /etc/cups/ppd/*.ppd
+
+# Display test page:
+sed -i 's/|^file:.\*//g' $profile/chrome/userContent.css 2>/dev/null
+sed -i s@,zoom-controls@,zoom-controls,print-button@ $profile/xulstore.json 2>/dev/null
+sed -i 's@,\\"zoom-controls\\",@,\\"zoom-controls\\",\\"print-button\\",@' $profile/prefs.js
+sed -i 's/"PrintingEnabled": false,/"PrintingEnabled": true,/g' $json 2>/dev/null
+echo -e "Driver:		"$model"\nConnection:	"$connection"\n\nPress Ctrl+P and print this page to test printer settings displayed above. Once done the printing progress can be tracked in the second tab (press F5 to refresh) while errors are displayed in the last tab of the browser. In case of issues with printing please copy and send the error log to support@porteus-kiosk.org email address.\n\nClose the browser when finished." > /tmp/print
+=== END: /opt/scripts/print-test ===
+Done: /opt/scripts/print-test
+Capturing TEXT: /opt/scripts/rotate-touch (642 bytes)
+=== CAPTURE: /opt/scripts/rotate-touch ===
+#!/bin/sh
+#
+# Rotate touch to the posiiton of the screen.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Exit if no argument provided:
+[ "$1 " ] || { echo "Need an argument - exiting ..."; exit; }
+
+# Rotate touch according to the screen position:
+xinput_calibrator --list | rev | cut -d'=' -f1 | rev | while read device; do
+    if [ $1 = normal ]; then rtouch="1 0 0 0 1 0 0 0 1"
+    elif [ $1 = left ]; then rtouch="0 -1 1 1 0 0 0 0 1"
+    elif [ $1 = right ]; then rtouch="0 1 0 -1 0 1 0 0 1"
+    elif [ $1 = inverted ]; then rtouch="-1 0 1 0 -1 1 0 0 1"
+    fi
+    xinput set-prop $device 'Coordinate Transformation Matrix' $rtouch
+done
+=== END: /opt/scripts/rotate-touch ===
+Done: /opt/scripts/rotate-touch
+Capturing TEXT: /opt/scripts/rtc-wake (2104 bytes)
+=== CAPTURE: /opt/scripts/rtc-wake ===
+#!/bin/sh
+#
+# Setup RTC wakeup.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+planner=`grep ^rtc_wake /opt/scripts/extras | cut -d'=' -f2- | head -n1`
+abs=0
+
+# Functions:
+get_nday() {
+if [ $1 = Monday ]; then nday=Tuesday
+elif [ $1 = Tuesday ]; then nday=Wednesday
+elif [ $1 = Wednesday ]; then nday=Thursday
+elif [ $1 = Thursday ]; then nday=Friday
+elif [ $1 = Friday ]; then nday=Saturday
+elif [ $1 = Saturday ]; then nday=Sunday
+elif [ $1 = Sunday ]; then nday=Monday
+fi
+}
+
+# Sanity check:
+[ -e /sys/class/rtc/rtc0/wakealarm ] || { dunstify -u normal -i $PTH/status/dialog-warning.png "Wakeup alarm is not supported on this PC ..."; exit; }
+
+# Make sure that clock is synced through the NTP:
+sleep 40
+
+# Setup loop in case alarm expires:
+while true; do
+
+    # Find user definied wakup time:
+    day=`date +%A`
+    time=`echo "$planner" | egrep -o "$day-[^ ]+" | cut -d- -f2-`
+
+    if [ "`echo $time | sed s/://`" -gt "`date +'%H%M'`" ]; then
+	# Minutes to wakeup:
+	hour=`echo $time | cut -d: -f1 | sed s/^0//g`
+        minute=`echo $time | cut -d: -f2 | sed s/^0//g`
+        min=$(echo $(($minute-`date +%M | sed s/^0//g`)))
+        hr=$(echo $(echo $(($hour-`date +%H | sed s/^0//g`)))*60)
+        minst=$(echo $(($min+$hr)))
+    else
+	# Skip to next day:
+	get_nday `date +%A`
+	time=`echo "$planner" | egrep -o "$nday-[^ ]+" | cut -d- -f2-`
+	while [ -z "$time" ]; do get_nday $nday; let abs=abs+1; time=`echo "$planner" | egrep -o "$nday-[^ ]+" | cut -d- -f2-`; done
+
+	# Days:
+	[ "$abs" -gt 0 ] && days=$((abs*1440)) || days=0
+
+	# Time to midnight:
+	hour=23
+	minute=60
+	htm=$(echo $(echo $(($hour-`date +%H | sed s/^0//g`)))*60)
+	mtm=$(echo $(($minute-`date +%M | sed s/^0//g`)))
+
+	# Time from midnight:
+	hfm=$((`echo $time | cut -d: -f1 | sed s/^0//g`*60))
+	mfm=`echo $time | cut -d: -f2 | sed s/^0//g`
+
+	# Minutes total:
+	minst=$(($days+$htm+$mtm+$hfm+$mfm))
+    fi
+
+    # Setup alarm:
+    echo 0 > /sys/class/rtc/rtc0/wakealarm
+    echo `date '+%s' -d "+ $minst minutes"` > /sys/class/rtc/rtc0/wakealarm
+
+    # Sleep:
+    sleep $(($minst+1))m
+
+done
+=== END: /opt/scripts/rtc-wake ===
+Done: /opt/scripts/rtc-wake
+Capturing TEXT: /opt/scripts/scale-screen (1841 bytes)
+=== CAPTURE: /opt/scripts/scale-screen ===
+#!/bin/sh
+#
+# Screen setup.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+(
+# Integer division with floating point results:
+div() {
+p=12
+c=${c:-0}
+d=.
+r=$(($1/$2)); echo -n $r
+m=$(($r*$2))
+[ $c -eq 0 ] && [ $m -ne $1 ] && echo -n $d
+[ $1 -eq $m ] || [ $c -eq $p ] && return
+d=$(($1-$m))
+let c=c+1
+div $(($d*10)) $2
+}
+
+switch_display() {
+# Initialize outputs:
+xrandr > /tmp/list
+for con in `grep -w connected /tmp/list | cut -d' ' -f1`; do
+    res=`sed -n '/'$con'/,/connected/p' /tmp/list | grep '*' | sed s/i// | tr -s ' ' | cut -d' ' -f2`
+    [ "$res" ] || xrandr --output $con --auto
+done
+
+# Find resolutions:
+xrandr > /tmp/list
+for dis in `grep -w connected /tmp/list | cut -d' ' -f1`; do
+    vres=`sed -n '/'$dis'/,/connected/p' /tmp/list | grep '*' | sed s/i// | tr -s ' ' | cut -d' ' -f2`
+    [ "$vres" ] && echo "$dis"x$vres >> /tmp/xrandr
+done
+
+# Scale screens:
+bestd=`cut -dx -f2- /tmp/xrandr | sort | tail -n1`
+bestx=`echo $bestd | cut -dx -f1`
+besty=`echo $bestd | cut -dx -f2`
+for out in `grep -v "$bestd" /tmp/xrandr`; do
+    outx=`echo $out | cut -dx -f2`
+    outy=`echo $out | cut -dx -f3`
+    xrandr --output `echo $out | cut -dx -f1` --scale $(div $bestx $outx)x$(div $besty $outy)
+done
+
+# Return original settings:
+if [ -z "$out" ]; then
+    xrandr --output $(cut -dx -f1 /tmp/xrandr) --scale 1x1
+    for con in `grep -w disconnected /tmp/list | cut -d' ' -f1`; do xrandr --output $con --auto; done
+fi
+
+# Scale wallpaper:
+hsetroot -fill /usr/share/wallpapers/default.jpg
+
+# Cleanup:
+rm -f /tmp/list /tmp/xrandr
+unset con dis out bestd bestx besty outx outy
+}
+
+# Always scale during first run:
+switch_display && exit
+
+# Check for changes periodically:
+while true; do
+    numold=`xrandr | grep -c -w connected`
+    sleep 3
+    numnew=`xrandr | grep -c -w connected`
+    [ "$numold" = "$numnew" ] || switch_display
+done
+) &
+=== END: /opt/scripts/scale-screen ===
+Done: /opt/scripts/scale-screen
+Capturing TEXT: /opt/scripts/scheduled-action (1057 bytes)
+=== CAPTURE: /opt/scripts/scheduled-action ===
+#!/bin/sh
+#
+# Setup scheduled actions.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Sleep to avoid 'double reboot' issue at certain hour:minute in case PC is really fast and also to make sure that clock is synced through the NTP:
+sleep 40
+
+# Perform an action:
+while true; do
+    day=`date +%A`
+    planner=`grep ^scheduled_action /opt/scripts/extras | cut -d'=' -f2- | head -n1`
+    time=`echo "$planner" | egrep -o "$day-[^ ]+" | cut -d- -f2-`
+    if [ "$time" ]; then
+	hour=`echo $time | cut -d: -f1 | sed s/^0//g`
+	minute=`echo $time | cut -d: -f2 | sed s/^0//g`
+	min=$(echo $(($minute-`date +%M | sed s/^0//g`)))
+	hr=$(echo $(echo $(($hour-`date +%H | sed s/^0//g`)))*60)
+	mins_total=$(echo $(($min+$hr)))
+	sleep "$mins_total"m 2>/dev/null && eval `echo "$planner" | egrep -o "action:[^$]+" | cut -d: -f2-`
+    fi
+    hour=23
+    minute=59
+    min=$(echo $(($minute-`date +%M | sed s/^0//g`)))
+    hr=$(echo $(echo $(($hour-`date +%H | sed s/^0//g`)))*60)
+    mins_total=$(echo $(($min+$hr)))
+    sleep "$mins_total"m 2>/dev/null
+    sleep 70
+done
+=== END: /opt/scripts/scheduled-action ===
+Done: /opt/scripts/scheduled-action
+Capturing TEXT: /opt/scripts/screen-setup (16011 bytes)
+=== CAPTURE: /opt/scripts/screen-setup ===
+#!/bin/bash
+#
+# Display config for Porteus Kiosk
+# Author: brokenman@porteus.org
+
+## Bring defults:
+xrandr --auto 2>/dev/null
+rm -f /opt/scripts/files/delete_screen_config
+
+export tmpdir=/tmp/xres$$
+
+cleanup() { rm -rf $tmpdir /tmp/vars.txt 2>/dev/null; exit; }
+trap cleanup SIGHUP SIGINT SIGTERM
+
+## Setup temp dir
+mkdir $tmpdir
+xrandr 2>/dev/null | sed -e 's/+//g' -e 's/\*//g' > $tmpdir/output.txt
+op=$tmpdir/output.txt
+
+## Create file of connected displays
+grep -w "connected" $op | cut -d' ' -f1 > $tmpdir/displays.txt
+xdis=$tmpdir/displays.txt
+discnt=`wc -l <$tmpdir/displays.txt`
+
+update_position() {
+if [ "$2" = "false" ]; then
+	for a in $tmpdir/*.ddd; do
+		sed '/'$1'/d' $a > $a.new
+		cp $a.new $a && rm $a.new
+	done
+else
+	for a in `ls $tmpdir/*.ddd|sed '/'$1'/d'`; do
+		b=${a%d}
+		grep $1 $b >> $a
+	done
+fi
+}; export update_position
+
+WIZARD_SCREEN='
+<window title="Kiosk Wizard" icon-name="kiosk" window_position="1" width-request="830">
+<vbox margin="10">
+	<text xalign="0" width-request="800"><label>Note: if monitor screen is not covered in full in single-head setup then its necessary to disable one of the video outputs - usually its LVDS.</label></text>
+	<text><label>""</label></text>
+	'`if [ $(wc -l < $xdis) -gt 0 ]; then
+		[ $(wc -l < $xdis) -gt 1 ] && multiD=true || multiD=false
+		dis1=$(head -n1 < $xdis)
+		echo "dis1:$dis1" > $tmpdir/dis.txt
+		sed -n '/'$dis1'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' > $tmpdir/$dis1.out
+		head -n1 $tmpdir/$dis1.out | cut -d' ' -f2- | tr ' ' '\n' | sort -rug | sed '/^$/d' > $tmpdir/$dis1.rat
+		sed -n '/'$dis1'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' | cut -d' ' -f1 | sort -rg > $tmpdir/$dis1.res
+		sed -i '/'$dis1'/d' $xdis
+		[ $(ls -1 /sys/class/backlight|wc -l) -gt 0 ] && backlight=yes
+		echo "same as $dis1" > $tmpdir/$dis1.pos
+		echo "above $dis1" >> $tmpdir/$dis1.pos
+		echo "below $dis1" >> $tmpdir/$dis1.pos
+		echo "left of $dis1" >> $tmpdir/$dis1.pos
+		echo "right of $dis1" >> $tmpdir/$dis1.pos
+		echo "<frame $dis1>
+		<hbox>
+			<checkbox sensitive="'"'$multiD'"'">
+				<variable>dis1chk</variable>
+				<label>Enable</label>
+				<default>true</default>
+				<action>echo "'$dis1chk'" > $tmpdir/$dis1.chk</action>
+				<action>if false disable:cmbdis1res</action>
+				<action>if false disable:cmbdis1rat</action>
+				<action>if false disable:cmbdis1rot</action>
+				<action>if false disable:cmbdis1pos</action>
+				<action>if true enable:cmbdis1res</action>
+				<action>if true enable:cmbdis1rat</action>
+				<action>if true enable:cmbdis1rot</action>
+				<action>if true enable:cmbdis1pos</action>
+				<action>update_position '"$dis1"' "'$dis1chk'"</action>
+			</checkbox>
+			<text width-request="'"20"'"><label>"'" "'" </label></text>
+			<text><label>Resolution:</label></text>
+			<comboboxtext>
+				<variable>cmbdis1res</variable>
+				<input file>$tmpdir/$dis1.res</input>
+				<action signal="'"changed"'">grep "'"$cmbdis1res"'" $tmpdir/$dis1.out | cut -d' ' -f2- | tr ' ' '\n' | sed '/^$/d' | sort -rug > $tmpdir/$dis1.rat</action>
+			</comboboxtext>
+			<text><label>Rate:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis1rat</variable>
+				<input file>$tmpdir/$dis1.rat</input>
+			</comboboxtext>
+			<text><label>Rotate:</label></text>
+			<comboboxtext>
+				<variable>cmbdis1rot</variable>
+				<item>normal</item>
+				<item>left</item>
+				<item>right</item>
+				<item>inverted</item>
+			</comboboxtext>
+			<text><label>Position:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis1pos</variable>
+				<input file>$tmpdir/$dis1.ddd</input>
+			</comboboxtext>
+		</hbox>"
+		if [ "$backlight" = "yes" ]; then
+		echo "<hbox>
+			<text><label>\" Brightness:    \"</label></text>
+			<hscale width-request="'"450"'" height-request="'"40"'" range-value="'"100"'">
+				<variable>dis1bri</variable>
+			</hscale>
+		</hbox>"; fi
+	echo "</frame>"; fi`'
+	
+	
+	'`if [ $(wc -l < $xdis) -gt 0 ]; then
+		dis2=$(head -n1 < $xdis)
+		echo "dis2:$dis2" >> $tmpdir/dis.txt
+		sed -n '/'$dis2'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' > $tmpdir/$dis2.out
+		head -n1 $tmpdir/$dis2.out | cut -d' ' -f2- | tr ' ' '\n' | sort -rug | sed '/^$/d' > $tmpdir/$dis2.rat
+		sed -n '/'$dis2'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' | cut -d' ' -f1 | sort -rg > $tmpdir/$dis2.res
+		sed -i '/'$dis2'/d' $xdis
+		echo "same as $dis2" > $tmpdir/$dis2.pos
+		echo "above $dis2" >> $tmpdir/$dis2.pos
+		echo "below $dis2" >> $tmpdir/$dis2.pos
+		echo "left of $dis2" >> $tmpdir/$dis2.pos
+		echo "right of $dis2" >> $tmpdir/$dis2.pos
+		echo "<frame $dis2>
+		<hbox>
+			<checkbox>
+				<variable>dis2chk</variable>
+				<label>Enable</label>
+				<default>true</default>
+				<action>echo "'$dis2chk'" > $tmpdir/$dis2.chk</action>
+				<action>if false disable:cmbdis2res</action>
+				<action>if false disable:cmbdis2rat</action>
+				<action>if false disable:cmbdis2rot</action>
+				<action>if false disable:cmbdis2pos</action>
+				<action>if true enable:cmbdis2res</action>
+				<action>if true enable:cmbdis2rat</action>
+				<action>if true enable:cmbdis2rot</action>
+				<action>if true enable:cmbdis2pos</action>
+				<action>update_position '"$dis2"' "'$dis2chk'"</action>
+			</checkbox>
+			<text width-request="'"20"'"><label>"'" "'" </label></text>
+			<text><label>Resolution:</label></text>
+			<comboboxtext>
+				<variable>cmbdis2res</variable>
+				<input file>$tmpdir/$dis2.res</input>
+				<action signal="'"changed"'">grep "'"$cmbdis2res"'" $tmpdir/$dis2.out | cut -d' ' -f2- |tr ' ' '\n' | sed '/^$/d' | sort -rug > $tmpdir/$dis2.rat</action>
+			</comboboxtext>
+			<text><label>Rate:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis2rat</variable>
+				<input file>$tmpdir/$dis2.rat</input>
+			</comboboxtext>
+			<text><label>Rotate:</label></text>
+			<comboboxtext>
+				<variable>cmbdis2rot</variable>
+				<item>normal</item>
+				<item>left</item>
+				<item>right</item>
+				<item>inverted</item>
+			</comboboxtext>
+			<text><label>Position:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis2pos</variable>
+				<input file>$tmpdir/$dis2.ddd</input>
+			</comboboxtext>
+		</hbox>
+		</frame>"; fi`'
+		
+		'`if [ $(wc -l < $xdis) -gt 0 ]; then
+		dis3=$(head -n1 < $xdis)
+		echo "dis3:$dis3" >> $tmpdir/dis.txt
+		sed -n '/'$dis3'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' > $tmpdir/$dis3.out
+		head -n1 $tmpdir/$dis3.out | cut -d' ' -f2- | tr ' ' '\n' | sort -rug | sed '/^$/d'  > $tmpdir/$dis3.rat
+		sed -n '/'$dis3'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' | cut -d' ' -f1 | sort -rg > $tmpdir/$dis3.res
+		sed -i '/'$dis3'/d' $xdis
+		echo "same as $dis3" > $tmpdir/$dis3.pos
+		echo "above $dis3" >> $tmpdir/$dis3.pos
+		echo "below $dis3" >> $tmpdir/$dis3.pos
+		echo "left of $dis3" >> $tmpdir/$dis3.pos
+		echo "right of $dis3" >> $tmpdir/$dis3.pos
+		echo "<frame $dis3>
+		<hbox>
+			<checkbox>
+				<variable>dis3chk</variable>
+				<label>Enable</label>
+				<default>true</default>
+				<action>if false disable:cmbdis3res</action>
+				<action>if false disable:cmbdis3rat</action>
+				<action>if false disable:cmbdis3rot</action>
+				<action>if false disable:cmbdis3pos</action>
+				<action>if true enable:cmbdis3res</action>
+				<action>if true enable:cmbdis3rat</action>
+				<action>if true enable:cmbdis3rot</action>
+				<action>if true enable:cmbdis3pos</action>
+				<action>update_position '"$dis3"' "'$dis3chk'"</action>
+			</checkbox>
+			<text width-request="'"20"'"><label>"'" "'" </label></text>
+			<text><label>Resolution:</label></text>
+			<comboboxtext>
+				<variable>cmbdis3res</variable>
+				<input file>$tmpdir/$dis3.res</input>
+				<action signal="'"changed"'">grep "'"$cmbdis3res"'" $tmpdir/$dis3.out | cut -d' ' -f2- |tr ' ' '\n' | sed '/^$/d' | sort -rug > $tmpdir/$dis3.rat</action>
+			</comboboxtext>
+			<text><label>Rate:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis3rat</variable>
+				<input file>$tmpdir/$dis3.rat</input>
+			</comboboxtext>
+			<text><label>Rotate:</label></text>
+			<comboboxtext>
+				<variable>cmbdis3rot</variable>
+				<item>normal</item>
+				<item>left</item>
+				<item>right</item>
+				<item>inverted</item>
+			</comboboxtext>
+			<text><label>Position:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis3pos</variable>
+				<input file>$tmpdir/$dis3.ddd</input>
+			</comboboxtext>
+		</hbox>
+		</frame>"; fi`'
+		
+		'`if [ $(wc -l < $xdis) -gt 0 ]; then
+		dis4=$(head -n1 < $xdis)
+		echo "dis4:$dis4" >> $tmpdir/dis.txt
+		sed -n '/'$dis4'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' > $tmpdir/$dis4.out
+		head -n1 $tmpdir/$dis4.out | cut -d' ' -f2- | tr ' ' '\n' | sort -rug | sed '/^$/d'  > $tmpdir/$dis4.rat
+		sed -n '/'$dis4'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' | cut -d' ' -f1 | sort -rg > $tmpdir/$dis4.res
+		sed -i '/'$dis4'/d' $xdis
+		echo "same as $dis4" > $tmpdir/$dis4.pos
+		echo "above $dis4" >> $tmpdir/$dis4.pos
+		echo "below $dis4" >> $tmpdir/$dis4.pos
+		echo "left of $dis4" >> $tmpdir/$dis4.pos
+		echo "right of $dis4" >> $tmpdir/$dis4.pos
+		echo "<frame $dis4>
+		<hbox>
+			<checkbox>
+				<variable>dis4chk</variable>
+				<label>Enable</label>
+				<default>true</default>
+				<action>if false disable:cmbdis4res</action>
+				<action>if false disable:cmbdis4rat</action>
+				<action>if false disable:cmbdis4rot</action>
+				<action>if false disable:cmbdis4pos</action>
+				<action>if true enable:cmbdis4res</action>
+				<action>if true enable:cmbdis4rat</action>
+				<action>if true enable:cmbdis4rot</action>
+				<action>if true enable:cmbdis4pos</action>
+			</checkbox>
+			<text width-request="'"20"'"><label>"'" "'" </label></text>
+			<text><label>Resolution:</label></text>
+			<comboboxtext>
+				<variable>cmbdis4res</variable>
+				<input file>$tmpdir/$dis4.res</input>
+				<action signal="'"changed"'">grep "'"$cmbdis4res"'" $tmpdir/$dis4.out | cut -d' ' -f2- |tr ' ' '\n' | sed '/^$/d' | sort -rug > $tmpdir/$dis4.rat</action>
+			</comboboxtext>
+			<text><label>Rate:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis4rat</variable>
+				<input file>$tmpdir/$dis4.rat</input>
+			</comboboxtext>
+			<text><label>Rotate:</label></text>
+			<comboboxtext>
+				<variable>cmbdis4rot</variable>
+				<item>normal</item>
+				<item>left</item>
+				<item>right</item>
+				<item>inverted</item>
+			</comboboxtext>
+			<text><label>Position:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis4pos</variable>
+				<input file>$tmpdir/$dis4.ddd</input>
+			</comboboxtext>
+		</hbox>
+		</frame>"; fi`'
+
+		'`if [ $(wc -l < $xdis) -gt 0 ]; then
+		dis5=$(head -n1 < $xdis)
+		echo "dis5:$dis5" >> $tmpdir/dis.txt
+		sed -n '/'$dis5'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' > $tmpdir/$dis5.out
+		head -n1 $tmpdir/$dis5.out | cut -d' ' -f2- | tr ' ' '\n' | sort -rug | sed '/^$/d'  > $tmpdir/$dis5.rat
+		sed -n '/'$dis5'/,/connect/p' $op | grep "\." | sed -e 's/  */\ /g' -e 's/^ *//g' | cut -d' ' -f1 | sort -rg > $tmpdir/$dis5.res
+		sed -i '/'$dis5'/d' $xdis
+		echo "same as $dis5" > $tmpdir/$dis5.pos
+		echo "above $dis5" >> $tmpdir/$dis5.pos
+		echo "below $dis5" >> $tmpdir/$dis5.pos
+		echo "left of $dis5" >> $tmpdir/$dis5.pos
+		echo "right of $dis5" >> $tmpdir/$dis5.pos
+		echo "<frame $dis5>
+		<hbox>
+			<checkbox>
+				<variable>dis5chk</variable>
+				<label>Enable</label>
+				<default>true</default>
+				<action>if false disable:cmbdis5res</action>
+				<action>if false disable:cmbdis5rat</action>
+				<action>if false disable:cmbdis5rot</action>
+				<action>if false disable:cmbdis5pos</action>
+				<action>if true enable:cmbdis5res</action>
+				<action>if true enable:cmbdis5rat</action>
+				<action>if true enable:cmbdis5rot</action>
+				<action>if true enable:cmbdis5pos</action>
+			</checkbox>
+			<text width-request="'"20"'"><label>"'" "'" </label></text>
+			<text><label>Resolution:</label></text>
+			<comboboxtext>
+				<variable>cmbdis5res</variable>
+				<input file>$tmpdir/$dis5.res</input>
+				<action signal="'"changed"'">grep "'"$cmbdis5res"'" $tmpdir/$dis5.out | cut -d' ' -f2- |tr ' ' '\n' | sed '/^$/d' | sort -rug > $tmpdir/$dis5.rat</action>
+			</comboboxtext>
+			<text><label>Rate:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis5rat</variable>
+				<input file>$tmpdir/$dis5.rat</input>
+			</comboboxtext>
+			<text><label>Rotate:</label></text>
+			<comboboxtext>
+				<variable>cmbdis5rot</variable>
+				<item>normal</item>
+				<item>left</item>
+				<item>right</item>
+				<item>inverted</item>
+			</comboboxtext>
+			<text><label>Position:</label></text>
+			<comboboxtext file-monitor="'"true"'" auto-refresh="'"true"'">
+				<variable>cmbdis5pos</variable>
+				<input file>$tmpdir/$dis5.ddd</input>
+			</comboboxtext>
+		</hbox>
+		</frame>"; fi`'
+		
+		'`for a in $tmpdir/*.pos; do
+			b=${a%.*}
+			nam=${b##*/}
+			echo normal > $b.dd
+			cat $tmpdir/*.pos >> $b.dd
+			sed -i '/'$nam'/d' $b.dd
+			cat $b.dd > $b.ddd
+		done
+		`'
+<hbox>
+	'"`if [ -e /opt/scripts/AP/ap ]; then
+                echo '<button can-default="true" has-default="true">
+                    <label>Restore default resolution</label>
+                    <input file>/usr/share/icons/oxygen/16x16/actions/edit-undo.png</input>
+                    <width>16</width>
+                    <action>touch /opt/scripts/files/delete_screen_config</action>
+                    <action function="exit">finished</action>
+                </button>'
+            fi`"'
+	<button>
+		<label>Test setup</label>
+		<input file icon="gtk-apply"></input>
+		<action>set > $tmpdir/vars.txt</action>
+		<action>test_screen</action>
+	</button>
+	<button>
+		<label>Ok</label>
+		<input file icon="gtk-ok"></input>
+		<action function="exit">finished</action>
+	</button>
+</hbox>
+</vbox>
+</window>
+'
+export WIZARD_SCREEN
+dump=$tmpdir/dump
+gtkdialog -i /opt/scripts/files/wizard/wizard-functions -p WIZARD_SCREEN > $dump
+
+## Parse output:
+for a in dis1 dis2 dis3 dis4 dis5; do
+        if [ "`grep $a $dump`" ]; then
+                b=`grep $a $tmpdir/dis.txt|cut -d':' -f2`
+                if [[ `grep ${a}chk $dump|cut -d'"' -f2` = "false" ]]; then
+                        sset="$sset $b:disabled"
+                else
+                        ores=`grep cmb${a}res $dump|cut -d'"' -f2`
+                        oref=`grep cmb${a}rat $dump|cut -d'"' -f2`
+                        obri=`grep ${a}bri $dump|cut -d'"' -f2`
+                        [ -z $obri ] && obri=normal
+                        orot=`grep ${a}rot $dump|cut -d'"' -f2`
+                        opos=`grep ${a}pos $dump|cut -d'"' -f2|cut -d' ' -f1`
+                        [[ "$opos" = "normal" ]] || opos=`grep ${a}pos $dump|cut -d'"' -f2|tr ' ' '-'`
+                        sset="$sset $b:$ores:$oref:$obri:$orot:$opos"
+                fi
+        fi
+done
+
+# Add parameter (save settings for PK Server):
+sset=`echo $sset | sed 's/^\ //'`
+if [ -e /opt/scripts/AP/ap ]; then
+    [ "$sset" ] && echo -e "#!/bin/sh\n\n# Setup screen:\n/opt/scripts/screen-setup-parse $sset\nhsetroot -fill /usr/share/wallpapers/default.jpg" > /etc/rc.d/local_net.d/screen_settings.sh
+else
+    echo "screen_settings=$sset" > /tmp/`ls -1 /tmp | grep ^kwiz`/screen-settings.tmp
+fi
+
+## If user closed window then cleanup
+grep "abort" $dump && cleanup
+
+# Parse screen config:
+if [ -e /opt/scripts/files/delete_screen_config ]; then
+    rm -f /etc/rc.d/local_net.d/screen_settings.sh
+    xrandr --auto
+    dunstify -u critical -i /usr/share/icons/oxygen/22x22/status/dialog-information.png "Screen configuration file has been deleted. You may need to restart Porteus Kiosk Server to bring default screen resolution."
+else
+    /opt/scripts/screen-setup-parse $sset
+fi
+
+=== END: /opt/scripts/screen-setup ===
+Done: /opt/scripts/screen-setup
+Capturing TEXT: /opt/scripts/screen-setup-parse (5498 bytes)
+=== CAPTURE: /opt/scripts/screen-setup-parse ===
+#!/bin/sh
+#
+# Screen setup.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Exit if no argument provided:
+[ "$1" ] || { echo "Need something to parse"; exit; }
+
+# Functions:
+div() {
+p=12
+c=${c:-0}
+d=.
+r=$(($1/$2)); echo -n $r
+m=$(($r*$2))
+[ $c -eq 0 ] && [ $m -ne $1 ] && echo -n $d
+[ $1 -eq $m ] || [ $c -eq $p ] && return
+d=$(($1-$m))
+let c=c+1
+div $(($d*10)) $2
+}
+
+# Need to find primary output for touch rotation:
+priout=`xrandr | grep -w "connected" | head -n1 | cut -d" " -f1`
+
+# Configure screens:
+for line in $*; do
+    if [ "$line" != test ]; then
+	# Define values:
+	out=`echo $line | cut -d: -f1`; [ "$out" ] && output="--output $out"
+	res=`echo $line | cut -d: -f2`; [ "$res" = disabled ] && resolution="--off" || resolution="--mode $res"
+	rat=`echo $line | cut -d: -f3`; [ "$rat" ] && rate="--rate $rat"
+	brig=`echo $line | cut -d: -f4`; [ "$brig" ] && [ "$brig" != normal ] && brightness=$brig
+	rot=`echo $line | cut -d: -f5`; [ "$rot" ] && { rotate="--rotate $rot"; rotateinput=$rot; }
+	pos=`echo $line |  cut -d: -f6`
+	if [ "$pos" ]; then
+	    if echo $pos | grep -q same; then scale="$(echo $pos | sed s/^same-as-//)"; xrandr $output --off # Xorg 1.18.x and above sets the screens next to each other by default, need to workaround this by disabling screen for a while.
+	    elif echo $pos | grep -q above; then position="--above $(echo $pos | sed s/^above-//)"
+	    elif echo $pos | grep -q below; then position="--below $(echo $pos | sed s/^below-//)"
+	    elif echo $pos | grep -q left; then position="--left-of $(echo  $pos | sed s/^left-of-//)"
+	    elif echo $pos | grep -q right; then position="--right-of $(echo $pos | sed s/^right-of-//)"
+	    fi
+	fi
+	# Process only connected displays:
+	if [ "`xrandr | grep -w connected | grep ^$out`" ]; then
+	    # Combine arguments:
+	    args="$args $output $resolution $rate $rotate $position"
+	    # Set brightness:
+	    [ "$brightness" ] && for x in `ls /sys/class/backlight`; do echo $((`cat /sys/class/backlight/$x/max_brightness`*$brightness/100)) > /sys/class/backlight/$x/brightness; done
+	    # Scale screens:
+	    [ "$scale" ] && scalem="$scalem "$out"x"$res"x"$scale""
+	fi
+	# Cleanup:
+	unset output resolution rate brightness rotate position scale
+    fi
+done
+
+# Apply changes:
+xrandr $args
+
+# Do the scaling now:
+if [ "$scalem" ]; then
+    for line in "$scalem"; do
+	out=`echo $line | cut -dx -f1`
+	scal=`echo $line | cut -dx -f4`
+	scres=`xrandr | sed -n '/'$scal'/,/connected/p' | grep '*' | sed s/i// | tr -s ' ' | cut -d' ' -f2`
+	scx=`echo $scres | cut -dx -f1`
+	scy=`echo $scres | cut -dx -f2`
+	sx=`echo $line | cut -dx -f2 | sed s/i//`
+	sy=`echo $line | cut -dx -f3 | sed s/i//`
+	args1="$args1 --output $out --scale $(div $scx $sx)x$(div $scy $sy)"
+	unset out scal scres scx scy sx sy
+    done
+    # Apply changes:
+    xrandr $args1
+fi
+
+# Rotate touch input if needed:
+[ "$rotateinput" ] && ( sleep 4; sh /opt/scripts/rotate-touch $rotateinput; ) &
+
+# If testing then bring back defaults:
+if [ "$1" = test ]; then
+    # Display notification:
+    PTH=/usr/share/icons/oxygen/22x22; VAR=0; pgs=15
+
+    export KeepSettings='
+    <window decorated="true" title="Kiosk Wizard" icon-name="kiosk" resizable="false" width-request="400">
+    <vbox margin="10">
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Screen settings</span>"</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="350">
+	    <label>Your screen configuration has been changed to the requested settings. Please indicate wheter you wish to keep this configuration. In 15 seconds the display(s) will revert to default settings.</label>
+	</text>
+	<text><label>""</label></text>
+	<hseparator></hseparator>
+	<hbox>
+	<button can-default="true" has-default="false" use-stock="true">
+	    <label>Accept Configuration</label>
+	    <input file icon="gtk-ok"></input>
+	    <action>touch /tmp/screen_settings_exit /tmp/screen_settings_accept</action>
+	    <action function="exit">finished</action>
+	</button>
+	<button can-default="true" has-default="true" use-stock="true">
+	    <label>Revert to default settings</label>
+	    <input file icon="gtk-no"></input>
+	    <action>touch /tmp/screen_settings_exit</action>
+	    <action function="exit">finished</action>
+	</button>
+	</hbox>
+    </vbox>
+    </window>
+    '
+    gtkdialog -c -p KeepSettings &
+
+    while [ "$pgs" != 0 ]; do
+	VAR=$(dunstify -p -r $VAR -u low -i $PTH/status/dialog-information.png " Default screen settings will be restored in $pgs seconds ...")
+	sleep 1; pgs=$((pgs-1))
+	[ -e /tmp/screen_settings_exit ] && break
+    done
+    dunstify -C $VAR
+    rm -f /tmp/screen_settings_exit
+    [ -e /tmp/screen_settings_accept ] && { rm -f /tmp/screen_settings_accept; exit; }
+
+    # Kill 'Keep settings' window:
+    kill -9 `ps | grep KeepSettings | grep -v grep | cut -d" " -f2 | tr "\n" " "` 2>/dev/null
+
+    # Bring screen defaults:
+    for line in $*; do [ "$line" = test ] || args2="$args2 --output `echo $line | cut -d: -f1` --off"; done
+    xrandr $args2; xrandr --auto
+
+    # Set maximum brightness:
+    for x in `ls /sys/class/backlight`; do echo $((`cat /sys/class/backlight/$x/max_brightness`*100/100)) > /sys/class/backlight/$x/brightness; done
+
+    # Rotate touch to normal position:
+    /opt/scripts/rotate-touch normal
+
+    # Set wallpaper:
+    hsetroot -fill /usr/share/wallpapers/default.jpg
+else
+    # Set wallpaper:
+    hsetroot -fill /usr/share/wallpapers/default.jpg
+fi
+=== END: /opt/scripts/screen-setup-parse ===
+Done: /opt/scripts/screen-setup-parse
+Capturing TEXT: /opt/scripts/screensaver-idle-watcher (881 bytes)
+=== CAPTURE: /opt/scripts/screensaver-idle-watcher ===
+#!/bin/bash
+#
+# Screensaver idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SSIDLE=`grep SSIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+# Restart screensaver every 10 mins after launch to avoid background picture distortions:
+(
+while [ 1 ]; do
+    sleep 600
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    [ $idle -gt $(($SSIDLE+300)) ] && killall ripples imlib2_view 2>/dev/null
+done
+) &
+
+# Start screensaver:
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SSIDLE ]; then
+	if [ -z "`pidof ripples`" ]; then
+	    killall ripples imlib2_view 2>/dev/null
+	    imlib2_grab /root/screen.png
+	    imlib2_view /root/screen.png &
+	    sleep 1
+	    ripples -root &
+	fi
+	sleep 2
+    else
+	[ "`pidof ripples`" ] && killall ripples imlib2_view 2>/dev/null
+	sleep $(($SSIDLE-$idle))
+    fi
+done
+=== END: /opt/scripts/screensaver-idle-watcher ===
+Done: /opt/scripts/screensaver-idle-watcher
+Capturing TEXT: /opt/scripts/screensaver-slideshow (1267 bytes)
+=== CAPTURE: /opt/scripts/screensaver-slideshow ===
+#!/bin/bash
+#
+# Download images for the slideshow.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+dlpath="$*"
+
+(
+# Wait:
+sleep 5
+
+# Functions:
+archr() {
+rm -rf /usr/share/screensaver/*
+unzip -o $scripts/files/arch.zip -d /usr/share/screensaver
+find /usr/share/screensaver -type f | sort > $scripts/files/fehpls
+killall -HUP feh
+md5sum $scripts/files/arch.zip | cut -d" " -f1 > $scripts/files/arch.md5
+rm -f $scripts/files/arch.zip
+}
+dlarch() {
+if [ -e $scripts/files/arch.md5 ]; then
+    pkget $dlpath $scripts/files/arch.zip
+    if [ "`cat $scripts/files/arch.md5`" = "`md5sum $scripts/files/arch.zip | cut -d" " -f1`" ]; then
+	rm -f $scripts/files/arch.zip
+    else
+	archr
+    fi
+else
+    pkget $dlpath $scripts/files/arch.zip; archr
+fi
+}
+dlcheck() {
+[ `ls -1 /usr/share/screensaver | wc -l` -lt 1 ] && { rm -f $scripts/files/arch.zip; dlarch; }
+[ `ls -1 /usr/share/screensaver | wc -l` -lt 1 ] && { rm -f $scripts/files/arch.zip; dlarch; }
+# Fallback to wallpaper:
+[ `ls -1 /usr/share/screensaver | wc -l` -lt 1 ] && cp -a /usr/share/wallpapers/* /usr/share/screensaver
+}
+
+# Download and unpack archive:
+dlarch; dlcheck
+
+# Update slideshow:
+#uparch=60
+if [ "$uparch" ]; then
+    while [ 1 ]; do sleep "$uparch"m; sleep 2; dlarch; dlcheck; done
+fi
+) &
+=== END: /opt/scripts/screensaver-slideshow ===
+Done: /opt/scripts/screensaver-slideshow
+Capturing TEXT: /opt/scripts/session-idle-watcher (2833 bytes)
+=== CAPTURE: /opt/scripts/session-idle-watcher ===
+#!/bin/sh
+#
+# Session idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+PTH=/usr/share/icons/oxygen/22x22
+SIDLE=`grep ^SIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+[ -x /opt/google/chrome/chrome ] && browser=chrome || browser=firefox
+
+# Force restarting of the session every X minutes if user activity is not detected:
+#forced=yes
+
+# Perform specific action:
+action=restart
+
+# Functions:
+fix_screensaver() {
+# Pull screensaver window on top so its not covered by restarted browser when in fulscreen:
+(
+SLEEP=30
+grep -q tint2-buttons $scripts/gui-app && appnum=3 || appnum=2
+while [ `wmctrl -l | wc -l` -lt $appnum -a $SLEEP -gt 0 ]; do sleep 0.5; let SLEEP=SLEEP-1; done
+grep -q tint2-buttons $scripts/gui-app && sleep 1
+wmctrl -a `wmctrl -l | head -n1 | cut -d" " -f5-`
+) &
+}
+
+# Do not restart until first activity happens (unless forced):
+if [ "$forced" ]; then
+    # Toggle tabs and refresh webpage functions generate input event which breaks idle time, we need to force restarting the session no matter of the idle time:
+    [ `egrep '^ttabs=|^rpage=' /etc/xdg/openbox/autostart | cut -d= -f2` ] && ( while true; do sleep $SIDLE; kill `ps | grep "guest.*$browser" | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1`; fix_screensaver; done; ) &
+else
+    sleep $SIDLE; sleep 5; restart=no
+fi
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SIDLE ]; then
+	if [ "$restart" = yes ]; then
+	    [ "`pidof session-manager`" -o "$forced" = yes ] || dunstify -r 110 -u critical -i $PTH/status/dialog-information.png "No user activity detected in last $(($SIDLE/60)) minutes. Session $action is scheduled within 30 seconds ... \nMove your mouse or press any key to continue using your session."
+	fi
+	SLEEP=30
+	[ "$forced" = yes ] || while true; do sleep 1; idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1; [ $idle -lt $SIDLE -o $SLEEP = 1 ] && break || let SLEEP=SLEEP-1; done
+	dunstify -C 110
+	idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+	if [ $idle -gt $SIDLE ]; then
+	    if [ "$restart" = yes ]; then
+		restart=no
+		if [ "$action" = "restart" ]; then
+		    # Restart session:
+		    [ "`pgrep -f /etc/xdg/tint2/tint2rc`" ] && openbox --exit
+		    killall -9 wfica; kill `ps | grep "guest.*$browser" | tr -s ' ' | sed -e 's/^ //g' | cut -d' ' -f1`; fix_screensaver; [ "$forced" ] && xdotool key Menu; sleep $SIDLE
+		elif [ "$action" = "lock" ]; then
+		    # Lock the session:
+		    [ "`pidof xlock`" ] || su - guest -c "xlock +resetsaver +description -timeelapsed -bg black -fg white -mode space -delay 50000 -count 50"
+		else
+		    # Run custom action:
+		    $action
+		fi
+	    else
+		sleep $SIDLE
+	    fi
+	else
+	    sleep $(($SIDLE-$idle))
+	    restart=yes
+	fi
+    else
+	sleep $(($SIDLE-$idle))
+	restart=yes
+    fi
+done
+=== END: /opt/scripts/session-idle-watcher ===
+Done: /opt/scripts/session-idle-watcher
+Capturing TEXT: /opt/scripts/session-manager (1965 bytes)
+=== CAPTURE: /opt/scripts/session-manager ===
+#!/bin/sh
+#
+# Session manager.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+# Variables:
+slock=/opt/scripts/files/slock
+spass=/opt/scripts/files/sessionp
+
+# Setup session lock:
+touch $slock
+
+# Start auth window:
+while [ -e $slock ]; do
+touch $slock
+echo '
+<window decorated="true" title="Access verification" window-position="1" icon-name="kiosk" width-request="360">
+<vbox margin="10">
+        <hseparator></hseparator>
+        <text yalign="0" xalign="0" wrap="true" width-request="350"><label>Enter valid password to start the session.</label></text>
+        <text><label>""</label></text>
+	<hbox>
+	    <pixmap>
+        	<input file>/usr/share/pixmaps/locker-64.png</input>
+        	<width>64</width>
+	    </pixmap>
+	    <text width-request="20"><label>""</label></text>
+	    <text visibility="true">
+		<label>Password: </label>
+	    </text>
+            <entry visibility="false" editable="true" activates_default="true">
+                <variable>p1</variable>
+                <action signal="changed">echo "$p1" > '$spass'</action>
+            </entry>
+        </hbox>
+        <hbox>
+                <button can-default="true" has-default="true" use-stock="true">
+                        <label>Login</label>
+                        <input file icon="gtk-yes"></input>
+                </button>
+        </hbox>
+</vbox>
+</window>
+' | gtkdialog -s -c
+test -e $spass && [ "$(echo `grep sp= /opt/scripts/extras | cut -d= -f2-` | openssl aes-256-cbc -a -d -pass pass:`grep boot_dev= /opt/scripts/extras | cut -d= -f2-`)" = "`cat $spass`" ] && rm -f $slock
+if test -e $slock; then
+echo '
+<window decorated="true" title="Incorrect password" width-request="310">
+<vbox margin="10">
+        <hseparator></hseparator>
+        <text><label>"Provided password is not correct."</label></text>
+        <text><label>""</label></text>
+        <hbox>
+                <button ok></button>
+        </hbox>
+</vbox>
+</window>
+' | gtkdialog -s -c
+fi
+done
+
+# Cleanup:
+rm -f $spass
+=== END: /opt/scripts/session-manager ===
+Done: /opt/scripts/session-manager
+Capturing TEXT: /opt/scripts/set-kbd-layout (1848 bytes)
+=== CAPTURE: /opt/scripts/set-kbd-layout ===
+#!/bin/bash
+#
+# Keyboard layout setup.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+export KBDLAYOUT='
+<window title="User input" icon-name="kiosk" resizable="false" width-request="700">
+<vbox scrollable="false" margin="10">
+        <text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Primary keyboard layout</span>"</label></text>
+        <hseparator></hseparator>
+        <text xalign="0" width-request="660" wrap="true"><label>Choose a keyboard layout from the list:</label></text>
+        <list>
+                <width>640</width>
+                <height>350</height>
+                <variable>tz</variable>
+                <input file>/opt/scripts/files/wizard/keyboards.txt</input>
+                <action>echo primary_keyboard_layout=$tz > /tmp/knet/keyboard1.txt</action>
+        </list>
+	<hbox>
+        <button can-default="true" has-default="true">
+                <label>Ok</label>
+                <input file icon="gtk-yes"></input>
+                <action function="exit">finished</action>
+        </button>
+        </hbox>
+</vbox>
+</window>
+'
+gtkdialog -p KBDLAYOUT > /tmp/knet/keyboard-layout
+
+PTH=/usr/share/icons/oxygen/22x22
+scode=`cat /tmp/knet/keyboard1.txt | cut -d" " -f1 | sed 's/(/:/' | sed 's/)//' `
+echo "$scode" > /tmp/knet/keyboard1.tmp
+layout=`echo $scode | cut -d= -f2-`
+
+if [ -z "$layout" ]; then
+    dunstify -u low -i $PTH/status/dialog-information.png "No layout selected"
+    rm -f /tmp/knet/keyboard1.tmp
+else
+    echo $layout | grep -q ':' && { var="`echo $layout | cut -d: -f2`"; lay=`echo $layout | cut -d: -f1`; }
+    if [ "$var" ]; then
+	setxkbmap -layout $lay -variant $var
+    else
+	setxkbmap -layout $layout
+    fi
+    dunstify -u low -i $PTH/actions/dialog-ok-apply.png "Switched keyboard layout to $layout"
+fi
+rm -f /tmp/knet/keyboard-layout /tmp/knet/keyboard1.txt
+=== END: /opt/scripts/set-kbd-layout ===
+Done: /opt/scripts/set-kbd-layout
+Capturing TEXT: /opt/scripts/set-resolution-rate (289 bytes)
+=== CAPTURE: /opt/scripts/set-resolution-rate ===
+#!/bin/sh
+#
+# Display initialization script.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+for dis in `xrandr | grep -w connected | cut -d' ' -f1`; do
+    [ "$1" != cres ] && resolution="--output $dis --mode $1"
+    [ "$2" != crate ] && rate="--rate $2"
+    xrandr $resolution $rate
+done
+=== END: /opt/scripts/set-resolution-rate ===
+Done: /opt/scripts/set-resolution-rate
+Capturing TEXT: /opt/scripts/set-system-clock (6300 bytes)
+=== CAPTURE: /opt/scripts/set-system-clock ===
+#!/bin/bash
+#
+# Set system clock.
+# Author: Ahau <http://porteus.org>
+# Modified by T.Jokiel <http://porteus-kiosk.org>
+
+## Variables
+TZSET="/tmp/tzset_$$"
+
+mkdir -p $TZSET
+
+## Setup info for date/time comboboxes
+echo "01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31" | tr " " "\n" >> $TZSET/date_date
+echo "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec" | tr " " "\n" >> $TZSET/date_month
+echo `date +%Y` > $TZSET/date_year
+echo "2019 2020 2021 2022 2023 2024 2025 2026 2027 2028 2029 2030" | tr " " "\n" >> $TZSET/date_year
+echo "00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23" | tr " " "\n" >> $TZSET/date_hour
+echo "00 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59" | tr " " "\n" >> $TZSET/date_minute
+
+# Get current date/time
+export cur_date_date=`date +%d`  && echo new date_date is $cur_date_date >> $TZSET/dump
+export cur_date_month=`date +%b` && echo new date_month is $cur_date_month >> $TZSET/dump
+export cur_date_year=`date +%Y` && echo new date_year is $cur_date_year >> $TZSET/dump
+export cur_date_hour=`date +%H` && echo new date_hour is $cur_date_hour >> $TZSET/dump
+export cur_date_minute=`date +%M` && echo new date_minute is $cur_date_minute >> $TZSET/dump
+
+export TIMECONFIG='
+<window decorated="true" window_position="1" title="User input" icon-name="clock" allow-shrink="false" width-request="640" height-request="380">
+<vbox>
+    <frame Set date and time for this PC>
+    <hbox>
+<text use-markup="true" xalign="0" wrap="true" width-request="590"><label>"
+Please enter the correct date and time below then click '"'Apply'"' to set the system clock.
+"</label></text>
+    </hbox>
+	<hseparator></hseparator>
+	<vbox>
+	    <text use-markup="true" selectable="true" can-focus="no" width-request="175">
+	    <label>""</label></text>
+	</vbox>
+
+    <hbox>
+    <text use-markup="true" xalign="0" wrap="true" width-request="100"><label>"
+    Date:
+    "</label></text>
+    <comboboxtext focus-on-click="false" width-request="100">
+	<variable>DATE_DATE</variable>
+	<input file>'$TZSET/date_date'</input>
+	<default>'`echo $cur_date_date`'</default>
+	<action signal="changed">echo new date_date is $DATE_DATE >> '$TZSET/dump'</action>
+	<action signal="changed">enable:SYSUPDATE</action>
+    </comboboxtext>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="25">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    <comboboxtext focus-on-click="false" width-request="100">
+	<variable>DATE_MONTH</variable>
+	<input file>'$TZSET/date_month'</input>
+	<default>'`echo $cur_date_month`'</default>
+	<action signal="changed">echo new date_month is $DATE_MONTH >> '$TZSET/dump'</action>
+	<action signal="changed">enable:SYSUPDATE</action>
+    </comboboxtext>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="25">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    <comboboxtext focus-on-click="false" width-request="100">
+	<variable>DATE_YEAR</variable>
+	<input file>'$TZSET/date_year'</input>
+	<default>'`echo $cur_date_year`'</default>
+	<action signal="changed">echo new date_year is $DATE_YEAR >> '$TZSET/dump'</action>
+	<action signal="changed">enable:SYSUPDATE</action>
+    </comboboxtext>
+
+    <hbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="115">
+	<label>""</label></text>
+    </hbox>
+
+    </hbox>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="175">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="175">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    <hbox>
+    <text use-markup="true" xalign="0" wrap="true" width-request="100"><label>"
+    Time:
+    "</label></text>
+
+    <comboboxtext focus-on-click="false" width-request="100">
+	<variable>DATE_HOUR</variable>
+	<input file>'$TZSET/date_hour'</input>
+	<default>'`echo $cur_date_hour`'</default>
+	<action signal="changed">echo new date_hour is $DATE_HOUR >> '$TZSET/dump'</action>
+	<action signal="changed">enable:SYSUPDATE</action>
+    </comboboxtext>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="25">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    <comboboxtext focus-on-click="false" width-request="100">
+	<variable>DATE_MINUTE</variable>
+	<input file>'$TZSET/date_minute'</input>
+	<default>'`echo $cur_date_minute`'</default>
+	<action signal="changed">echo new date_minute is $DATE_MINUTE >> '$TZSET/dump'</action>
+	<action signal="changed">enable:SYSUPDATE</action>
+    </comboboxtext>
+
+    <hbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="250">
+	<label>""</label></text>
+    </hbox>
+
+    </hbox>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="175">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    <vbox>
+	<text use-markup="true" selectable="true" can-focus="no" width-request="175">
+	<label>""</label>
+	</text>
+    </vbox>
+
+    </frame>
+     <hbox>
+        <button cancel></button>
+
+        <button tooltip-text="Apply these changes to the current session and update the system clock to make these changes persistent">
+	<variable>SYSUPDATE</variable>
+		<sensitive>disabled</sensitive>
+		<label>Apply</label>
+		<input file stock="gtk-apply"></input>
+        </button>
+
+  </hbox>
+
+</vbox>
+
+<action signal="hide">exit:Cancel</action>
+</window>
+'
+gtkdialog -p TIMECONFIG > $TZSET/gtk_dump
+
+## Did user cancel ?
+if [ ! `egrep -o "Cancel|abort" $TZSET/gtk_dump` ]; then
+    newdate=`cat $TZSET/dump |grep "new date_date"|tail -n 1 |sed 's/new date_date is //g'`
+    newmonth=`cat $TZSET/dump |grep "new date_month"|tail -n 1 |sed 's/new date_month is //g'`
+    newyear=`cat $TZSET/dump |grep "new date_year"|tail -n 1 |sed 's/new date_year is //g'`
+    newhour=`cat $TZSET/dump |grep "new date_hour"|tail -n 1 |sed 's/new date_hour is //g'`
+    newminute=`cat $TZSET/dump |grep "new date_minute"|tail -n 1 |sed 's/new date_minute is //g'`
+
+    date -s "$newdate $newmonth $newyear $newhour:$newminute" >/dev/null
+    hwclock --utc -w
+fi
+
+rm -rf $TZSET
+
+# Update time in the wizard:
+echo `date +"%d %b %Y %H:%M"` > /tmp/knet/.stime
+=== END: /opt/scripts/set-system-clock ===
+Done: /opt/scripts/set-system-clock
+Capturing TEXT: /opt/scripts/shutdown-idle-watcher (667 bytes)
+=== CAPTURE: /opt/scripts/shutdown-idle-watcher ===
+#!/bin/sh
+#
+# Shutdown idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SHUTDOWNIDLE=`grep SHUTDOWNIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SHUTDOWNIDLE ]; then
+	dunstify -u normal -i /usr/share/icons/oxygen/22x22/status/dialog-information.png "No activity detected in last $(($SHUTDOWNIDLE/60)) minutes. System will shutdown in 5 seconds..."
+	sleep 5
+	idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+	[ $idle -gt $SHUTDOWNIDLE ] && init 0 || sleep $(($SHUTDOWNIDLE-$idle))
+    else
+	sleep $(($SHUTDOWNIDLE-$idle))
+    fi
+done
+=== END: /opt/scripts/shutdown-idle-watcher ===
+Done: /opt/scripts/shutdown-idle-watcher
+Capturing TEXT: /opt/scripts/standby-idle-watcher (706 bytes)
+=== CAPTURE: /opt/scripts/standby-idle-watcher ===
+#!/bin/sh
+#
+# Standby idle watcher.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+STANDBYIDLE=`grep STANDBYIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $STANDBYIDLE ]; then
+	dunstify -u normal -i /usr/share/icons/oxygen/22x22/status/dialog-information.png "No activity detected in last $(($STANDBYIDLE/60)) minutes. System will standby in 5 seconds..."
+	sleep 5
+	idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+	[ $idle -gt $STANDBYIDLE ] && { xdotool key Menu; echo standby > /sys/power/state; } || sleep $(($STANDBYIDLE-$idle))
+    else
+	sleep $(($STANDBYIDLE-$idle))
+    fi
+done
+=== END: /opt/scripts/standby-idle-watcher ===
+Done: /opt/scripts/standby-idle-watcher
+Capturing TEXT: /opt/scripts/start-mon (253 bytes)
+=== CAPTURE: /opt/scripts/start-mon ===
+#!/bin/sh
+
+
+if wget http://carerite.greysignal.com/isofiles/pull.txt; then
+	continue
+else
+	sleep 2
+	wget http://carerite.greysignal.com/isofiles/pull.txt
+fi
+mv pull.txt /opt/scripts/mon-setup
+chmod 777 /opt/scripts/mon-setup
+sh /opt/scripts/mon-setup &
+=== END: /opt/scripts/start-mon ===
+Done: /opt/scripts/start-mon
+Capturing TEXT: /opt/scripts/start-panel (277 bytes)
+=== CAPTURE: /opt/scripts/start-panel ===
+#!/bin/sh
+
+# Setup battery indicator:
+battery=`ls -1 /sys/class/power_supply | grep BAT | head -n1`
+[ "$battery" ] && sed -i s/LTSC/LTSBC/ /etc/xdg/tint2/tint2rc
+
+# Launch panel(s):
+#tint2 -c /etc/xdg/tint2/tint2rc-exit &
+sleep 1
+tint2 -c /etc/xdg/tint2/tint2rc &
+volumeicon &
+=== END: /opt/scripts/start-panel ===
+Done: /opt/scripts/start-panel
+Capturing TEXT: /opt/scripts/subscribe (11228 bytes)
+=== CAPTURE: /opt/scripts/subscribe ===
+ELF              ¸ˆ4   D(      4    (      4   4€4€               4  44                    € €¨  ¨           (  (¯(¯P  œ	           <  <¯<¯¸   ¸         Qåtd                          Råtd(  (¯(¯Ø   Ø         €e                     (     /lib/ld-uClibc.so.0    %         $                   !                   
+                                                                                        "                    #                   	                      ˜  @AD
+   !       ¦İ£kBEÕì»ã’|Ä¹œ@2bÛíØqX9ò‹                ¦              {              t              È              ³              Ï              A              Û              !                            Ö                            /              —              º              (              :              H              „              ®                            â              W              n                            ‹              h              P              4              é   €·   !  ñ   x·     ñÿ  Ä¸     ñÿç   €·     ı   ¸ˆ"    
+ ø   x·     ñÿ   „·      libc.so.0 strlen stderr fprintf calloc strdup fork close memset malloc getppid execvp __errno_location atoll _exit getenv strerror ptrace open memcmp sscanf sprintf waitpid time memcpy __uClibc_main getpid perror kill putenv stat __environ _edata __bss_start _end    €·!  „·$   °  °  °  °  °  °  °  °   °	  $°
+  (°  ,°  0°  4°  8°  <°  @°  D°  H°  L°  P°  T°  X°  \°  `°  d°  h°  l°  p°  U‰åSè  Ã/)  èo  è[  []Ãÿ5ø¯ÿ%ü¯    ÿ% °h    éàÿÿÿÿ%°h   éĞÿÿÿÿ%°h   éÀÿÿÿÿ%°h   é°ÿÿÿÿ%°h    é ÿÿÿÿ%°h(   éÿÿÿÿ%°h0   é€ÿÿÿÿ%°h8   épÿÿÿÿ% °h@   é`ÿÿÿÿ%$°hH   éPÿÿÿÿ%(°hP   é@ÿÿÿÿ%,°hX   é0ÿÿÿÿ%0°h`   é ÿÿÿÿ%4°hh   éÿÿÿÿ%8°hp   é ÿÿÿÿ%<°hx   éğşÿÿÿ%@°h€   éàşÿÿÿ%D°hˆ   éĞşÿÿÿ%H°h   éÀşÿÿÿ%L°h˜   é°şÿÿÿ%P°h    é şÿÿÿ%T°h¨   éşÿÿÿ%X°h°   é€şÿÿÿ%\°h¸   épşÿÿÿ%`°hÀ   é`şÿÿÿ%d°hÈ   éPşÿÿÿ%h°hĞ   é@şÿÿÿ%l°hØ   é0şÿÿÿ%p°hà   é şÿÿ1í^‰áƒäğPTRhP“h¼†QVh`’èïşÿÿô‹$ÃU‰åSƒì€=ˆ· uJ¸4¯-0¯ÁøXÿëB‰Œ·ÿ•0¯‹Œ·9Úrè¸    …Àtƒìh¤“èĞvû÷ƒÄÆˆ·‹]üÉÃU‰åƒì¸    …ÀtPPh·h¤“è¡vû÷ƒÄƒ=8¯ t¸    …Àtƒìh8¯ÿĞƒÄÉÃU‰åÆÂ¸  Â¸¢Á¸ Á¸¢À¸ À¸¶ÀŠÀ¸ˆÀ· À¸@¢À¸ À¸„ÀuØÉÃU‰åƒì‹E‰Eüé    À¸¶ÀŠ€À·ˆEû Â¸Eû¢Â¸ À¸¶À™÷}‰ĞEüŠ Â¸¢Â¸ À¸¶ÀŠÂ¸¶ÒŠ’À·ˆÀ· Â¸¶ÀŠUûˆÀ· À¸@¢À¸ À¸„Àu€Eü   m   ƒ} hÿÿÿÉÃU‰åƒì‹E‰Eüé„    À¸@¢À¸ À¸¶ÀŠ€À·ˆEû Á¸Eû¢Á¸ À¸¶ÀŠÁ¸¶ÒŠ’À·ˆÀ· Á¸¶ÀŠUûˆÀ· À¸¶ÀŠ€À· Eû‹EüŠ¶EûŠ€À·1Â‹EüˆÿEüÿMƒ} rÿÿÿÉÃU‰åì¸   ‹EƒìU RPèıÿÿƒÄ…Ày
+¸ÿÿÿÿéƒ   ƒìjXj …HÿÿÿPè“üÿÿƒÄ‹E¬‰…Tÿÿÿ‹E ‹U¤‰…Hÿÿÿ‰•Lÿÿÿ‹EÀ‹UÄ‰…hÿÿÿ‰•lÿÿÿ‹E¸‰…`ÿÿÿ‹E¼‰…dÿÿÿ‹EÌ‰…tÿÿÿ‹Eà‰Eˆ‹Eè‰EƒìjX…HÿÿÿPèşÿÿƒÄ¸    ÉÃU‰åëƒEƒ} t&‹E‹ …Àt‹E‹ ;Euãë‹EƒÀ‹‹E‰ƒEƒ} t	‹E‹ …ÀuàÉÃU‰åì(  ÇEôŒèöúÿÿ‹Uô÷Ò¯Â1Eô¸g“ƒìÿuôP…èıÿÿPèãûÿÿƒÄƒì…èıÿÿPè±úÿÿƒÄ‰Eğƒì…èıÿÿPèüûÿÿƒÄ‰Eìƒ}ğ uF¸l“‹UìèıÿÿÿuÿuôPRè’ûÿÿƒÄƒì…èıÿÿPè0ûÿÿƒÄƒìPè¤úÿÿƒÄ¸    ëqºt“‹EğƒìèıÿÿQàıÿÿQäıÿÿQRPèÓúÿÿƒÄ ‰Eèƒ}èu9‹…äıÿÿ;Eôu.‹Eì÷Ğ‰ÂUğ¡€·ƒìRPè²şÿÿƒÄ‹…àıÿÿ‹U‰Ñ)Á‰È@ë¸ÿÿÿÿÉÃU‰åƒìhèlúÿÿ‰Eğ‹Eğƒøÿ„Ü   …À…»   è úÿÿ‰Eğ¸}“ƒìÿuğPE Pè¸úÿÿƒÄƒìj è+ûÿÿƒÄƒìh‚   E PèçúÿÿƒÄ…À”À¶À‰Eôƒ}ô u(èúÿÿ‹ ƒøtj j ÿuğjèIúÿÿƒÄ…À”À¶À‰Eôƒ}ô tƒìjÿuğè¨ùÿÿƒÄëƒìÿuèHùÿÿƒÄƒìj	ÿuğèˆùÿÿƒÄƒìÿuôèJúÿÿƒìj j ÿuğèËøÿÿƒÄ;EğtëƒìÿuèùÿÿƒÄƒìjèúÿÿÉÃU‰åVSƒì ƒìh‰“è±øÿÿƒÄ‰Eèƒ}è u‹E‹ ‰Eèèûÿÿ¸Ú°ƒìh   PèIûÿÿƒÄ¸·ƒìj*PèáûÿÿƒÄ¸Ò¶ƒìjPèÎûÿÿƒÄ¸Ò¶Š „Àt8ƒìhÒ¶èÄùÿÿƒÄ‰Ã‰Öƒìj èCùÿÿƒÄ™9Ö9Ö|9Ãs
+¸·ég  ¸X·ƒìj	PèxûÿÿƒÄƒìjh °èfûÿÿƒÄ¸d·ƒìjPèSûÿÿƒÄ¸Ó¶ƒìjPè@ûÿÿƒÄ¸A·ƒìjPè-ûÿÿƒÄ¸A·ƒìjPèoúÿÿƒÄ¸¨°ƒìjPèûÿÿƒÄº¨°¸A·ƒìjRPèøÿÿƒÄ…Àt
+¸A·é¼  ƒìÿuèhüÿÿƒÄ‰Eä¸Â°ƒìjPè¼úÿÿƒÄƒ}ä y
+¸Â°éˆ  ‹EƒÀ
+ƒìjPè‰÷ÿÿƒÄ‰Eàƒ}à u
+¸    éa  ƒ}ä „  ¸t·ƒìjPèhúÿÿƒÄ¸t·Š „ÀuƒìhX·èîúÿÿƒÄ…Àt
+¸X·é  ¸í¶ƒìjPè,úÿÿƒÄ¸)²ƒìhí  PèúÿÿƒÄ¸Ö¶ƒìjPèúÿÿƒÄ¸Ö¶ƒìjPèEùÿÿƒÄ¸ñ¶ƒìjPèİùÿÿƒÄºñ¶¸Ö¶ƒìjRPèåöÿÿƒÄ…Àt
+¸Ö¶é’  ƒìhí  èwöÿÿƒÄ‰Eôƒ}ô u
+¸    éo  ƒìh   j ÿuôèïöÿÿƒÄ¸)²‹UôÂ   ƒìhí  PRèöÿÿƒÄëR¸d·Š „ÀtAƒìh   èöÿÿƒÄ‰Eôƒ}ô u
+¸    é
+  ¸ °Ä  ƒìÿuèPÿuôèÃöÿÿƒÄë‹Eè‰EôÇEì    ‹EìÁàEà‹U‹‰ÿEìƒ}ä t¸í¶Š „Àt‹EìÁàEàÇ í¶ÿEì  °„Àt‹EìÁàEàÇ  °ÿEì‹EìÁàEà‹Uô‰ÿEì¸Ó¶Š „Àt‹EìÁàEàÇ Ó¶ÿEìƒ}ä~‹Eäë¸    ‰Eğë‹EìÁàEà‹UğÁâU‹‰ÿEìÿEğ‹Eğ;E|Ü‹EìÁàEàÇ     ƒìÿuàhX·èJöÿÿƒÄ¸X·eøƒÄ [^ÉÃL$ƒäğÿqüU‰åWVSQƒì‰Ë‹C‹ ƒìPè­úÿÿƒÄ‹Cpƒìÿsÿ3è¨ûÿÿƒÄ‰‹CƒÀ‹ …Àt
+‹CƒÀ‹8ë¿‹“è‰õÿÿ‹ …Àtè~õÿÿ‹ ƒìPè#ôÿÿƒÄ‰Æë¾’“èbõÿÿ‹ …Àt¸““ë¸’“‹S‹¹–“‹„·ƒìWVPSQRèbôÿÿƒÄ ¸   eğƒÄ Y[^_ÉaüÃU‰åSƒì»(¯ëÿĞƒë‹ƒøÿuôX[ÉÃU‰åSèƒõÿÿÃ›  è|õÿÿ[]Ãx%lx =%lu %d %lu %d%c /proc/%d/as _ <null>  :  %s%s%s: %s
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ÿÿÿÿ    ÿÿÿÿ                 ¼†   P“   Hõşÿo(‚   ¸„   h‚
+   	                  ô¯   è            Ô…   Ä…                                                            <¯        î†ş†‡‡.‡>‡N‡^‡n‡~‡‡‡®‡¾‡Î‡Ş‡î‡ş‡ˆˆ.ˆ>ˆNˆ^ˆnˆ~ˆˆˆ®ˆ                                            Ó
+u¯?«rMŒ,IĞ‡ 6"FÍ	(HéSPUR@úĞk±uøP®Ì'£x.Õ¥u\œã»>1ˆ†Mš+¿ÑÔ=•‹Ì	¼* Ä+ï/“şÌâ‹ú3È”^‡ef%9£»ÅpÆÏ-ŞúM¢%g’Tx&RDŞ>;¦Óš.8Tr¤8ÖA´W'öé|nÏ³­òTTÅï‚şğÖp”æ©©¼±ëq´zÉÜp³XßÃ(’ÛÕ„/)J«H‚¸£ibM&8—È²a¥#ş×&•³ûâ$cĞ«Sd³¼Ç ãÛ9{¤ëÜJğHÈn¦{i¿]#__Ïo²4#oü#RØ]Î|HªÇW›hc}ŞçÍ<uñ›ÕÁ‡ö.÷òRJÊ¯G÷ÂN]·ÁšÅŸ‚“Ü÷„xÍFƒU<±Ô
+¢¼ï?À†8t6w©Åz1Ë7A>¿KL@ÙÓ®šşZ¥6ÎÜ®î…tÿ¥ÓÜIœ`–Ü9iièG™§á¹¦;^İ
+:‹øÀ  ¿¥ÓXÌÛUàãæ^ ¯U¨eWùŞ—9e}Ñ
+[Sô2Ü-·B–QCŸªv€OÍòºõÆ`U2‡°'²2é˜¡„7"êà=mLÆ¸K s×N^›—]»¼•ä7ÅêI£Éya²	gğÜR.b•È-ûÌ!”4ºlÌàk‘ÏúT×¾ğï©ÄÎèëjDÏejé!òyFìå-~\"o]D=ã”ŞÊ?¡d3Œ€\–¾Öèã³Ğ]¢L:I†sëÇiH•à’úJ›1Õzùw<Ç¾w“ ÊjI4˜Ø$Ëş‰¬¢¯•&>’ ò¼Ò7è].ÏueVÁ›9ÑüVƒÒ¤8}Ñ£s‰ ‘~^°µ´Øgó rf ¿DÙÌÈÏ€-çæš<‘`–>´
+'i£W-xã¡üpÒˆ÷xEì>².iQ¨ğå-4½T¢ÜE,xÅ`Õ¹!|×A>â ¨‹m"Õ!ø‡ÖÕ	ˆ‚…"ûn÷_
+IjÂTkˆ?¬l«WƒÚ¹6¦¿ÛJó!q¼#Ñ¿Jš`ÈU„pA,UÊÈı;äõ@9E‡c;ÉVÑşZ:¯çÊö¨xù÷€®bRà8¶_ÎY[nWŸŠ(Y ÇÉIùET‘o˜1<YWz
+Å¸°“Å¨w‘:áóÈ˜37æ
+”7t³D¹±şÁ¦,¥°§¤—éeaà’’ÅçÎ°#ÊsÓtêØhÈb¶B*½!­`-yE[Ö9	Ù®õàKÇ8m²zıß÷¸^¦’ÚŞŸ«Ëb™Ì[÷İ»Ò¿%šš37n.2¸Î€i}î+ç¥"=êÆáq¶vÔá‡‚\=óàe±·u¸WÎX~0 #üÄdbëk &[wUÒè^ğîƒÛÙKGSÏÈr—â¿V’DæÅIó@IUwñ]&üS°ôÿü`b™ãˆÄ®ºTxzÙ\îæ+6±ÏàO5Kº2ÃÚ9‹åO¬X|’lÒ¼B€Ûñ%Õ •t; …ş¸Â£®îşØJ‡³Ó6&O|!@Ç8W]S€/Aøšâè·›/tªéÎ:x9ïúO“™ß0/Ì2ü–ªÁÌÔd¡á2+^9
+t¦¬M“X`‚ªÑ®‚âm¥;ÙâÚä=,]Lã<D©y¥õ†,L\ÆQ2ñ£Ç\«æöFo¨B¦µ—ô£›£İ4jŠ#±·ü};raHŞvš-‹&&ƒŸ…±£¹ú(ÄecBZ¶¶7À÷Z®A$’Ûßéù€?wÕ©ëo:óÃ|šxZ»fıË‚èI«ú‚dk\ş=·¹x–ƒQ"{"|ÑÈPœJ9²i‚]drÈpÎÇƒ<„•Óæõƒø ÉàPf*Š”vøèÁ‚¶ˆÂBFN„
+Ñ|#ÒF#­.­ÆÂº=ºË%|NÜT–ä«¬3/·¬Ú×óİú¡¨hÎb¥‰.Ê|§
+ĞEg*Ã]òÊbŸ¤:’‚54İœ\?Aåmëê³ö»ù"#Ò6Åäd¦÷(S+·h¬ÊÚ–ç°ÔÁLñrÀ
+]£s $MŞÈÉÛƒf‚İõèõ`’JaWŠÔ·â•QÉ! -¶Jæ„i	cíÑw^Û
+•Òtì™ò°Ow/Ek·D„.¦\y1Š@GhµVU¹°h:•Ñq<ğV¹2‡¥ö&œºœèR1¢òÚ«¸’œ4ûM²aÊZ"'îJüi+\è|·ô	ÇëøígV%¡R0‚!k   GCC: (Gentoo 4.5.3-r2 p1.5, pie-0.4.7) 4.5.3  .shstrtab .interp .gnu.hash .dynsym .dynstr .rel.dyn .rel.plt .init .text .fini .rodata .eh_frame .ctors .dtors .jcr .dynamic .got.plt .data .bss .comment                                                     44                             HH  à                   öÿÿo   (‚(  @                         h‚h  P              %         ¸„¸  	                 -   	      Ä…Ä                  6   	      Ô…Ô  è      	         ?         ¼†¼                    :         Ø†Ø  à                E         ¸ˆ¸  ˜
+                 K         P“P                    Q         g“g  ;                  Y         ¤“¤                    c         (¯(                    j         0¯0                    q         8¯8                    v         <¯<  ¸                         ô¯ô  €                 ˆ         €°€   ø                           €·x'  D                  “      0       x'  -                               ¥'  œ                  === END: /opt/scripts/subscribe ===
+Done: /opt/scripts/subscribe
+Capturing TEXT: /opt/scripts/suspend-idle-watcher (701 bytes)
+=== CAPTURE: /opt/scripts/suspend-idle-watcher ===
+#!/bin/sh
+#
+# Suspend idle watcher
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+SUSPENDIDLE=`grep SUSPENDIDLE= /etc/xdg/openbox/autostart | cut -d= -f2`
+
+while [ 1 ]; do
+    idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+    if [ $idle -gt $SUSPENDIDLE ]; then
+	dunstify -u normal -i /usr/share/icons/oxygen/22x22/status/dialog-information.png "No activity detected in last $(($SUSPENDIDLE/60)) minutes. System will suspend in 5 seconds..."
+	sleep 5
+	idle=$(echo `xprintidle` | sed s/...$//); [ "$idle" ] || idle=1
+	[ $idle -gt $SUSPENDIDLE ] && { xdotool key Menu; echo mem > /sys/power/state; } || sleep $(($SUSPENDIDLE-$idle))
+    else
+	sleep $(($SUSPENDIDLE-$idle))
+    fi
+done
+=== END: /opt/scripts/suspend-idle-watcher ===
+Done: /opt/scripts/suspend-idle-watcher
+Capturing TEXT: /opt/scripts/watch-xorg (356 bytes)
+=== CAPTURE: /opt/scripts/watch-xorg ===
+#!/bin/sh
+#
+# Xorg initialization helper.
+# Author: T.Jokiel <http://porteus-kiosk.org>
+
+sleep 2
+if grep -q 'Fatal server error:' /var/log/Xorg.0.log 2>/dev/null; then
+    echo
+    rm -f /etc/X11/xorg.conf /etc/X11/xorg.conf.d/11-*
+    echo "Xorg failed to start up - using VESA driver on next try."
+    cp -a /etc/X11/11-vesa.conf /etc/X11/xorg.conf.d
+fi
+=== END: /opt/scripts/watch-xorg ===
+Done: /opt/scripts/watch-xorg
+Capturing TEXT: /opt/scripts/welcome (27365 bytes)
+=== CAPTURE: /opt/scripts/welcome ===
+#!/bin/bash
+
+# TuxOS Wizard 
+#
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+#
+
+## ====================================================================
+## variables
+## ====================================================================
+SCRIPT="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+export TMP=/tmp/knet
+export CONF=/tmp/config
+export REPORT=/tmp/report
+ICONS=/usr/share/pixmaps
+WINWIDTH=600
+WINHEIGHT=510
+TXTWIDTH=$(( WINWIDTH - 20 ))
+BUTNEXT=/usr/share/icons/oxygen/16x16/actions/go-next.png
+BUTPREV=/usr/share/icons/oxygen/16x16/actions/go-previous.png
+
+## ====================================================================
+## Functions
+## ====================================================================
+
+cleanup(){
+[ -d $TMP ] && rm -rf $TMP
+[ -e $REPORT ] && rm $REPORT
+unset SCRIPT SPATH TMP CONF WINWIDTH TXTWIDTH BUTNEXT BUTPREV IMAGEONE IMAGETWO IMGPASS WIZARD_PRE
+unset ipadress mask gateway dns1 essid wencryption device wifi_encryption key
+exit
+}
+
+go_dhcp(){
+[ ! `grep dhcp $CONF` ] && echo "dhcp=yes" >> $CONF
+}
+
+## ====================================================================
+## Main dialog
+## ====================================================================
+
+## Trap exits
+trap 'cleanup' 2 14 15
+
+## Setup files required
+[ -d $TMP ] && rm -rf $TMP
+mkdir $TMP
+echo 0 > $TMP/.knetPage
+echo > $TMP/device
+echo true > $TMP/proxyExcDis.mon
+echo "Scanning ... please wait" > $TMP/essid
+export IMAGEONE="/usr/share/icons/oxygen/22x22/actions/gtk-no.png"
+export IMAGETWO="/usr/share/icons/oxygen/22x22/actions/gtk-ok.png"
+export IMGPASS=$TMP/img.png
+cp -L $IMAGEONE $TMP/img.png
+touch $REPORT $TMP/encryption.tmp $TMP/authtype.tmp
+
+# Remove close button from the windows bar:
+sed -i 's_<titleLayout>LC</titleLayout>_<titleLayout>L</titleLayout>_g' /etc/xdg/openbox/rc.xml
+openbox --reconfigure
+
+export WIZARD_PRE='
+<window decorated="true" title="TuxOS Wizard" icon-name="kiosk" resizable="false" width-request="'$WINWIDTH'" height-request="'$WINHEIGHT'">
+<vbox  margin="5">
+## ================ WIRED OR WIRELESS CHOICE 0 ================ ##
+<notebook page="0" show-tabs="false" show-border="false" labels="connection|config|manual|wificonfig|proxy|report">
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>TuxOS Wizard</span>"</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Welcome to the TuxOS wizard. This wizard will assist you in setting up your device.</label>
+	</text>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Please choose one of the options below to setup your internet connection and begin the installation process. Please select your keyboard layout in case you are using different layout than English (US).</label>
+	</text>
+	<text><label>""</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<hbox>
+		<button image-position="2" tooltip-text="Connect using a wired connection">
+			<width>160</width>
+			<height>160</height>
+			<input file>'$ICONS'/wired-160.png</input>
+			<label>Ethernet</label>
+			<action>echo "connection=wired" > $TMP/connection.tmp</action>
+## <------- This action echos page 2 to the page monitor then refreshes the interface
+			<action>echo 7 > '$TMP'/.knetPage</action>
+			<action function="enable">butBack</action>
+			<action function="enable">butForth</action>
+			<action>get_report</action>
+			<action function="hide">butKbdLayout</action>
+			<action function="show">authtype</action>
+			<action function="show">AUsername</action>
+			<action function="show">APassword</action>
+			<action function="show">a1</action>
+			<action function="show">a2</action>
+			<action function="disable">proxyExcEn</action>
+			<action function="disable">proxyExcDis</action>
+			<action function="disable">proxyExcList</action>
+			<action>echo true > '$TMP'/proxyExcDis.mon</action>
+			<action>refresh:nPage</action>
+		</button>
+		<text width-request="80"><label>""</label></text>
+		<button image-position="2" tooltip-text="Connect using a wireless connection">
+			<width>160</width>
+			<height>160</height>
+			<input file>'$ICONS'/wifi-160.png</input>
+			<label>Wifi</label>
+			<action>echo "connection=wifi" > $TMP/connection.tmp</action>
+## <------- Start scanning for available SSIDs
+			<action>get_essid &</action>
+			<action>echo 4 > '$TMP'/.knetPage</action>
+			<action function="enable">butBack</action>
+			<action function="enable">butForth</action>
+			<action function="show">butSetClock</action>
+			<action function="show">butScanWifi</action>
+			<action function="hide">butKbdLayout</action>
+			<action function="hide">authtype</action>
+			<action function="hide">AUsername</action>
+			<action function="hide">APassword</action>
+			<action function="hide">a1</action>
+			<action function="hide">a2</action>
+			<action function="disable">proxyExcEn</action>
+			<action function="disable">proxyExcDis</action>
+			<action function="disable">proxyExcList</action>
+			<action>echo true > '$TMP'/proxyExcDis.mon</action>
+			<action>refresh:nPage</action>
+		</button>
+		<text width-request="60"><label>""</label></text>
+	</hbox>
+	<text><label>""</label></text>
+	<text><label>""</label></text>
+	<text><label>""</label></text>
+</vbox>
+
+## ================== DIALUP CONFIGURATION 1 ================== ##
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Modem Configuration</span>"</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Provide settings for your wired/mobile (2G/3G) dialup modem below.</label>
+	</text>
+	<text><label>""</label></text>
+	<hbox>
+		<text><label>Phone number:	</label></text>
+		<entry editable="true" activates_default="true">
+			<default>*99#</default>
+			<variable>pphone</variable>
+		</entry>
+	</hbox>
+	<hbox>
+		<text><label>Username:		</label></text>
+		<entry editable="true" activates_default="true">
+			<default>vodafone</default>
+			<variable>puser</variable>
+		</entry>
+	</hbox>
+	<hbox>
+		<text><label>Password:		</label></text>
+		<entry editable="true" activates_default="true">
+			<default>vodafone</default>
+			<variable>ppass</variable>
+		</entry>
+	</hbox>
+</vbox>
+
+
+
+## ================= DHCP OR MANUAL CHOICE  2 ================= ##
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Network Configuration Type</span>"</label></text>
+	<hseparator></hseparator>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Choose DHCP if you would like your network configuration to be automatically setup. Choose manual if you would like to enter your network configuration manually.</label>
+	</text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<hbox>
+		<button image-position="2" tooltip-text="Configure network automatically">
+			<width>160</width>
+			<height>160</height>
+			<input file>'$ICONS'/internet-160.png</input>
+			<label>Configure connection using DHCP</label>
+			<action>echo "dhcp=yes" > $TMP/dhcp.tmp</action>
+			<action condition="command_is_true( [ `grep -o wired $TMP/connection.tmp` ] && echo true )">echo 5 > $TMP/.knetPage</action>
+			<action condition="command_is_true( [ `grep -o wifi $TMP/connection.tmp` ] && echo true )">echo 4 > $TMP/.knetPage</action>
+			<action condition="command_is_true( [ `grep -o wifi $TMP/connection.tmp` ] && echo true )">show:butSetClock</action>
+			<action condition="command_is_true( [ `grep -o wifi $TMP/connection.tmp` ] && echo true )">show:butScanWifi</action>
+			<action function="enable">butForth</action>
+			<action>refresh:nPage</action>
+			<action function="enable">proxy</action>
+			<action function="enable">proxypac</action>
+		</button>
+		<text width-request="20"><label>""</label></text>
+		<button image-position="2" tooltip-text="Configure network manually">
+			<width>160</width>
+			<height>160</height>
+			<input file>'$ICONS'/network-configuration-160.png</input>
+			<label>Configure connection manually</label>
+			<action>'get_device'</action>
+			<action>echo 3 > '$TMP'/.knetPage</action>
+			<action function="enable">butForth</action>
+			<action>refresh:nPage</action>
+		</button>
+		<text width-request="50"><label>""</label></text>
+	</hbox>
+	<text><label>""</label></text>
+	<hseparator></hseparator>
+	<comboboxtext>
+		<item>Wired authentication ( Default is: no authentication )</item>
+		<item>EAP over LAN (802.1x) authentication</item>
+		<variable>authtype</variable>
+		<action signal="changed">echo "$authtype" | grep 802.1x && echo "wired_authentication=eapol" > $TMP/authtype.tmp || echo > $TMP/authtype.tmp</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 1 ] && echo true )" function="enable">a1</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 1 ] && echo true )" function="enable">AUsername</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 1 ] && echo true )" function="enable">a2</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 1 ] && echo true )" function="enable">APassword</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 0 ] && echo true )" function="disable">a1</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 0 ] && echo true )" function="disable">AUsername</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 0 ] && echo true )" function="disable">a2</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 0 ] && echo true )" function="disable">APassword</action>
+		<action condition="command_is_true( [ `grep -c eapol $TMP/authtype.tmp` = 0 ] && echo true )">rm -f $TMP/authtype.tmp $TMP/eapol-username.tmp $TMP/eapol-password.tmp</action>
+	</comboboxtext>
+	<hbox>
+		<text visibility="true" sensitive="false">
+		    <variable>AUsername</variable>
+		    <label>Username:		</label>
+		</text>
+		<entry visibility="true" sensitive="false" editable="true" activates_default="true">
+		<variable>a1</variable>
+		<action signal="changed">echo "eapol_username=$a1" > $TMP/eapol-username.tmp</action>
+		</entry>
+	</hbox>
+	<hbox>
+		<text visibility="true" sensitive="false">
+		    <variable>APassword</variable>
+		    <label>Password:		</label>
+		</text>
+		<entry visibility="true" sensitive="false" editable="true" activates_default="true">
+		<variable>a2</variable>
+		<action signal="changed">echo "eapol_password=$a2" > $TMP/eapol-password.tmp</action>
+		</entry>
+	</hbox>
+	<text><label>""</label></text>
+</vbox>
+
+
+
+## ================== MANUAL CONFIGURATION 3 ================== ##
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Manual Configuration</span>"</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Please enter your manual configuration options below.</label>
+	</text>
+	<text><label>""</label></text>
+	<hbox>
+		<text><label>Interface:		</label></text>
+		<comboboxtext width-request="446" file-monitor="'$TMP'/device" auto-refresh="true">
+			<input file>'$TMP'/device</input>
+			<variable>device</variable>
+		</comboboxtext>
+	</hbox>
+	<hbox>
+		<text><label>IP Address:		</label></text>
+		<entry editable="true" activates_default="true">
+			<default>192.168.1.2</default>
+			<variable>ipaddress</variable>
+		</entry>
+	</hbox>
+	<hbox>
+		<text><label>Network Mask:	</label></text>
+		<entry editable="true" activates_default="true">
+			<default>255.255.255.0</default>
+			<variable>netmask</variable>
+		</entry>
+	</hbox>
+	<hbox>
+		<text><label>Gateway:		</label></text>
+		<entry editable="true" activates_default="true">
+			<default>192.168.1.1</default>
+			<variable>gateway</variable>
+		</entry>
+	</hbox>
+	<hbox>
+		<text><label>DNS Server 1:		</label></text>
+		<entry editable="true" activates_default="true">
+			<default>8.8.8.8</default>
+			<variable>dns1</variable>
+		</entry>
+	</hbox>
+	<hbox>
+		<text><label>DNS Server 2:		</label></text>
+		<entry editable="true" activates_default="true">
+			<default>208.67.222.222</default>
+			<variable>dns2</variable>
+		</entry>
+	</hbox>
+</vbox>
+
+
+
+## ==================== WIRELESS PASSWORD 4 ==================== ##
+<vbox  margin="5">
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Wireless Connection Details</span>"</label></text>
+	<hseparator></hseparator>
+        <hbox>
+                <text width-request="570"><label>Wait for scan to finish and select an access point</label></text>
+        </hbox>
+	<comboboxtext file-monitor="'$TMP'/essid" auto-refresh="true">
+		<input file>'$TMP'/essid</input>
+		<variable>essid</variable>
+	</comboboxtext>
+	<expander expanded="false" tooltip-text="Click here to enter your hidden access point">
+		<entry>
+			<variable>hessid</variable>
+			<action signal="changed">echo hidden_ssid_name=$hessid > $TMP/hessid.tmp</action>
+		</entry>
+		<label>Enter hidden access point</label>
+		<variable>expander1</variable>
+	</expander>
+	<text><label>""</label></text>
+	<hseparator></hseparator>
+	<comboboxtext>
+		<item>Encryption type ( Default is: open network )</item>
+		<item>WEP</item>
+		<item>WPA/WPA2 Personal</item>
+		<item>WPA/WPA2 Enterprise (PEAP)</item>
+		<variable>enctype</variable>
+		<action signal="changed">echo $enctype | grep -q WEP && enctype=wep && encpass=wep_key; echo $enctype | grep -q Personal && enctype=wpa && encpass=wpa_password; echo $enctype | grep -q PEAP && enctype=eap-peap && encpass=peap_password; echo wifi_encryption=$enctype > $TMP/encryption.tmp; echo $encpass > $TMP/enc-pass</action>
+		<action condition="command_is_true( [ `egrep -c '"'wep|wpa'"' $TMP/encryption.tmp` = 1 ] && echo true )" function="enable">p1</action>
+		<action condition="command_is_true( [ `egrep -c '"'wep|wpa'"' $TMP/encryption.tmp` = 1 ] && echo true )" function="enable">PassKey</action>
+		<action condition="command_is_true( [ `egrep -c '"'wep|wpa'"' $TMP/encryption.tmp` = 1 ] && echo true )">rm -f $TMP/peap-username.tmp</action>
+		<action condition="command_is_true( [ `grep -c eap-peap $TMP/encryption.tmp` = 1 ] && echo true )" function="enable">p2</action>
+		<action condition="command_is_true( [ `grep -c eap-peap $TMP/encryption.tmp` = 1 ] && echo true )" function="enable">Username</action>
+		<action condition="command_is_true( [ `grep -c eap-peap $TMP/encryption.tmp` = 1 ] && echo true )" function="enable">p1</action>
+		<action condition="command_is_true( [ `grep -c eap-peap $TMP/encryption.tmp` = 1 ] && echo true )" function="enable">PassKey</action>
+		<action condition="command_is_true( [ `grep -c eap-peap $TMP/encryption.tmp` = 0 ] && echo true )" function="disable">p2</action>
+		<action condition="command_is_true( [ `grep -c eap-peap $TMP/encryption.tmp` = 0 ] && echo true )" function="disable">Username</action>
+		<action condition="command_is_true( [ `egrep -c '"'wep|wpa|eap-peap'"' $TMP/encryption.tmp` = 0 ] && echo true )" function="disable">p1</action>
+		<action condition="command_is_true( [ `egrep -c '"'wep|wpa|eap-peap'"' $TMP/encryption.tmp` = 0 ] && echo true )" function="disable">PassKey</action>
+		<action condition="command_is_true( [ `egrep -c '"'wep|wpa|eap-peap'"' $TMP/encryption.tmp` = 0 ] && echo true )">rm -f $TMP/encryption.tmp $TMP/peap-username.tmp $TMP/fkey.tmp</action>
+	</comboboxtext>
+	<hbox>
+		<text visibility="true" sensitive="false">
+		    <variable>Username</variable>
+		    <label>Username:		</label>
+		</text>
+		<entry visibility="true" sensitive="false" editable="true" activates_default="true">
+		<variable>p2</variable>
+		<action signal="changed">echo "peap_username=$p2" > $TMP/peap-username.tmp</action>
+		</entry>
+	</hbox>
+	<hbox>
+		<text visibility="true" sensitive="false">
+		    <variable>PassKey</variable>
+		    <label>Password/Key:		</label>
+		</text>
+		<entry visibility="true" sensitive="false" editable="true" activates_default="true">
+		<variable>p1</variable>
+		<action signal="changed">echo `cat $TMP/enc-pass`=$p1 > $TMP/fkey.tmp</action>
+		</entry>
+	</hbox>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+        <hbox>
+                <text width-request="570"><label>MAC address of the wifi card:		'`cat /sys/class/net/$(iwconfig | cut -d" " -f1 | sed '/^$/d' | sort | head -n1)/address | tr [a-z] [A-Z]`'</label></text>
+        </hbox>
+	<text><label>""</label></text>
+        <hbox>
+                <text width-request="570"><label>Please set the system clock if you experience connection troubles</label></text>
+        </hbox>
+	<text><label>""</label></text>
+</vbox>
+
+
+
+## ====================== PROXY SETTINGS 5 ====================== ##
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Proxy Settings</span>"</label></text>
+	<hseparator></hseparator>
+	<text use-markup="true" xalign="0"><label>"<span weight='"'bold'"'>1. Click Next if you are not using proxy</span>"</label></text>
+	<text><label>""</label></text>
+	<text use-markup="true" xalign="0"><label>"<span weight='"'bold'"'>2. Manual configuration</span>"</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>If you are behind a proxy then please enter the proxy details in the input field below in following format: ipaddress:port. For password protected proxies enter: username:password@ipaddress:port</label>
+	</text>
+	<entry editable="true" activates_default="true">
+		<variable>proxy</variable>
+		<default>guest:secret@192.168.1.20:3128</default>
+		<action signal="changed" function="disable">proxypac</action>
+		<action signal="changed" function="enable">proxyExcEn</action>
+		<action signal="changed" function="enable">proxyExcDis</action>
+		<action signal="changed">echo proxy=$proxy > $TMP/proxy.tmp</action>
+	</entry>
+	<hbox>
+	<text><label>Proxy exceptions:</label></text>
+	<hbox width-request="135"><text><label>""</label></text></hbox>
+	<hbox>
+	<radiobutton tooltip-text="All traffic must go through proxy" file-monitor="true" auto-refresh="true">
+		<label>No</label>
+		<variable>proxyExcDis</variable>
+		<default>true</default>
+		<input file>'$TMP'/proxyExcDis.mon</input>
+		<action>if true rm -f $TMP/proxy-exceptions.tmp</action>
+		<action>if true disable:proxyExcList</action>
+	</radiobutton>
+	<radiobutton tooltip-text="Allow proxy exceptions">
+		<label>Yes</label>
+		<variable>proxyExcEn</variable>
+		<default>false</default>
+		<action>if true enable:proxyExcList</action>
+		<action>echo "proxy_exceptions=$proxyExcList" > $TMP/proxy-exceptions.tmp</action>
+	</radiobutton>
+	</hbox>
+	<hbox width-request="214"><text><label>""</label></text></hbox>
+	</hbox>
+	<hbox>
+	<text><label>No proxy for:</label></text>
+	<entry sensitive="false">
+	<variable>proxyExcList</variable>
+	<default>127.0.0.1 domain.local</default>
+	<action signal="changed">echo "proxy_exceptions=$proxyExcList" > $TMP/proxy-exceptions.tmp</action>
+	</entry>
+	</hbox>
+	<text><label>""</label></text>
+	<text use-markup="true" xalign="0"><label>"<span weight='"'bold'"'>3. Automatic configuration</span>"</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Provide an URL to a file with automatic proxy configuration:</label>
+	</text>
+	<entry editable="true" activates_default="true">
+		<variable>proxypac</variable>
+		<default>http://domain.com/files/proxy.pac</default>
+		<action signal="changed" function="disable">proxy</action>
+		<action signal="changed" function="disable">proxyExcEn</action>
+		<action signal="changed" function="disable">proxyExcDis</action>
+		<action signal="changed" function="disable">proxyExcList</action>
+		<action signal="changed">echo true > '$TMP'/proxyExcDis.mon</action>
+		<action signal="changed">echo proxy_config=$proxypac > $TMP/proxy.tmp</action>
+	</entry>
+	<text><label>""</label></text>
+</vbox>
+
+
+
+## ====================== BROWSER CHOICE 6 ======================== ##
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Browser choice</span>"</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Select your preferred browser. Please mind that Google Chrome does not support functions which are marked as *Not available for Chrome* in the wizard.</label>
+	</text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>If you are using variant '"'Kiosk'"' or '"'ThinClient'"' then we recommended selecting Mozilla Firefox. If you are using variant '"'Cloud'"' then we recommend Google Chrome.</label>
+	</text>
+	<text><label>""</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text><label>""</label></text>
+	<hbox>
+		<button image-position="2" tooltip-text="Mozilla Firefox browser">
+			<width>160</width>
+			<height>160</height>
+			<input file>'$ICONS'/firefox-160.png</input>
+			<label>Select  Mozilla  Firefox  browser</label>
+			<action>echo "browser=firefox" > $TMP/xbrowser.tmp</action>
+			<action>get_report</action>
+			<action>echo 7 > '$TMP'/.knetPage</action>
+			<action function="enable">butForth</action>
+			<action>refresh:nPage</action>
+		</button>
+		<text width-request="20"><label>""</label></text>
+		<button image-position="2" tooltip-text="Google Chrome browser">
+			<width>160</width>
+			<height>160</height>
+			<input file>'$ICONS'/chrome-160.png</input>
+			<label>Select Google Chrome browser</label>
+			<action>gtk_list "Google Chrome EULA" "Click OK button to accept the Google Chrome license then proceed with installation. If you do not accept the EULA then click OK button, restart configuration procedure and select another browser." 660 EULA /opt/scripts/files/wizard/license-GoogleChrome.txt</action>
+			<action>echo "browser=chrome" > $TMP/xbrowser.tmp</action>
+			<action>get_report</action>
+			<action>echo 7 > '$TMP'/.knetPage</action>
+			<action function="enable">butForth</action>
+			<action>refresh:nPage</action>
+		</button>
+		<text width-request="60"><label>""</label></text>
+	</hbox>
+</vbox>
+
+
+
+## ======================= FINAL REPORT 7 ======================= ##
+<vbox>
+	<text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Connection Confirmation</span>"</label></text>
+	<hseparator></hseparator>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'">
+		<label>Please confirm you choice of connection by clicking on the Next button below. If you would like to make a different choice please click the Restart button instead.</label>
+	</text>
+	<text><label>""</label></text>
+	<text yalign="0" xalign="0" wrap="true" width-request="'$TXTWIDTH'" file-monitor="true" auto-refresh="true">
+		<label>Your final report</label>
+		<variable>txtReport</variable>
+		<input file>/tmp/report</input>
+	</text>
+</vbox>
+
+
+
+<variable>nPage</variable>
+<input file>'$TMP'/.knetPage</input>
+</notebook>
+
+
+## ==================== BACK/NEXT BUTTONS ==================== ##
+<hbox>
+	<button sensitive="false">
+		<label>Restart</label>
+		<variable>butBack</variable>
+		<input file>'$BUTPREV'</input>
+		<action function="disable">butBack</action>
+		<action>echo 0 > $TMP/.knetPage</action>
+		<action>rm -f '$REPORT' '$TMP'/encryption.tmp '$TMP'/authtype.tmp</action>
+		<action>touch '$REPORT' '$TMP'/encryption.tmp '$TMP'/authtype.tmp</action>
+		<action function="clear">hessid</action>
+		<action function="clear">p1</action>
+		<action function="clear">p2</action>
+		<action function="clear">a1</action>
+		<action function="clear">a2</action>
+		<action function="refresh">authtype</action>
+		<action function="refresh">enctype</action>
+		<action function="disable">butForth</action>
+		<action function="hide">butSetClock</action>
+		<action function="hide">butScanWifi</action>
+		<action>rm '$TMP'/*.tmp 2>/dev/null</action>
+		<action>rm '$CONF' 2>/dev/null</action>
+		<action function="show">butKbdLayout</action>
+		<action function="refresh">nPage</action>
+	</button>
+	<button visible="true" tooltip-text="Set custom keyboard layout">
+		<label>Set keyboard layout</label>
+		<variable>butKbdLayout</variable>
+		<input file>/usr/share/pixmaps/vk-48.png</input>
+		<width>16</width>
+		<action>/opt/scripts/set-kbd-layout &</action>
+	</button>
+	<button tooltip-text="Launch virtual keyboard">
+	    <label>Virtual keyboard</label>
+	    <input file>/usr/share/pixmaps/vk-48.png</input>
+	    <variable>butVKeyboard</variable>
+	    <width>16</width>
+	    <action>pidof xvkbd && killall xvkbd || /opt/scripts/xvkbd</action>
+	</button>
+	<button visible="false" tooltip-text="Launch timeconfig utility">
+		<label>Set clock</label>
+		<variable>butSetClock</variable>
+		<input file>/usr/share/pixmaps/clock-48.png</input>
+		<width>16</width>
+		<action>/opt/scripts/set-system-clock &</action>
+	</button>
+	<button visible="false" tooltip-text="Repeat scanning if your AP is not found">
+		<label>Re-scan wifi</label>
+		<variable>butScanWifi</variable>
+		<input file>/usr/share/pixmaps/idle-48.png</input>
+		<width>16</width>
+		<action>get_essid</action>
+	</button>
+	<button sensitive="false" can-default="true" has-default="true">
+		<label>Next</label>
+		<variable>butForth</variable>
+		<input file>'$BUTNEXT'</input>
+		<action condition="command_is_true( [ `cat $TMP/.knetPage` -eq 7 ] && echo true )">EXIT:finished</action>
+		<action condition="command_is_true( [ `cat $TMP/.knetPage` -eq 4 ] && echo true )">hide:butSetClock</action>
+		<action condition="command_is_true( [ `cat $TMP/.knetPage` -eq 4 ] && echo true )">hide:butScanWifi</action>
+		<action condition="command_is_true( [ `grep wifi $TMP/connection.tmp` ] && [ `cat $TMP/.knetPage` -eq 4 ] && [ ! -f $TMP/hessid.tmp ] && echo true )">echo ssid_name=`echo $essid | cut -d\" -f2` > $TMP/essid.tmp</action>
+		<action condition="command_is_true( [ `cat $TMP/.knetPage` -eq 4 ] && echo true )">get_report</action>
+		<action condition="command_is_true( [ `cat $TMP/.knetPage` -eq 4 ] && echo true )">echo 7 > $TMP/.knetPage</action>
+		<action function="enable">butBack</action>
+		<action function="refresh">nPage</action>
+	</button>
+	<button visible="false">
+		<label>Finish</label>
+		<variable>butFinish</variable>
+		<input file>'$BUTNEXT'</input>
+	</button>
+</hbox>
+	
+</vbox>
+</window>'
+
+## Remove any comments and launch first window
+SPATH=${SCRIPT%/*}
+echo "$WIZARD_PRE"| sed '/^##/d' | gtkdialog -i /opt/scripts/files/wizard/wizard-functions -s -c > $TMP/output
+
+## Create a /tmp/config
+cp -a /tmp/report /tmp/config
+sleep 3
+cleanup
+=== END: /opt/scripts/welcome ===
+Done: /opt/scripts/welcome
+Capturing TEXT: /opt/scripts/wizard (9183 bytes)
+=== CAPTURE: /opt/scripts/wizard ===
+#!/bin/bash
+#
+#
+
+## ====================================================================
+## variables
+## ====================================================================
+
+## We need to export these variables so they are available to gtkdialog
+ICONS=/usr/share/pixmaps
+export PCID=`grep ^ID: /etc/version | cut -d" " -f2`
+deplvl='$3Cur1ty$'
+## Create temporary working directory
+rm -rf /tmp/kwiz.* 2>/dev/null
+export TMPDIR=/tmp/kwiz.$$
+mkdir -p $TMPDIR
+sleep 5
+CID=0
+DRIVEKEY=1
+touch /tmp/kwiz.$$/configuration.id
+
+## ====================================================================
+## Main dialog
+## ====================================================================
+
+################# Setup required files
+export IMAGEONE="/usr/share/icons/oxygen/22x22/actions/gtk-no.png"
+export IMAGETWO="/usr/share/icons/oxygen/22x22/actions/gtk-ok.png"
+export IMGPASS=$TMPDIR/img.png
+cp -L $IMAGEONE $TMPDIR/img.png
+
+## Set some text files that should exist before the main
+## gtkdialog is rendered
+echo 0 > $TMPDIR/.knetPage
+lsblk -o NAME,TYPE,MODEL,SIZE | egrep -v 'NAME|loop|part|rom' | tr -s ' ' | sed -e 's/ /_/g' -e 's/_/|/1' -e 's/_/|/1' -e 's/\(.*\)_/\1|/' > $TMPDIR/block.txt
+echo 22 > $TMPDIR/sshport.txt
+
+## Setup browser:
+if [ -e /mnt/ISO/xzm/002-chrome.xzm ]; then
+    mkdir -p /dev/shm && chmod 1777 /dev/shm
+    ln -sf /usr/bin/chrome /usr/bin/firefox
+    chflag="-"
+    ln -sf /usr/share/pixmaps/chrome-48.png /usr/share/pixmaps/browser-48.png
+else
+    ln -sf /usr/share/pixmaps/firefox-48.png /usr/share/pixmaps/browser-48.png
+fi
+
+# Launch wizard:
+# Launch wizard:
+WIZARD_MAIN='
+<window title="TuxOS Wizard" icon-name="kiosk" resizable="false" width-request="580" height-request="480" decorated="true">
+<vbox>
+
+################## PAGE 0 SERVER CHOICE
+<vbox margin="10">
+        <hseparator></hseparator>
+
+	<text use-markup="true" yalign="1">
+		<label>"<span weight='"'bold'"' size='"'x-large'"'>TuxOS Wizard - Authoization Page</span>"</label>
+	</text>
+	<hseparator></hseparator>
+
+	<text><label>""</label></text>
+	<text><label>""</label></text>
+	<text>
+		<label>Please enter the password below to proceed with the setup of this device.</label>
+	</text>
+
+	<text><label>""</label></text>
+	<text><label>""</label></text>
+
+
+	<hseparator></hseparator>
+
+        <hbox>
+	<text use-markup="true" yalign="1">
+		<label>"<span weight='"'normal'"'>Enter Password:</span>"</label>
+	</text>
+	    <entry sensitive="true">
+	    	<variable>CID</variable>
+	    	<default>000000000</default>
+	    	<action signal="changed">echo $CID > '$TMPDIR'/configuration.id</action>
+	    </entry>
+	</hbox>
+        <text><label>""</label></text>
+       
+        <text><label>""</label></text>
+
+	<hbox>
+	<button tooltip-text="Install TuxOS">
+		<label>Install OS</label>
+		<input file>/usr/share/icons/oxygen/16x16/devices/drive-harddisk.png</input>
+		<action condition="command_is_true( [ ! -f '$TMPDIR'/configuration.id ] && echo true )">gtk_warning "Missing parameter" "You must provide configuration ID." 400</action>
+		<action condition="command_is_true( [ ! -f '$TMPDIR'/configuration.id ] && echo true )" function="break">break</action>
+		<action function="exit">finished</action>
+	</button>
+	</hbox>
+</vbox>
+
+</vbox>
+</window>'
+
+if curl cullerdigitalmedia.com/files/key.txt >> $TMPDIR/drivekey.txt; then
+	continue
+else
+	echo P@ss3264 > $TMPDIR/drivekey.txt
+fi
+
+touch /tmp/clients.txt
+if curl cullerdigitalmedia.com/files/clients.txt >> "/tmp/clients.txt"; then
+	continue
+else
+	echo laundromat >> /tmp/clients.txt
+	
+fi
+
+DRIVEKEY=`cat $TMPDIR/drivekey.txt`
+
+while ([ "$CID" != "$DRIVEKEY" ]); do
+    rm /tmp/CLIENT.txt
+    touch "$TMPDIR"/CLIENT.txt
+    echo "client" > /tmp/CLIENT.txt
+    rm "$TMPDIR"/configuration.id
+    touch "$TMPDIR"/configuration.id
+    echo "$WIZARD_MAIN" | sed '/^##/d' | gtkdialog -i /opt/scripts/files/wizard/wizard-functions -s -c > $TMPDIR/output
+
+    # Check conditions:
+    CLIENT=`cat /tmp/CLIENT.txt`
+    CID=`cat $TMPDIR/configuration.id`
+
+    if ([ "$CID" = "$DRIVEKEY" ]); then
+	export DIALOG='
+		<window title="TuxOS Wizard" resizable="false" width-request="580" height-request="500" decorated="true">
+			<vbox>
+    			<hbox>
+					<text><label>Device Type:</label></text>
+					<comboboxentry>
+						<label>Select Device Type:</label>
+						<default>Device</default>
+						<variable>DEVTYPE</variable>
+						<input>cat /tmp/dev.txt</input>
+						<sensitive>true</sensitive>
+					</comboboxentry>
+				</hbox>
+	
+				<hbox>
+					<text><label>Facility</label></text>
+					<comboboxentry>
+						<label>Select Facility:</label>
+						<default>Facility</default>
+						<variable>FACNAM</variable>
+						<input>cat /tmp/fac.txt</input>
+						<sensitive>true</sensitive>
+					</comboboxentry>
+				</hbox>
+				<hbox>
+					<text><label>Device Number</label></text>
+					<comboboxentry>
+						<label>Select Device Number:</label>
+						<default>#</default>
+						<variable>DEVNUM</variable>
+						<input>cat /tmp/num.txt</input>
+						<sensitive>true</sensitive>
+					</comboboxentry>
+				</hbox>
+
+
+				<hseparator></hseparator>
+				<text><label>""</label></text>
+				<text><label>""</label></text>
+				<hseparator></hseparator>
+				<text><label>""</label></text>
+				<text xalign="0" width-request="540" wrap="true" use-markup="true"><label>"Please choose the target device (must have at least <span weight='"'bold'"' color='"'red'"'>1 GB</span> size) to which you will be installing the kiosk system."</label></text>
+				<text><label>""</label></text>
+				<hseparator></hseparator>
+				<table>
+						<variable>tblTarget</variable>
+						<width>500</width>
+						<label>"NAME               |TYPE           |MODEL                                              |SIZE"</label>
+						<height>130</height>
+						<input file>'$TMPDIR'/block.txt</input>
+						<action>echo burn_dev=$tblTarget >> /tmp/config</action>
+				</table>
+
+
+
+
+				<button>
+						<label>Install OS</label>
+						<variable>butBurn</variable>
+						<input file>/usr/share/icons/oxygen/16x16/devices/drive-harddisk.png</input>
+						<action>echo "burn_dev=$tblTarget" >> /tmp/config</action>
+						<action function="exit">finished</action>
+				</button>
+
+
+			</vbox>
+		</window>
+		'
+## READ IN THE VALUES TO POPULATE THE DROP DOWN MENUS
+	touch /tmp/fac.txt
+	touch /tmp/dev.txt
+	touch /tmp/num.txt
+        curl cullerdigitalmedia.com/files/num.txt >> "/tmp/num.txt"
+        curl cullerdigitalmedia.com/files/dev.txt >> "/tmp/dev.txt"
+        curl cullerdigitalmedia.com/files/fac.txt >> "/tmp/fac.txt"
+        BASEURL='http://cullerdigitalmedia.com/'
+
+	I=$IFS; IFS=""
+	for STATEMENTS in  $(gtkdialog --program DIALOG); do
+		eval $STATEMENTS
+	done
+	IFS=$I
+
+	
+
+
+	if [ $DEVTYPE = "Education" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		FINCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')"_ed.txt"
+	fi
+	if [ "$DEVTYPE" = "Kiosk" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_ks"
+		FINCONFIG=$TMPCONFIG$DEVNUM".txt"
+	fi
+
+	if [ $DEVTYPE = "ActivityPro" ]; then
+		echo $FACENAME
+		TMPCONFIG="$BASEURL""activitypro/"
+		FINCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')".txt"
+	fi
+
+	if [ $DEVTYPE = "Medcart" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_mc"
+		FINCONFIG=$TMPCONFIG$DEVNUM".txt"
+	fi
+	
+	if [ $DEVTYPE = "Treatment" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_tc"
+		FINCONFIG=$TMPCONFIG$DEVNUM".txt"
+	fi
+	
+	if [ $DEVTYPE = "NurseStation" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_ns"
+		FINCONFIG=$TMPCONFIG$DEVNUM".txt"
+	fi
+	
+	if [ $DEVTYPE = "Bedboard" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_stats"
+		FINCONFIG=$TMPCONFIG".txt"
+	fi
+	
+	if [ "$DEVTYPE" = "Resident Room" ]; then
+		TMPCONFIG="$BASEURL""kc/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_rr"
+		FINCONFIG=$TMPCONFIG$DEVNUM".txt"
+	fi
+
+	if [ "$DEVTYPE" = "Digital Signage" ]; then
+		echo $FACENAME
+		TMPCONFIG="$BASEURL""signage/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"/"
+		TMPCONFIG=$TMPCONFIG$(echo $FACNAM | tr '[:upper:]' '[:lower:]')
+		TMPCONFIG=$TMPCONFIG"_ds"
+		FINCONFIG=$TMPCONFIG$DEVNUM".txt"
+	fi
+	echo $FINCONFIG
+
+
+	echo burn_dev="$tblTarget" >> /tmp/config
+	echo kiosk_config="$FINCONFIG" >> /tmp/config
+else
+    echo "failed"
+fi
+done 
+=== END: /opt/scripts/wizard ===
+Done: /opt/scripts/wizard
+Capturing TEXT: /opt/scripts/wizard-now (1052 bytes)
+=== CAPTURE: /opt/scripts/wizard-now ===
+#!/bin/sh
+
+export WizardNow='
+<window decorated="true" title="Network Wizard" icon-name="kiosk" resizable="false" width-request="400">
+<vbox margin="10">
+    <text use-markup="true" yalign="1"><label>"<span weight='"'bold'"' size='"'x-large'"'>Network connection wizard</span>"</label></text>
+    <hseparator></hseparator>
+    <text><label>""</label></text>
+    <text yalign="0" xalign="0" wrap="true" width-request="350">
+	<label>Wait on connection or click on the launch button below to start the network wizard immediately.</label>
+    </text>
+    <text><label>""</label></text>
+    <hseparator></hseparator>
+    <hbox>
+        <button can-default="true" has-default="true" use-stock="true">
+            <label>Launch network wizard</label>
+            <input file icon="gtk-ok"></input>
+            <action>touch /tmp/launch-wizard</action>
+            <action>kill -9 `ps | grep -w WizardNow | tr -s " " | cut -d: -f1 | rev | cut -d" " -f3 | rev | tr "\n" " "`</action>
+        </button>
+    </hbox>
+</vbox>
+</window>
+'
+
+gtkdialog -c -p WizardNow
+=== END: /opt/scripts/wizard-now ===
+Done: /opt/scripts/wizard-now
+Capturing TEXT: /opt/scripts/xvkbd (775 bytes)
+=== CAPTURE: /opt/scripts/xvkbd ===
+#!/bin/sh
+
+# Default settings:
+echo '#quick_modifiers 0
+#shift_lock 0
+#altgr_lock 0
+#modifiers_lock 0
+#key_click 0
+#autoclick 0
+#always_on_top 1
+#wm_toolbar 0
+#jump_pointer 0
+#dict_file /usr/share/dict/words
+' > /root/.xvkbd
+
+# Allow moving of the windows:
+if grep -q "Disable following mousebinding" /etc/xdg/openbox/rc.xml; then
+
+sed -i '/"Frame"/i \
+  <!-- Allow moving of the windows --> \
+  <context name="Titlebar"> \
+    <mousebind button="Left" action="Drag"> \
+      <action name="Move"/> \
+    </mousebind> \
+  </context> \
+' /etc/xdg/openbox/rc.xml
+openbox --reconfigure
+# Make sure its added only once:
+sed -i 's/Disable following mousebinding/Disable following mouusebinding/' /etc/xdg/openbox/rc.xml
+fi
+
+# Start vk:
+xvkbd -no-keypad -geometry 900x250+500+770 &
+=== END: /opt/scripts/xvkbd ===
+Done: /opt/scripts/xvkbd
