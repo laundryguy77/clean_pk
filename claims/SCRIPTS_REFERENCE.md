@@ -4,6 +4,8 @@
 
 Complete inventory of scripts, their locations, and purposes in the Porteus Kiosk system.
 
+**AUDIT NOTE (2026-01-21):** ARM64-specific references have been removed as no ARM64 port exists. See AUDIT_REPORT.md for details.
+
 ---
 
 ## 1. HOOK DIRECTORIES
@@ -138,19 +140,12 @@ Lines 141+:   Printing, scheduled actions, screensaver
 Line 292:     Launch gui-app (browser)
 ```
 
-### ARM64 Boot Flow (Verified)
-
-```
-autostart → DPMS off → network wait → NTP → first-run → update-config → apply-config → local_net.d hooks → browser
-```
-
 ---
 
 ## 6. RUNTIME SCRIPTS (003-settings.xzm)
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `/opt/scripts/apply-config` | ~20 | Config parameter applier (ARM64) |
 | `/opt/scripts/gui-app` | ~18 | Browser launcher loop |
 | `/opt/scripts/persistence` | ~50 | Persistent storage setup |
 | `/opt/scripts/screen-setup` | ~400 | Dynamic screen configuration |
@@ -158,19 +153,6 @@ autostart → DPMS off → network wait → NTP → first-run → update-config 
 | `/opt/scripts/pkget` | ~20 | Secure file download utility |
 | `/opt/scripts/scheduled-action` | - | Scheduled command execution |
 | `/usr/sbin/pktunnel` | 117 | Reverse SSH tunnel to server |
-
-### apply-config (ARM64 Port)
-
-Sources the config file and runs all parameter handlers:
-
-```bash
-# Called by daemon.sh on config change, and by autostart at boot
-for handler in /opt/scripts/param-handlers/*.sh; do
-    [ -x "$handler" ] && "$handler"
-done
-```
-
-See [PARAM_HANDLERS.md](PARAM_HANDLERS.md) for handler architecture and [PARAM_REFERENCE.md](PARAM_REFERENCE.md) for parameter reference.
 
 ### gui-app Loop
 ```bash
@@ -205,7 +187,7 @@ wget --no-http-keep-alive --no-cache --no-check-certificate -q -T20 -t5 $1 -O $2
 |--------|-------|---------|
 | `/etc/rc.d/local_net.d/daemon.sh` | 65 | Remote config polling |
 | `/opt/scripts/welcome` | 617 | Network setup wizard |
-| `/opt/scripts/wizard` | ~385 | Device installation wizard |
+| `/opt/scripts/wizard` | 299 | Device installation wizard |
 | `/opt/scripts/wizard-now` | 27 | Wizard launcher |
 | `/opt/scripts/files/greyos_reboot` | 23 | Scheduled reboot |
 
@@ -219,7 +201,6 @@ Every daemon_check minutes:
 5. Compare: md5sum lconc vs rconc
 6. If different:
    - Copy rcon to lcon
-   - Call /opt/scripts/apply-config (ARM64)
    - daemon_force_reboot=yes → sleep 30s, init 6
    - daemon_message set → display notification
    - else → schedule reboot for 3:00 AM
@@ -377,14 +358,15 @@ mkisofs -o ../GreyOS_v20.iso \
 
 ## Related Documentation
 
-- [PARAM_HANDLERS.md](PARAM_HANDLERS.md) - Extensible parameter handler architecture (ARM64)
-- [PARAM_REFERENCE.md](PARAM_REFERENCE.md) - Complete parameter reference tables
-- [ARM_PORTING_NOTES.md](ARM_PORTING_NOTES.md) - ARM64 porting notes
+- [AUDIT_REPORT.md](AUDIT_REPORT.md) - Documentation audit findings
+- [BOOT_SEQUENCE.md](BOOT_SEQUENCE.md) - Boot sequence and reconfiguration analysis
+
+Note: PARAM_REFERENCE.md and PARAM_HANDLERS.md have been archived to `archived_aspirational/` as they described non-existent features.
 
 ---
 
 ## Document History
 - Created: 2026-01-12
-- Updated: 2026-01-13 - Added apply-config and parameter handler references (ARM64)
-- Updated: 2026-01-13 - Added verified ARM64 boot flow
+- Updated: 2026-01-13 - Initial script documentation
+- Updated: 2026-01-21 - Removed false ARM64 references (apply-config, param handlers, ARM64 boot flow) per audit
 - Purpose: Complete script inventory and reference

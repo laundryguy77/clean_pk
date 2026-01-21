@@ -6,6 +6,8 @@ This document traces the complete boot sequence, configuration management, and r
 
 ### Note on Custom vs Original Files
 
+**AUDIT NOTE (2026-01-21):** This document has been corrected based on codebase audit. See AUDIT_REPORT.md for details.
+
 This ISO (TuxOS_v2.iso) is a customized version of Porteus Kiosk. The following references are **custom additions** made years ago and are NOT part of the original Porteus Kiosk distribution:
 
 - `cullerdigitalmedia.com` - Custom domain
@@ -29,7 +31,7 @@ The core boot mechanism, AUFS overlay system, and module loading (sections 1-6) 
 
 **Kernel Parameters:**
 ```
-quiet first_run run_splash mem_encrypt=off amd_iommu=off
+quiet first_run run_splash
 ```
 
 ### Phase 2: Initramfs (`boot/initrd.xz`)
@@ -321,7 +323,7 @@ The boot config includes `first_run` as a kernel parameter:
 
 ```
 # isolinux.cfg / grub.cfg:
-quiet first_run run_splash mem_encrypt=off amd_iommu=off
+quiet first_run run_splash
 ```
 
 **Effect on boot (in /init):**
@@ -468,10 +470,9 @@ Establishes reverse SSH tunnel to Porteus Kiosk Server:
 
 | Priority | Module | Size | Purpose |
 |----------|--------|------|---------|
-| 1 | 000-kernel.xzm | 41M | Kernel modules, firmware |
-| 2 | 001-core.xzm | 47M | Base system (glibc, init, utils) |
-| 3 | 002-chrome.xzm | 65M | Google Chrome |
-| 4 | 003-settings.xzm | 1.2M | Configuration, startup scripts |
+| 1 | 000-kernel.xzm | 51M | Kernel modules, firmware |
+| 2 | 001-core.xzm | 63M | Base system (glibc, init, utils) |
+| 3 | 003-settings.xzm | 1.2M | Configuration, startup scripts |
 | 5 | 004-wifi.xzm | 1.8M | WiFi tools |
 | 6 | 06-fonts.xzm | 34M | Fonts |
 | 7 | 08-ssh.xzm | 1.2M | OpenSSH |
@@ -588,13 +589,12 @@ This architecture means the **burning logic is intentionally external** to preve
 
 ## 12. EMBEDDED CREDENTIALS (Security Note)
 
-The following credentials are hardcoded in the scripts:
+**NOTE:** The wizard script (299 lines) uses `cullerdigitalmedia.com` as its primary domain. Some credentials listed in earlier versions of this document referenced different line numbers and URLs that do not match the current codebase.
+
+The following credential is confirmed in the scripts:
 
 | Credential | Location | Purpose |
 |------------|----------|---------|
-| `kiosk_images:$3Cur1ty$` | wizard:12-13, 113-115 | FTP access to pod9.gsiresource.com |
-| `prestige:$3Cur1ty$` | wizard:212-214 | FTP access for prestige client |
-| `admin:412Grey$ignal412$` | wizard:208, 215 | HTTP Basic Auth for config servers |
 | `9Se-7c.fgLa` | pkget:8, pktunnel:111 | SSH password for kiosk server tunnel |
 
 ### SSH Tunnel Configuration
@@ -746,7 +746,7 @@ Would handle initial device registration and wizard launch. Likely:
 | fatal | boot/initrd.xz | 49 |
 | daemon.sh | xzm/zz-settings/etc/rc.d/local_net.d/ | 65 |
 | greyos_reboot | xzm/zz-settings/opt/scripts/files/ | 23 |
-| wizard | xzm/zz-settings/opt/scripts/ | ~385 |
+| wizard | xzm/zz-settings/opt/scripts/ | 299 |
 | welcome | xzm/zz-settings/opt/scripts/ | 617 |
 | wizard-now | xzm/zz-settings/opt/scripts/ | 27 |
 | autostart | 003-settings.xzm:/etc/xdg/openbox/ | 293 |
