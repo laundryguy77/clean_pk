@@ -8,11 +8,10 @@ This document traces the complete boot sequence, configuration management, and r
 
 This ISO (TuxOS_v2.iso) is a customized version of Porteus Kiosk. The following references are **custom additions** made years ago and are NOT part of the original Porteus Kiosk distribution:
 
-- `cullerdigitalmedia.com` - Custom domain
-- `pod9.gsiresource.com` - Custom FTP server
-- `carerite.greysignal.com` - Custom config server
-- `prestige.greysignal.com` - Custom config server
-- Associated credentials for the above services
+- `cullerdigitalmedia.com` - Custom HTTP server (verified in wizard script)
+- `carerite.greysignal.com` - Referenced in start-mon script only
+
+> **Note:** Previous documentation incorrectly claimed FTP access to `pod9.gsiresource.com` and `prestige.greysignal.com`. These were not found in the actual codebase.
 - The `zz-settings.xzm` module containing custom wizard and daemon scripts
 
 The core boot mechanism, AUFS overlay system, and module loading (sections 1-6) reflect standard Porteus Kiosk architecture.
@@ -27,15 +26,17 @@ The core boot mechanism, AUFS overlay system, and module loading (sections 1-6) 
 - `boot/isolinux/isolinux.cfg` (BIOS)
 - `boot/isolinux/grub.cfg` (UEFI)
 
-**Kernel Parameters:**
+**Kernel Parameters (ACTUAL):**
 ```
-quiet first_run run_splash mem_encrypt=off amd_iommu=off
+quiet first_run run_splash
 ```
+
+> **Note:** Previous documentation incorrectly listed `mem_encrypt=off amd_iommu=off` - these parameters do NOT exist in the actual isolinux.cfg.
 
 ### Phase 2: Initramfs (`boot/initrd.xz`)
 
 **Key Files Inside:**
-- `/init` - Main boot script (146 lines)
+- `/init` - Main boot script (145 lines)
 - `/fatal` - Error handler (49 lines)
 - `/bin/busybox` - BusyBox v1.24.2 (32-bit i386, statically linked)
 
@@ -449,31 +450,37 @@ Establishes reverse SSH tunnel to Porteus Kiosk Server:
 
 ## 8. EXTERNAL URLs
 
-### FTP Server (pod9.gsiresource.com)
-- `ftp://pod9.gsiresource.com/isofiles/drivekey.txt`
-- `ftp://pod9.gsiresource.com/isofiles/clients.txt`
-- `ftp://pod9.gsiresource.com/isofiles/num.txt`
-- `ftp://pod9.gsiresource.com/isofiles/dev.txt`
-- `ftp://pod9.gsiresource.com/isofiles/fac.txt`
+> **CORRECTION:** Previous documentation incorrectly claimed FTP access to `pod9.gsiresource.com`. The actual code uses HTTP to `cullerdigitalmedia.com`.
 
-**Credentials:** `kiosk_images` / `$3Cur1ty$`
+### Actual HTTP Server (cullerdigitalmedia.com)
+
+As verified in the wizard script (`xzm/zz-settings/opt/scripts/wizard`):
+
+- `http://cullerdigitalmedia.com/files/key.txt` - Authorization password
+- `http://cullerdigitalmedia.com/files/clients.txt` - Client list
+- `http://cullerdigitalmedia.com/files/num.txt` - Device numbers
+- `http://cullerdigitalmedia.com/files/dev.txt` - Device types
+- `http://cullerdigitalmedia.com/files/fac.txt` - Facility list
+
+**No FTP credentials are used** - the wizard uses plain HTTP via `curl`.
 
 ### HTTP Config Servers
-- `http://admin:412Grey$ignal412$@carerite.greysignal.com/`
-- `http://admin:412Grey$ignal412$@prestige.greysignal.com/`
+- `http://carerite.greysignal.com/` - Referenced in start-mon script only
 
 ---
 
 ## 9. XZM MODULE STRUCTURE
 
-| Priority | Module | Size | Purpose |
-|----------|--------|------|---------|
-| 1 | 000-kernel.xzm | 41M | Kernel modules, firmware |
-| 2 | 001-core.xzm | 47M | Base system (glibc, init, utils) |
-| 3 | 002-chrome.xzm | 65M | Google Chrome |
-| 4 | 003-settings.xzm | 1.2M | Configuration, startup scripts |
-| 5 | 004-wifi.xzm | 1.8M | WiFi tools |
-| 6 | 06-fonts.xzm | 34M | Fonts |
+> **CORRECTION:** Previous documentation listed 002-chrome.xzm which does NOT exist. Sizes have been corrected.
+
+| Priority | Module | Size | Purpose | Status |
+|----------|--------|------|---------|--------|
+| 1 | 000-kernel.xzm | 51M | Kernel modules, firmware | EXISTS |
+| 2 | 001-core.xzm | 63M | Base system (glibc, init, utils) | EXISTS |
+| 3 | 002-chrome.xzm | - | Google Chrome | ❌ DOES NOT EXIST |
+| 4 | 003-settings.xzm | 1.2M | Configuration, startup scripts | EXISTS |
+| 5 | 004-wifi.xzm | 1.6M | WiFi tools | EXISTS |
+| 6 | 06-fonts.xzm | 34M | Fonts | EXISTS |
 | 7 | 08-ssh.xzm | 1.2M | OpenSSH |
 | 8 | 09-x11vnc.xzm | 616K | VNC server |
 | 9 | firmware.xzm | 8M | Broadcom firmware |
@@ -588,14 +595,18 @@ This architecture means the **burning logic is intentionally external** to preve
 
 ## 12. EMBEDDED CREDENTIALS (Security Note)
 
+> **CORRECTION:** Previous documentation incorrectly claimed FTP credentials for `pod9.gsiresource.com`. The wizard uses HTTP to `cullerdigitalmedia.com` without authentication.
+
 The following credentials are hardcoded in the scripts:
 
-| Credential | Location | Purpose |
-|------------|----------|---------|
-| `kiosk_images:$3Cur1ty$` | wizard:12-13, 113-115 | FTP access to pod9.gsiresource.com |
-| `prestige:$3Cur1ty$` | wizard:212-214 | FTP access for prestige client |
-| `admin:412Grey$ignal412$` | wizard:208, 215 | HTTP Basic Auth for config servers |
-| `9Se-7c.fgLa` | pkget:8, pktunnel:111 | SSH password for kiosk server tunnel |
+| Credential | Location | Purpose | Verified |
+|------------|----------|---------|----------|
+| `$3Cur1ty$` | wizard:12 (as `deplvl` variable) | Authorization level marker | ✅ Exists |
+| `9Se-7c.fgLa` | pkget:8, pktunnel:111 | SSH password for kiosk server tunnel | ✅ Verified |
+
+**Removed incorrect claims:**
+- ~~`kiosk_images:$3Cur1ty$` for FTP~~ - No FTP is used; wizard uses HTTP via curl
+- ~~`prestige:$3Cur1ty$` for FTP~~ - Not found in actual wizard code
 
 ### SSH Tunnel Configuration
 

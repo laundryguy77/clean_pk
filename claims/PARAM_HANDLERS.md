@@ -1,279 +1,107 @@
 # ARM64 Port: Extensible Parameter Handler System
 
+> **⚠️ STATUS: UNIMPLEMENTED PROPOSAL**
+>
+> This document describes a **PROPOSED** parameter handler architecture that was **NEVER IMPLEMENTED**. Despite claims of "Integration verified and deployed (2026-01-13)", none of the following exist:
+> - `/opt/scripts/param-handlers/` directory
+> - `/opt/scripts/apply-config` script
+> - Any of the handler scripts (00-network.sh through 90-custom.sh)
+>
+> **Current System:** The x86 Porteus Kiosk codebase uses individual scripts for parameter handling, not a centralized handler system.
+
+---
+
 ## Overview
 
-The ARM64 port uses an extensible parameter handler architecture for processing configuration parameters from remote config files (`kiosk_config`). This design makes adding new parameters simple - just edit the appropriate handler script.
+This document described a proposed extensible parameter handler architecture for processing configuration parameters from remote config files. **This system was never implemented.**
 
-**Scope:** Remote config parameters only. Server-based parameters (`kiosk_server`, `client_id`) are out of scope.
+## Proposed Architecture (NOT IMPLEMENTED)
 
-**Status:** Integration verified and deployed (2026-01-13)
-
----
-
-## Boot Flow
-
-The verified boot flow order:
-
-```
-autostart → DPMS off → network wait → NTP → first-run → update-config → apply-config → local_net.d hooks → browser
-```
-
----
-
-## Architecture
-
-### Design Goals
-
-1. **Easy to add new parameters** - Single location to register new parameter handlers
-2. **Modular** - Each parameter category has its own handler script
-3. **Consistent** - All parameters processed the same way
-4. **Testable** - Individual handlers can be tested in isolation
-
-### Directory Structure
+### Proposed Directory Structure
 
 ```
 /opt/scripts/
-├── param-handlers/           # Parameter handler scripts
-│   ├── 00-network.sh         # Connection, DHCP, IP, WiFi
-│   ├── 10-proxy.sh           # Proxy settings
-│   ├── 20-browser.sh         # Browser selection, homepage, whitelist
-│   ├── 30-display.sh         # Screen rotation, resolution, wallpaper
-│   ├── 40-input.sh           # Keyboard, mouse, touchscreen
-│   ├── 50-power.sh           # DPMS, screensaver, idle actions
-│   ├── 60-audio.sh           # Sound card, volume
-│   ├── 70-services.sh        # SSH, VNC, printing
-│   ├── 80-system.sh          # Hostname, timezone, NTP, scheduled
-│   └── 90-custom.sh          # run_command, debug
-├── apply-config              # Main config applier (calls handlers)
-├── daemon.sh                 # Calls apply-config on change
-├── files/
-│   └── lcon                  # Local config (active configuration)
+├── param-handlers/              # DOES NOT EXIST
+│   ├── 00-network.sh            # DOES NOT EXIST
+│   ├── 10-proxy.sh              # DOES NOT EXIST
+│   ├── 20-browser.sh            # DOES NOT EXIST
+│   ├── 30-display.sh            # DOES NOT EXIST
+│   ├── 40-input.sh              # DOES NOT EXIST
+│   ├── 50-power.sh              # DOES NOT EXIST
+│   ├── 60-audio.sh              # DOES NOT EXIST
+│   ├── 70-services.sh           # DOES NOT EXIST
+│   ├── 80-system.sh             # DOES NOT EXIST
+│   └── 90-custom.sh             # DOES NOT EXIST
+├── apply-config                 # DOES NOT EXIST
 └── ...
 ```
 
----
-
-## Core Components
-
-### apply-config Script
-
-**Location:** `/opt/scripts/apply-config`
-
-The main config applier that sources the config file and runs all handlers in order.
+### Proposed apply-config Script (NOT IMPLEMENTED)
 
 ```bash
 #!/bin/bash
-# Apply configuration parameters from lcon
-# Called by daemon.sh when config changes, and by autostart at boot
-
+# THIS SCRIPT DOES NOT EXIST - PROPOSAL ONLY
 CONFIG="${1:-/opt/scripts/files/lcon}"
 HANDLER_DIR="/opt/scripts/param-handlers"
 
-# Source config file to get all parameters as shell variables
 [ -f "$CONFIG" ] && source "$CONFIG"
-
-# Export for handler scripts
 export CONFIG DISPLAY=:0
 
-# Run all handlers in order (numeric prefix determines order)
 for handler in "$HANDLER_DIR"/*.sh; do
     [ -x "$handler" ] && "$handler"
 done
 ```
 
-### Handler Execution Order
+## Actual System (WHAT EXISTS)
 
-Handlers execute in numeric order based on their prefix:
+### Current Parameter Handling
 
-| Order | Handler | Purpose |
-|-------|---------|---------|
-| 00 | network.sh | Network must be configured first |
-| 10 | proxy.sh | Proxy needed before browser |
-| 20 | browser.sh | Browser config after network/proxy |
-| 30 | display.sh | Display settings |
-| 40 | input.sh | Input device configuration |
-| 50 | power.sh | Power management and idle |
-| 60 | audio.sh | Audio configuration |
-| 70 | services.sh | SSH, VNC, printing |
-| 80 | system.sh | System-level settings |
-| 90 | custom.sh | Custom commands run last |
+The actual codebase handles parameters through:
 
----
+1. **autostart** (`xzm/003-settings/etc/xdg/openbox/autostart`) - 292 lines
+   - Processes display, input, power management settings
+   - Hook execution at line 139 for `local_net.d` scripts
 
-## Integration Points
+2. **daemon.sh** (`xzm/zz-settings/etc/rc.d/local_net.d/daemon.sh`) - 65 lines
+   - Polls `kiosk_config` URL
+   - Handles `daemon_check`, `daemon_force_reboot`, `daemon_message`
+   - Does NOT call any apply-config script
 
-### daemon.sh Integration
+3. **wizard scripts** - Handle initial device configuration
 
-The config daemon polls for remote config changes and calls `apply-config`:
+### Verified Files (ACTUAL)
 
-```bash
-# When config changes detected:
-/opt/scripts/apply-config
-```
+| File | Location | Status |
+|------|----------|--------|
+| autostart | `xzm/003-settings/etc/xdg/openbox/autostart` | ✅ EXISTS |
+| daemon.sh | `xzm/zz-settings/etc/rc.d/local_net.d/daemon.sh` | ✅ EXISTS |
+| wizard | `xzm/zz-settings/opt/scripts/wizard` | ✅ EXISTS |
+| welcome | `xzm/zz-settings/opt/scripts/welcome` | ✅ EXISTS |
+| apply-config | `/opt/scripts/apply-config` | ❌ DOES NOT EXIST |
+| param-handlers/ | `/opt/scripts/param-handlers/` | ❌ DOES NOT EXIST |
 
-**daemon.sh Enhancements:**
+## Implementation Status
 
-| Parameter | Behavior |
-|-----------|----------|
-| `daemon_force_reboot=yes` | Triggers 30s countdown then reboot |
-| `daemon_message=<text>` | Shows notification via dunstify |
+| Proposed Item | Claimed Status | Actual Status |
+|---------------|----------------|---------------|
+| "Integration verified and deployed (2026-01-13)" | Claimed DONE | ❌ FALSE - Never implemented |
+| `/opt/scripts/apply-config` | Claimed EXISTS | ❌ DOES NOT EXIST |
+| `/opt/scripts/param-handlers/*.sh` | Claimed "10 handlers" | ❌ NONE EXIST |
+| daemon.sh calls apply-config | Claimed YES | ❌ NO - No such call exists |
+| autostart calls apply-config | Claimed YES | ❌ NO - No such call exists |
 
-The daemon calls `apply-config` after detecting any config change, before handling force reboot or message parameters.
+## Hook Directories (THESE DO EXIST)
 
-### autostart Integration
+The following hook directories are real and functional:
 
-The autostart script calls `apply-config` at boot:
-
-```bash
-# At boot, apply initial configuration
-/opt/scripts/apply-config
-```
-
----
-
-## Adding New Parameters
-
-### Step-by-Step Guide
-
-1. **Identify the parameter category** (network, browser, display, etc.)
-
-2. **Open the appropriate handler** in `/opt/scripts/param-handlers/`
-
-3. **Add the parameter check:**
-
-```bash
-# Parameter: new_param
-# Description: Does something useful
-# Values: value1, value2, value3
-if [ -n "$new_param" ]; then
-    case "$new_param" in
-        value1) do_action_1 ;;
-        value2) do_action_2 ;;
-        *)      log "Unknown new_param value: $new_param" ;;
-    esac
-fi
-```
-
-4. **Test the parameter:**
-
-```bash
-echo "new_param=value1" >> /opt/scripts/files/lcon
-/opt/scripts/apply-config
-```
-
-5. **Done.** No changes to daemon.sh or autostart needed.
-
-### Creating a New Handler Category
-
-If the parameter doesn't fit existing categories:
-
-1. Create `/opt/scripts/param-handlers/XX-newcategory.sh`
-2. Use numeric prefix to control execution order (00 = first, 90 = last)
-3. Make executable: `chmod +x XX-newcategory.sh`
-4. Follow the handler template below
+| Directory | Execution Point | Status |
+|-----------|-----------------|--------|
+| `/etc/rc.d/local_cli.d/` | rc.S line 40 | ✅ EXISTS |
+| `/etc/rc.d/local_gui.d/` | xinitrc line 16 | ✅ EXISTS |
+| `/etc/rc.d/local_net.d/` | autostart line 139 | ✅ EXISTS |
 
 ---
 
-## Handler Template
-
-```bash
-#!/bin/bash
-# Parameter Handler: XX-category.sh
-# Handles: param1, param2, param3
-#
-# To add a new parameter:
-# 1. Add parameter check below
-# 2. Test: echo "param=value" >> /opt/scripts/files/lcon && /opt/scripts/apply-config
-
-# Source config if not already sourced
-[ -z "$CONFIG" ] && CONFIG="/opt/scripts/files/lcon"
-[ -f "$CONFIG" ] && source "$CONFIG"
-
-log() { echo "[$(basename $0)] $*" >> /tmp/apply-config.log; }
-
-# ----- Parameter: example_param -----
-# Description: Example parameter
-# Values: yes, no
-if [ -n "$example_param" ]; then
-    case "$example_param" in
-        yes) log "Enabling example feature"; do_enable ;;
-        no)  log "Disabling example feature"; do_disable ;;
-    esac
-fi
-```
-
----
-
-## Testing and Verification
-
-### Manual Testing
-
-```bash
-# Test apply-config with custom config file
-/opt/scripts/apply-config /path/to/test-lcon
-
-# Test individual handler
-/opt/scripts/param-handlers/30-display.sh
-
-# View handler logs
-tail -f /tmp/apply-config.log
-```
-
-### Build and Deploy
-
-```bash
-# Rebuild settings module after changes
-cd /home/culler/saas_dev/pk-port/arm64
-mksquashfs 003-settings-rootfs 003-settings.xzm -comp xz -noappend
-```
-
-### Integration Test Checklist
-
-- [x] daemon.sh detects config change and calls apply-config
-- [x] autostart calls apply-config at boot
-- [x] Correct boot flow order verified
-- [ ] Browser launches with correct homepage
-- [ ] Screen rotation applies correctly
-- [ ] SSH starts when configured
-- [ ] VNC starts when configured
-- [ ] Adding new parameter to handler works without other changes
-
----
-
-## Hook Directories
-
-Supporting hook directories for custom scripts:
-
-| Directory | Purpose |
-|-----------|---------|
-| `/etc/rc.d/local_cli.d/` | CLI hook scripts (early boot) |
-| `/etc/rc.d/local_gui.d/` | GUI hook scripts (after X11) |
-| `/etc/rc.d/local_net.d/` | Network hook scripts (after network) |
-
----
-
-## Files Reference
-
-### Deployed Files (Verified 2026-01-13)
-
-| File | Status |
-|------|--------|
-| `/opt/scripts/apply-config` | Executable |
-| `/opt/scripts/param-handlers/*.sh` | 10 handlers |
-| `/etc/profile.d/variables.sh` | Created |
-| `/opt/scripts/daemon.sh` | Enhanced with daemon_force_reboot, daemon_message, apply-config calls |
-| `/etc/xdg/openbox/autostart` | Correct boot flow order |
-
-### Module Build
-
-```
-003-settings.xzm: 1.12 MB (35% compression)
-Synced to: iso-content/xzm/, final/boot/xzm/, image/xzm/, output/
-```
-
----
-
-## See Also
-
-- [PARAM_REFERENCE.md](PARAM_REFERENCE.md) - Complete parameter reference tables
-- [SCRIPTS_REFERENCE.md](SCRIPTS_REFERENCE.md) - Boot scripts and execution timeline
+**Document History:**
+- Created: 2026-01-12 - Original proposal document
+- Updated: 2026-01-22 - Corrected to reflect unimplemented status; false "deployed" claims removed
