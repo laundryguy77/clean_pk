@@ -1,10 +1,12 @@
 # Porteus Kiosk Parameter Reference
 
-Complete reference of remote config parameters supported by the ARM64 port. Based on official Porteus Kiosk parameters from https://porteus-kiosk.org/parameters.html
+Complete reference of remote config parameters used by Porteus Kiosk. Based on official Porteus Kiosk parameters from https://porteus-kiosk.org/parameters.html
+
+> **Note:** These parameters are processed by various scripts throughout the system (autostart, daemon.sh, wizard scripts, etc.) rather than centralized handlers. Some parameters are used by the wizard during initial setup, while others are applied at runtime.
 
 ---
 
-## Connection Settings (00-network.sh)
+## Connection Settings
 
 | Parameter | Description | Values |
 |-----------|-------------|--------|
@@ -29,7 +31,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Proxy Settings (10-proxy.sh)
+## Proxy Settings
 
 | Parameter | Description | Values |
 |-----------|-------------|--------|
@@ -39,7 +41,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Browser Settings (20-browser.sh)
+## Browser Settings
 
 ### Core Browser Parameters
 
@@ -105,7 +107,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Display Settings (30-display.sh)
+## Display Settings
 
 | Parameter | Description | Values |
 |-----------|-------------|--------|
@@ -115,7 +117,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Input Settings (40-input.sh)
+## Input Settings
 
 ### Keyboard
 
@@ -143,7 +145,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Power/Idle Settings (50-power.sh)
+## Power/Idle Settings
 
 ### Screensaver
 
@@ -177,7 +179,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Audio Settings (60-audio.sh)
+## Audio Settings
 
 | Parameter | Description | Values |
 |-----------|-------------|--------|
@@ -187,7 +189,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Services (70-services.sh)
+## Services
 
 ### SSH
 
@@ -221,7 +223,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## System Settings (80-system.sh)
+## System Settings
 
 ### Identity
 
@@ -272,7 +274,7 @@ Complete reference of remote config parameters supported by the ARM64 port. Base
 
 ---
 
-## Custom/Debug (90-custom.sh)
+## Custom/Debug
 
 | Parameter | Description | Values |
 |-----------|-------------|--------|
@@ -298,25 +300,7 @@ These special parameters are handled by the config daemon directly:
 
 ---
 
-## Handler Quick Reference
-
-| Handler File | Parameters |
-|--------------|------------|
-| `00-network.sh` | connection, dhcp, ip_address, network_interface, gateway, dns, wifi, 802.1x |
-| `10-proxy.sh` | proxy_config, proxy, proxy_exceptions |
-| `20-browser.sh` | browser, homepage, whitelist, blacklist, zoom, user agent, certificates |
-| `30-display.sh` | wallpaper, screen_settings, screen_rotate |
-| `40-input.sh` | keyboard layout, hide_mouse, mouse_speed, touchscreen_calibration |
-| `50-power.sh` | screensaver, dpms_idle, suspend_idle, halt_idle, session_idle |
-| `60-audio.sh` | default_sound_card, default_microphone, volume_level |
-| `70-services.sh` | SSH, VNC, printing configuration |
-| `80-system.sh` | hostname, timezone, ntp_server, swapfile, zRAM, firewall, WoL |
-| `90-custom.sh` | run_command, debug, gpu_driver, watchdog |
-
----
-
 ## See Also
 
-- [PARAM_HANDLERS.md](PARAM_HANDLERS.md) - Handler architecture and how to add parameters
 - [SCRIPTS_REFERENCE.md](SCRIPTS_REFERENCE.md) - Boot scripts and execution timeline
 - Official documentation: https://porteus-kiosk.org/parameters.html

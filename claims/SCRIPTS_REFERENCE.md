@@ -138,10 +138,10 @@ Lines 141+:   Printing, scheduled actions, screensaver
 Line 292:     Launch gui-app (browser)
 ```
 
-### ARM64 Boot Flow (Verified)
+### Boot Flow
 
 ```
-autostart → DPMS off → network wait → NTP → first-run → update-config → apply-config → local_net.d hooks → browser
+autostart → DPMS off → network wait → NTP → first-run check → update-config check → local_net.d hooks → browser
 ```
 
 ---
@@ -150,8 +150,7 @@ autostart → DPMS off → network wait → NTP → first-run → update-config 
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `/opt/scripts/apply-config` | ~20 | Config parameter applier (ARM64) |
-| `/opt/scripts/gui-app` | ~18 | Browser launcher loop |
+| `/opt/scripts/gui-app` | 19 | Browser launcher loop |
 | `/opt/scripts/persistence` | ~50 | Persistent storage setup |
 | `/opt/scripts/screen-setup` | ~400 | Dynamic screen configuration |
 | `/opt/scripts/session-manager` | ~100 | Password authentication |
@@ -159,29 +158,15 @@ autostart → DPMS off → network wait → NTP → first-run → update-config 
 | `/opt/scripts/scheduled-action` | - | Scheduled command execution |
 | `/usr/sbin/pktunnel` | 117 | Reverse SSH tunnel to server |
 
-### apply-config (ARM64 Port)
-
-Sources the config file and runs all parameter handlers:
-
-```bash
-# Called by daemon.sh on config change, and by autostart at boot
-for handler in /opt/scripts/param-handlers/*.sh; do
-    [ -x "$handler" ] && "$handler"
-done
-```
-
-See [PARAM_HANDLERS.md](PARAM_HANDLERS.md) for handler architecture and [PARAM_REFERENCE.md](PARAM_REFERENCE.md) for parameter reference.
-
 ### gui-app Loop
 ```bash
 while true; do
-    # Clean guest home
-    rm -rf /home/guest
-    cp -a /opt/scripts/guest /home/guest
-    chown -R guest:guest /home/guest
-
+    rm -rf /home/guest /tmp/*
+    cp -a /opt/scripts/guest /home
+    sync
     # Launch browser
     su - guest -c "firefox"
+    sync
 done
 ```
 
@@ -219,7 +204,6 @@ Every daemon_check minutes:
 5. Compare: md5sum lconc vs rconc
 6. If different:
    - Copy rcon to lcon
-   - Call /opt/scripts/apply-config (ARM64)
    - daemon_force_reboot=yes → sleep 30s, init 6
    - daemon_message set → display notification
    - else → schedule reboot for 3:00 AM
@@ -327,7 +311,7 @@ See [PARAM_REFERENCE.md](PARAM_REFERENCE.md) for complete parameter documentatio
 
 ## 10. ISO BUILD SCRIPT (make_iso.sh)
 
-**Location:** `/home/culler/saas_dev/pk-port/iso/make_iso.sh`
+**Location:** `make_iso.sh` (project root)
 
 ### mkisofs Command
 ```bash
@@ -377,14 +361,12 @@ mkisofs -o ../GreyOS_v20.iso \
 
 ## Related Documentation
 
-- [PARAM_HANDLERS.md](PARAM_HANDLERS.md) - Extensible parameter handler architecture (ARM64)
 - [PARAM_REFERENCE.md](PARAM_REFERENCE.md) - Complete parameter reference tables
-- [ARM_PORTING_NOTES.md](ARM_PORTING_NOTES.md) - ARM64 porting notes
+- [ARM_PORTING_NOTES.md](ARM_PORTING_NOTES.md) - ARM64 porting notes (planning document)
 
 ---
 
 ## Document History
 - Created: 2026-01-12
-- Updated: 2026-01-13 - Added apply-config and parameter handler references (ARM64)
-- Updated: 2026-01-13 - Added verified ARM64 boot flow
+- Updated: 2026-01-22 - Removed references to non-existent apply-config and param-handlers
 - Purpose: Complete script inventory and reference

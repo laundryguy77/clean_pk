@@ -1,5 +1,11 @@
 # ARM Porting Notes - Porteus Kiosk to Raspberry Pi
 
+> **PLANNING DOCUMENT - NOT IMPLEMENTED**
+>
+> This document describes theoretical requirements for an ARM64 port that **has not been implemented**.
+> The current codebase is x86-only. This document is retained for reference if ARM64 porting is
+> undertaken in the future.
+
 ## Overview
 
 This document details the x86-specific dependencies in Porteus Kiosk that must be addressed for ARM64 (aarch64) porting.
@@ -301,4 +307,5 @@ CONFIG_BCMGENET=y          # RPi 4 ethernet
 
 ## Document History
 - Created: 2026-01-12
-- Purpose: Track x86 dependencies and ARM64 porting requirements
+- Updated: 2026-01-22 - Added planning document disclaimer
+- Purpose: Track x86 dependencies and ARM64 porting requirements (planning only, not implemented)

@@ -29,7 +29,7 @@ The core boot mechanism, AUFS overlay system, and module loading (sections 1-6) 
 
 **Kernel Parameters:**
 ```
-quiet first_run run_splash mem_encrypt=off amd_iommu=off
+quiet first_run run_splash
 ```
 
 ### Phase 2: Initramfs (`boot/initrd.xz`)
@@ -468,17 +468,18 @@ Establishes reverse SSH tunnel to Porteus Kiosk Server:
 
 | Priority | Module | Size | Purpose |
 |----------|--------|------|---------|
-| 1 | 000-kernel.xzm | 41M | Kernel modules, firmware |
-| 2 | 001-core.xzm | 47M | Base system (glibc, init, utils) |
-| 3 | 002-chrome.xzm | 65M | Google Chrome |
-| 4 | 003-settings.xzm | 1.2M | Configuration, startup scripts |
-| 5 | 004-wifi.xzm | 1.8M | WiFi tools |
-| 6 | 06-fonts.xzm | 34M | Fonts |
-| 7 | 08-ssh.xzm | 1.2M | OpenSSH |
-| 8 | 09-x11vnc.xzm | 616K | VNC server |
-| 9 | firmware.xzm | 8M | Broadcom firmware |
-| 10 | NextWindow-5.3.9.xzm | 940K | Touch driver |
+| 1 | 000-kernel.xzm | 51M | Kernel modules, firmware |
+| 2 | 001-core.xzm | 64M | Base system (glibc, init, utils) |
+| 3 | 003-settings.xzm | 1.2M | Configuration, startup scripts |
+| 4 | 004-wifi.xzm | 1.6M | WiFi tools |
+| 5 | 06-fonts.xzm | 34M | Fonts |
+| 6 | 08-ssh.xzm | 1.4M | OpenSSH |
+| 7 | 09-x11vnc.xzm | 620K | VNC server |
+| 8 | firmware.xzm | 8M | Broadcom firmware |
+| 9 | NextWindow-5.10.25.xzm | 940K | Touch driver |
 | Last | zz-settings.xzm | 12K | Custom scripts overlay |
+
+> **Note:** Additional modules like `002-chrome.xzm` (Google Chrome browser) may be downloaded from the Kiosk Server during reconfiguration but are not included in the base ISO. The screenshots showing "Downloading 002-chrome.xzm" in Section 5 reference this server-provisioned component.
 
 ---
 
@@ -751,7 +752,7 @@ Would handle initial device registration and wizard launch. Likely:
 | wizard-now | xzm/zz-settings/opt/scripts/ | 27 |
 | autostart | 003-settings.xzm:/etc/xdg/openbox/ | 293 |
 | pkget | 003-settings.xzm:/opt/scripts/ | ~20 |
-| pktunnel | 003-settings.xzm:/usr/sbin/ | 117 |
+| pktunnel | 003-settings.xzm:/usr/sbin/ | 116 |
 | rc.S | 003-settings.xzm:/etc/rc.d/ | ~80 |
 | xinitrc | 003-settings.xzm:/etc/X11/xinit/ | ~15 |
 | screen-setup | 003-settings.xzm:/opt/scripts/ | ~400 |
