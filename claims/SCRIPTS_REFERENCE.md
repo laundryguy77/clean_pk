@@ -4,6 +4,8 @@
 
 Complete inventory of scripts, their locations, and purposes in the Porteus Kiosk system.
 
+**AUDIT NOTE (2026-01-21):** ARM64-specific references have been removed as no ARM64 port exists. See AUDIT_REPORT.md for details.
+
 ---
 
 ## 1. HOOK DIRECTORIES
@@ -77,15 +79,15 @@ These scripts are checked at boot but are **NOT in the base ISO** - they're down
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `/etc/rc.d/rc.S` | 44 | System initialization |
-| `/etc/rc.d/rc.M` | 71 | Multi-user setup |
-| `/etc/rc.d/rc.4` | 18 | GUI startup |
-| `/etc/rc.d/rc.inet1` | 17 | Network interface setup |
-| `/etc/rc.d/rc.FireWall` | 20 | Firewall rules |
-| `/etc/rc.d/rc.sound` | 36 | Audio initialization |
-| `/etc/rc.d/rc.sshd` | 10 | SSH daemon control |
-| `/etc/rc.d/rc.vncd` | 26 | VNC daemon control |
-| `/etc/rc.d/rc.stunnel` | 26 | SSL tunnel control |
+| `/etc/rc.d/rc.S` | ~45 | System initialization |
+| `/etc/rc.d/rc.M` | ~72 | Multi-user setup |
+| `/etc/rc.d/rc.4` | ~19 | GUI startup |
+| `/etc/rc.d/rc.inet1` | ~18 | Network interface setup |
+| `/etc/rc.d/rc.FireWall` | ~60 | Firewall rules |
+| `/etc/rc.d/rc.sound` | ~40 | Audio initialization |
+| `/etc/rc.d/rc.sshd` | ~20 | SSH daemon control |
+| `/etc/rc.d/rc.vncd` | ~20 | VNC daemon control |
+| `/etc/rc.d/rc.stunnel` | ~20 | SSL tunnel control |
 
 ### rc.S Flow
 1. Install busybox applets
@@ -138,43 +140,19 @@ Lines 141+:   Printing, scheduled actions, screensaver
 Line 292:     Launch gui-app (browser)
 ```
 
-### Boot Flow
-
-> **Note:** Previous documentation claimed an "ARM64 Boot Flow" with `apply-config` - this script does NOT exist.
-
-```
-autostart → DPMS off → network wait → NTP → first-run check → update-config check → local_net.d hooks → browser
-```
-
 ---
 
 ## 6. RUNTIME SCRIPTS (003-settings.xzm)
 
-| Script | Lines | Purpose | Status |
-|--------|-------|---------|--------|
-| `/opt/scripts/apply-config` | - | Config parameter applier (ARM64) | ❌ DOES NOT EXIST |
-| `/opt/scripts/gui-app` | 18 | Browser launcher loop | ✅ EXISTS |
-| `/opt/scripts/persistence` | ~50 | Persistent storage setup | ✅ EXISTS |
-| `/opt/scripts/screen-setup` | ~400 | Dynamic screen configuration | ✅ EXISTS |
-| `/opt/scripts/session-manager` | ~100 | Password authentication | ✅ EXISTS |
-| `/opt/scripts/pkget` | 25 | Secure file download utility | ✅ EXISTS |
-| `/opt/scripts/scheduled-action` | - | Scheduled command execution | ✅ EXISTS |
-| `/usr/sbin/pktunnel` | 117 | Reverse SSH tunnel to server | ✅ EXISTS |
-
-### apply-config (PROPOSED - NOT IMPLEMENTED)
-
-> **⚠️ The apply-config script and param-handlers directory do NOT exist in this codebase.**
-
-The following was proposed but never implemented:
-
-```bash
-# THIS DOES NOT EXIST - PROPOSAL ONLY
-for handler in /opt/scripts/param-handlers/*.sh; do
-    [ -x "$handler" ] && "$handler"
-done
-```
-
-See [PARAM_HANDLERS.md](PARAM_HANDLERS.md) for details on what was proposed vs actual.
+| Script | Lines | Purpose |
+|--------|-------|---------|
+| `/opt/scripts/gui-app` | ~18 | Browser launcher loop |
+| `/opt/scripts/persistence` | ~50 | Persistent storage setup |
+| `/opt/scripts/screen-setup` | ~400 | Dynamic screen configuration |
+| `/opt/scripts/session-manager` | ~100 | Password authentication |
+| `/opt/scripts/pkget` | ~20 | Secure file download utility |
+| `/opt/scripts/scheduled-action` | - | Scheduled command execution |
+| `/usr/sbin/pktunnel` | 117 | Reverse SSH tunnel to server |
 
 ### gui-app Loop
 ```bash
@@ -209,7 +187,7 @@ wget --no-http-keep-alive --no-cache --no-check-certificate -q -T20 -t5 $1 -O $2
 |--------|-------|---------|
 | `/etc/rc.d/local_net.d/daemon.sh` | 65 | Remote config polling |
 | `/opt/scripts/welcome` | 617 | Network setup wizard |
-| `/opt/scripts/wizard` | ~385 | Device installation wizard |
+| `/opt/scripts/wizard` | 299 | Device installation wizard |
 | `/opt/scripts/wizard-now` | 27 | Wizard launcher |
 | `/opt/scripts/files/greyos_reboot` | 23 | Scheduled reboot |
 
@@ -225,10 +203,8 @@ Every daemon_check minutes:
    - Copy rcon to lcon
    - daemon_force_reboot=yes → sleep 30s, init 6
    - daemon_message set → display notification
-   - else → schedule reboot for 3:00 AM via greyos_reboot
+   - else → schedule reboot for 3:00 AM
 ```
-
-> **Note:** Previous documentation claimed daemon.sh calls `/opt/scripts/apply-config` - this is incorrect. That script does not exist.
 
 ### greyos_reboot Scheduled Reboot
 ```bash
@@ -332,9 +308,7 @@ See [PARAM_REFERENCE.md](PARAM_REFERENCE.md) for complete parameter documentatio
 
 ## 10. ISO BUILD SCRIPT (make_iso.sh)
 
-**Location:** Project root (`/home/user/clean_pk/make_iso.sh`)
-
-> **Note:** Previous documentation listed an incorrect path.
+**Location:** `/home/culler/saas_dev/pk-port/iso/make_iso.sh`
 
 ### mkisofs Command
 ```bash
@@ -384,14 +358,15 @@ mkisofs -o ../GreyOS_v20.iso \
 
 ## Related Documentation
 
-- [PARAM_HANDLERS.md](PARAM_HANDLERS.md) - Parameter handler architecture (PROPOSED - NOT IMPLEMENTED)
-- [PARAM_REFERENCE.md](PARAM_REFERENCE.md) - Parameter reference (PROPOSED - NOT IMPLEMENTED)
-- [ARM_PORTING_NOTES.md](ARM_PORTING_NOTES.md) - ARM64 porting analysis (ACCURATE)
+- [AUDIT_REPORT.md](AUDIT_REPORT.md) - Documentation audit findings
+- [BOOT_SEQUENCE.md](BOOT_SEQUENCE.md) - Boot sequence and reconfiguration analysis
+
+Note: PARAM_REFERENCE.md and PARAM_HANDLERS.md have been archived to `archived_aspirational/` as they described non-existent features.
 
 ---
 
 ## Document History
 - Created: 2026-01-12
-- Updated: 2026-01-13 - Added apply-config and parameter handler references (ARM64) - *Note: These features were never implemented*
-- Updated: 2026-01-22 - Corrected inaccurate claims; marked unimplemented features; fixed line counts and paths
+- Updated: 2026-01-13 - Initial script documentation
+- Updated: 2026-01-21 - Removed false ARM64 references (apply-config, param handlers, ARM64 boot flow) per audit
 - Purpose: Complete script inventory and reference
