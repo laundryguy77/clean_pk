@@ -138,19 +138,13 @@ Lines 141+:   Printing, scheduled actions, screensaver
 Line 292:     Launch gui-app (browser)
 ```
 
-### Boot Flow
-
-```
-autostart → DPMS off → network wait → NTP → first-run check → update-config check → local_net.d hooks → browser
-```
-
 ---
 
 ## 6. RUNTIME SCRIPTS (003-settings.xzm)
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `/opt/scripts/gui-app` | 19 | Browser launcher loop |
+| `/opt/scripts/gui-app` | ~18 | Browser launcher loop |
 | `/opt/scripts/persistence` | ~50 | Persistent storage setup |
 | `/opt/scripts/screen-setup` | ~400 | Dynamic screen configuration |
 | `/opt/scripts/session-manager` | ~100 | Password authentication |
@@ -161,12 +155,13 @@ autostart → DPMS off → network wait → NTP → first-run check → update-c
 ### gui-app Loop
 ```bash
 while true; do
-    rm -rf /home/guest /tmp/*
-    cp -a /opt/scripts/guest /home
-    sync
+    # Clean guest home
+    rm -rf /home/guest
+    cp -a /opt/scripts/guest /home/guest
+    chown -R guest:guest /home/guest
+
     # Launch browser
     su - guest -c "firefox"
-    sync
 done
 ```
 
@@ -311,7 +306,7 @@ See [PARAM_REFERENCE.md](PARAM_REFERENCE.md) for complete parameter documentatio
 
 ## 10. ISO BUILD SCRIPT (make_iso.sh)
 
-**Location:** `make_iso.sh` (project root)
+**Location:** `/home/culler/saas_dev/pk-port/iso/make_iso.sh`
 
 ### mkisofs Command
 ```bash
@@ -361,12 +356,11 @@ mkisofs -o ../GreyOS_v20.iso \
 
 ## Related Documentation
 
-- [PARAM_REFERENCE.md](PARAM_REFERENCE.md) - Complete parameter reference tables
-- [ARM_PORTING_NOTES.md](ARM_PORTING_NOTES.md) - ARM64 porting notes (planning document)
+- [BOOT_SEQUENCE.md](BOOT_SEQUENCE.md) - Complete boot sequence analysis
+- [BINARY_ANALYSIS.md](BINARY_ANALYSIS.md) - Analysis of first-run and update-config binaries
 
 ---
 
 ## Document History
 - Created: 2026-01-12
-- Updated: 2026-01-22 - Removed references to non-existent apply-config and param-handlers
-- Purpose: Complete script inventory and reference
+- Purpose: Complete script inventory and reference for Porteus Kiosk

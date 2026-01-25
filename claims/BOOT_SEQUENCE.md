@@ -622,18 +622,7 @@ Options: -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null
 
 ---
 
-## 13. RASPBERRY PI PORTING NOTES
-
-See `docs/ARM_PORTING_NOTES.md` for detailed ARM porting analysis including:
-- x86-specific code locations in /init (lspci, uvesafb, v86d)
-- Library and loader path changes for aarch64
-- Kernel and module rebuild requirements
-- RPi boot architecture differences (U-Boot vs isolinux)
-- Estimated 2,400+ binaries requiring recompilation
-
----
-
-## 14. KNOWLEDGE GAPS
+## 13. KNOWLEDGE GAPS
 
 ### kiosk.sgn File
 
@@ -682,7 +671,7 @@ These scripts are executed at boot if present, but are **NOT included in the bas
 
 ---
 
-## 15. WRITING REPLACEMENT SCRIPTS
+## 14. WRITING REPLACEMENT SCRIPTS
 
 Based on screenshots and analysis, we have enough information to write our own versions of the server-provisioned scripts.
 
@@ -734,13 +723,12 @@ Would handle initial device registration and wizard launch. Likely:
 
 ---
 
-## 16. RELATED DOCUMENTATION
+## 15. RELATED DOCUMENTATION
 
 | Document | Location | Purpose |
 |----------|----------|---------|
-| ARM Porting Notes | `docs/ARM_PORTING_NOTES.md` | x86 dependencies, ARM64 requirements |
-| Scripts Reference | `docs/SCRIPTS_REFERENCE.md` | Complete script inventory |
-| This Document | `KIOSK_BOOT_ANALYSIS.md` | Boot sequence and architecture |
+| Scripts Reference | `SCRIPTS_REFERENCE.md` | Complete script inventory |
+| This Document | `BOOT_SEQUENCE.md` | Boot sequence and architecture |
 
 ---
 
@@ -749,7 +737,7 @@ Would handle initial device registration and wizard launch. Likely:
 - Updated: 2026-01-12 - Added complete reconfiguration flow, resolved gaps, documented server-provisioned scripts
 - Updated: 2026-01-12 - Documented observed reconfiguration process from screenshots (burning to partition 2, component downloads)
 - Updated: 2026-01-12 - Split documentation into multiple files, added replacement script templates, comprehensive agent exploration
-- Purpose: Trace boot and reconfiguration process for ARM porting project
+- Purpose: Trace boot and reconfiguration process for Porteus Kiosk
 
 ## Files Analyzed
 

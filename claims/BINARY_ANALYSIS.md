@@ -211,8 +211,11 @@ You can replace these with shell scripts that:
 # Update extras with persistent settings
 ```
 
+<<<<<<< HEAD
 These templates describe the conceptual approach for replacement scripts if the proprietary binaries need to be replicated.
 
+=======
+>>>>>>> origin/claude/setup-iso-baseline-y4yfs
 ---
 
 ## Key URLs for TuxOS

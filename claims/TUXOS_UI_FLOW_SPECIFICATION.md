@@ -18,7 +18,7 @@
 3. [Boot Sequence to UI](#3-boot-sequence-to-ui)
 4. [Complete UI Flow Diagram](#4-complete-ui-flow-diagram)
 5. [Phase 1: Autostart and Network Wait](#5-phase-1-autostart-and-network-wait)
-6. [Phase 2: First-Run Binary](#6-phase-2-first-run-binary)
+6. [Phase 2: First-Run Script](#6-phase-2-first-run-script)
 7. [Phase 3: Wizard-Now Prompt](#7-phase-3-wizard-now-prompt)
 8. [Phase 4: Network Wizard (welcome)](#8-phase-4-network-wizard-welcome)
 9. [Phase 5: TuxOS Authorization (wizard)](#9-phase-5-tuxos-authorization-wizard)
@@ -72,7 +72,7 @@ BOOT → X11 Starts → Openbox → Autostart
                  │
                  ▼
       ┌──────────────────┐
-      │    first-run     │ (proprietary binary, server-provisioned)
+      │    first-run     │ (orchestrator script)
       └────────┬─────────┘
                │
                ▼
@@ -120,7 +120,7 @@ BOOT → X11 Starts → Openbox → Autostart
 | Order | File | Location | Purpose |
 |-------|------|----------|---------|
 | 1 | `autostart` | `/etc/xdg/openbox/autostart` | X11 session initialization, network wait, launches first-run |
-| 2 | `first-run` | `/opt/scripts/first-run` | Orchestrates wizard flow (proprietary binary, not in base ISO) |
+| 2 | `first-run` | `/opt/scripts/first-run` | Orchestrates wizard flow, validates config |
 | 3 | `wizard-now` | `/opt/scripts/wizard-now` | Initial prompt with "Launch Network Wizard" button |
 | 4 | `welcome` | `/opt/scripts/welcome` | Network configuration wizard (GTKDialog notebook with 8 pages; current UI uses subset: Ethernet/Wifi/Confirmation) |
 | 5 | `wizard` | `/opt/scripts/wizard` | TuxOS authorization + device configuration |
@@ -130,6 +130,7 @@ BOOT → X11 Starts → Openbox → Autostart
 | File | Location | Purpose |
 |------|----------|---------|
 | `wizard-functions` | `/opt/scripts/files/wizard/wizard-functions` | GTKDialog helper functions library |
+| `lcon.default` | `/opt/scripts/files/lcon.default` | Default configuration template |
 | `keyboards.txt` | `/opt/scripts/files/wizard/keyboards.txt` | Keyboard layout options |
 | `timezones.txt` | `/opt/scripts/files/wizard/timezones.txt` | Timezone options |
 
@@ -160,13 +161,10 @@ BOOT → X11 Starts → Openbox → Autostart
 ### 3.1 Kernel to X11
 
 ```
-BIOS/UEFI
+BIOS/UEFI → isolinux/GRUB
          │
          ▼
-    isolinux/GRUB bootloader
-         │
-         ▼
-    vmlinuz (Linux kernel x86_64)
+    vmlinuz (Linux 5.10.25-kiosk x86_64)
          │
          ▼
     initrd.xz (initramfs)
@@ -176,7 +174,7 @@ BIOS/UEFI
          └── switch_root → /sbin/init
                 │
                 ▼
-         /sbin/init (custom, busybox sh)
+         /sbin/init
                 │
                 ├── Mount /proc, /sys, /dev
                 ├── Run /etc/rc.d/rc.S (system init)
@@ -805,7 +803,7 @@ autostart begins
 
 ---
 
-## 6. Phase 2: First-Run Binary
+## 6. Phase 2: First-Run Script
 
 ### File: `/opt/scripts/first-run`
 
@@ -1696,7 +1694,7 @@ kiosk_config=http://cullerdigitalmedia.com/kc/sunrise/sunrise_ks3.txt
 | Stage | File | Purpose |
 |-------|------|---------|
 | Wizard output | `/tmp/config` | Temporary, merged network + device config |
-| Permanent storage | `/opt/scripts/files/lcon` | Saved by first-run binary |
+| Permanent storage | `/opt/scripts/files/lcon` | Saved by first-run script |
 | Comparison copy | `/opt/scripts/files/lconc` | For daemon.sh change detection |
 
 ---
