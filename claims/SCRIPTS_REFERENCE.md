@@ -4,8 +4,6 @@
 
 Complete inventory of scripts, their locations, and purposes in the Porteus Kiosk system.
 
-**AUDIT NOTE (2026-01-21):** ARM64-specific references have been removed as no ARM64 port exists. See AUDIT_REPORT.md for details.
-
 ---
 
 ## 1. HOOK DIRECTORIES
@@ -140,13 +138,19 @@ Lines 141+:   Printing, scheduled actions, screensaver
 Line 292:     Launch gui-app (browser)
 ```
 
+### Boot Flow
+
+```
+autostart → DPMS off → network wait → NTP → first-run check → update-config check → local_net.d hooks → browser
+```
+
 ---
 
 ## 6. RUNTIME SCRIPTS (003-settings.xzm)
 
 | Script | Lines | Purpose |
 |--------|-------|---------|
-| `/opt/scripts/gui-app` | ~18 | Browser launcher loop |
+| `/opt/scripts/gui-app` | 19 | Browser launcher loop |
 | `/opt/scripts/persistence` | ~50 | Persistent storage setup |
 | `/opt/scripts/screen-setup` | ~400 | Dynamic screen configuration |
 | `/opt/scripts/session-manager` | ~100 | Password authentication |
@@ -157,13 +161,12 @@ Line 292:     Launch gui-app (browser)
 ### gui-app Loop
 ```bash
 while true; do
-    # Clean guest home
-    rm -rf /home/guest
-    cp -a /opt/scripts/guest /home/guest
-    chown -R guest:guest /home/guest
-
+    rm -rf /home/guest /tmp/*
+    cp -a /opt/scripts/guest /home
+    sync
     # Launch browser
     su - guest -c "firefox"
+    sync
 done
 ```
 
@@ -187,7 +190,7 @@ wget --no-http-keep-alive --no-cache --no-check-certificate -q -T20 -t5 $1 -O $2
 |--------|-------|---------|
 | `/etc/rc.d/local_net.d/daemon.sh` | 65 | Remote config polling |
 | `/opt/scripts/welcome` | 617 | Network setup wizard |
-| `/opt/scripts/wizard` | 299 | Device installation wizard |
+| `/opt/scripts/wizard` | ~385 | Device installation wizard |
 | `/opt/scripts/wizard-now` | 27 | Wizard launcher |
 | `/opt/scripts/files/greyos_reboot` | 23 | Scheduled reboot |
 
@@ -308,7 +311,7 @@ See [PARAM_REFERENCE.md](PARAM_REFERENCE.md) for complete parameter documentatio
 
 ## 10. ISO BUILD SCRIPT (make_iso.sh)
 
-**Location:** `/home/culler/saas_dev/pk-port/iso/make_iso.sh`
+**Location:** `make_iso.sh` (project root)
 
 ### mkisofs Command
 ```bash
@@ -358,15 +361,12 @@ mkisofs -o ../GreyOS_v20.iso \
 
 ## Related Documentation
 
-- [AUDIT_REPORT.md](AUDIT_REPORT.md) - Documentation audit findings
-- [BOOT_SEQUENCE.md](BOOT_SEQUENCE.md) - Boot sequence and reconfiguration analysis
-
-Note: PARAM_REFERENCE.md and PARAM_HANDLERS.md have been archived to `archived_aspirational/` as they described non-existent features.
+- [PARAM_REFERENCE.md](PARAM_REFERENCE.md) - Complete parameter reference tables
+- [ARM_PORTING_NOTES.md](ARM_PORTING_NOTES.md) - ARM64 porting notes (planning document)
 
 ---
 
 ## Document History
 - Created: 2026-01-12
-- Updated: 2026-01-13 - Initial script documentation
-- Updated: 2026-01-21 - Removed false ARM64 references (apply-config, param handlers, ARM64 boot flow) per audit
+- Updated: 2026-01-22 - Removed references to non-existent apply-config and param-handlers
 - Purpose: Complete script inventory and reference

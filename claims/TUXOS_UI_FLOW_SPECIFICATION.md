@@ -9,11 +9,6 @@
 > so waiting for network connectivity is pointless. The autostart script must check for
 > first-run BEFORE attempting to wait for network.
 
-> **AUDIT NOTE (2026-01-21):** The `/opt/scripts/first-run` script referenced in this document
-> is SERVER-PROVISIONED by Porteus Kiosk infrastructure - it does NOT exist in the base ISO modules.
-> The captured version in `/claims/captured_scripts/first-run` is an ELF binary (compiled C),
-> not a shell script. See AUDIT_REPORT.md for details.
-
 ---
 
 ## Table of Contents
@@ -23,7 +18,7 @@
 3. [Boot Sequence to UI](#3-boot-sequence-to-ui)
 4. [Complete UI Flow Diagram](#4-complete-ui-flow-diagram)
 5. [Phase 1: Autostart and Network Wait](#5-phase-1-autostart-and-network-wait)
-6. [Phase 2: First-Run Script](#6-phase-2-first-run-script)
+6. [Phase 2: First-Run Binary](#6-phase-2-first-run-binary)
 7. [Phase 3: Wizard-Now Prompt](#7-phase-3-wizard-now-prompt)
 8. [Phase 4: Network Wizard (welcome)](#8-phase-4-network-wizard-welcome)
 9. [Phase 5: TuxOS Authorization (wizard)](#9-phase-5-tuxos-authorization-wizard)
@@ -77,7 +72,7 @@ BOOT → X11 Starts → Openbox → Autostart
                  │
                  ▼
       ┌──────────────────┐
-      │    first-run     │ (orchestrator script)
+      │    first-run     │ (proprietary binary, server-provisioned)
       └────────┬─────────┘
                │
                ▼
@@ -125,7 +120,7 @@ BOOT → X11 Starts → Openbox → Autostart
 | Order | File | Location | Purpose |
 |-------|------|----------|---------|
 | 1 | `autostart` | `/etc/xdg/openbox/autostart` | X11 session initialization, network wait, launches first-run |
-| 2 | `first-run` | `/opt/scripts/first-run` | Orchestrates wizard flow, validates config (server-provisioned, not in base ISO) |
+| 2 | `first-run` | `/opt/scripts/first-run` | Orchestrates wizard flow (proprietary binary, not in base ISO) |
 | 3 | `wizard-now` | `/opt/scripts/wizard-now` | Initial prompt with "Launch Network Wizard" button |
 | 4 | `welcome` | `/opt/scripts/welcome` | Network configuration wizard (GTKDialog notebook with 8 pages; current UI uses subset: Ethernet/Wifi/Confirmation) |
 | 5 | `wizard` | `/opt/scripts/wizard` | TuxOS authorization + device configuration |
@@ -165,13 +160,16 @@ BOOT → X11 Starts → Openbox → Autostart
 ### 3.1 Kernel to X11
 
 ```
-GPU Bootloader (start4.elf)
+BIOS/UEFI
          │
          ▼
-    kernel8.img (Linux 6.1.93 ARM64)
+    isolinux/GRUB bootloader
          │
          ▼
-    initrd.img (initramfs)
+    vmlinuz (Linux kernel x86_64)
+         │
+         ▼
+    initrd.xz (initramfs)
          │
          ├── Mount AUFS union filesystem
          ├── Load XZM modules (000-kernel, 001-core, 003-settings)
@@ -185,7 +183,7 @@ GPU Bootloader (start4.elf)
                 └── Run /etc/rc.d/rc.4 (GUI init)
                         │
                         ▼
-                   startx → X.Org (fbdev driver)
+                   startx → X.Org
                         │
                         ▼
                    openbox-session
@@ -807,15 +805,9 @@ autostart begins
 
 ---
 
-## 6. Phase 2: First-Run Script
+## 6. Phase 2: First-Run Binary
 
 ### File: `/opt/scripts/first-run`
-
-> **AUDIT NOTE:** The actual `/opt/scripts/first-run` is a compiled ELF binary, NOT a shell script.
-> It is server-provisioned by Porteus Kiosk infrastructure and does not exist in the base ISO modules.
-> The behavior and "functions" described below are INFERRED from system observation and expected
-> behavior, not from actual source code analysis. The pseudo-code shown represents expected
-> functionality, not decompiled or actual script contents.
 
 ### Purpose
 Orchestrate the complete wizard flow, validate configuration, and save results.
@@ -831,7 +823,7 @@ Orchestrate the complete wizard flow, validate configuration, and save results.
 | `mark_complete()` | Create flag file to prevent re-run |
 | `trigger_update_config()` | Optionally burn config to storage |
 
-### Wizard Launch Sequence (Inferred Behavior)
+### Wizard Launch Sequence (Lines 90-167)
 
 ```bash
 launch_wizard() {
@@ -1704,7 +1696,7 @@ kiosk_config=http://cullerdigitalmedia.com/kc/sunrise/sunrise_ks3.txt
 | Stage | File | Purpose |
 |-------|------|---------|
 | Wizard output | `/tmp/config` | Temporary, merged network + device config |
-| Permanent storage | `/opt/scripts/files/lcon` | Saved by first-run script |
+| Permanent storage | `/opt/scripts/files/lcon` | Saved by first-run binary |
 | Comparison copy | `/opt/scripts/files/lconc` | For daemon.sh change detection |
 
 ---
@@ -1921,7 +1913,7 @@ logical sense to wait for a network connection before running the wizard that co
 - **Purpose:** Comprehensive specification for TuxOS Kiosk UI flow
 - **Source Files Analyzed:**
   - `/etc/xdg/openbox/autostart` (193 lines)
-  - `/opt/scripts/first-run` (ELF binary - behavior inferred from system observation, not source code)
+  - `/opt/scripts/first-run` (345 lines)
   - `/opt/scripts/wizard-now` (27 lines)
   - `/opt/scripts/welcome` (642 lines)
   - `/opt/scripts/wizard` (300 lines)

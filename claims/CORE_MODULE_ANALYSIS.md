@@ -8,7 +8,7 @@ The 001-core.xzm module contains the complete userland for Porteus Kiosk, includ
 - Compressed size: 64 MB (squashfs)
 - Extracted size: 288 MB
 - Total files: 4,524
-- Total directories: 293
+- Total directories: 286
 - Total symlinks: 696
 - ELF executables: 104
 - Shared libraries: 459
@@ -417,7 +417,7 @@ openbox (Window Manager)
 │   └── pango
 └── X11 libraries
 
-Browser (in 002-chrome.xzm)
+Browser (Firefox - in 001-core.xzm)
 ├── GTK+ 3.0
 ├── NSS/NSPR
 ├── D-Bus
@@ -467,4 +467,4 @@ These are uClibc libraries (alternative to glibc). May be used by some staticall
 
 - Created: 2026-01-12
 - Purpose: ARM64 porting analysis for 001-core.xzm module
-- Source: /home/culler/saas_dev/pk-port/iso/xzm/001-core.xzm
+- Source: xzm/001-core.xzm
